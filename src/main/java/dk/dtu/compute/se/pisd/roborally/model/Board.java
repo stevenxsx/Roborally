@@ -70,7 +70,7 @@ public class Board extends Subject {
                 spaces[x][y] = space;
             }
         }
-        spaces[5][1] = new Wall(this, 5, 1, Heading.SOUTH);
+        //spaces[5][1] = new Wall(this, 5, 1, Heading.SOUTH); //this creates a wall. commented out because collision detection isnt made yet.
         this.stepMode = false;
     }
 

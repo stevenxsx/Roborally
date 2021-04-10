@@ -62,7 +62,7 @@ public class GameController {
             board.setCurrentPlayer(board.getPlayer((number+1) % board.getPlayersNumber() ));
         }
         else if (space.getPlayer() != current_player){
-            push(space.getPlayer());
+            push(space.getPlayer(), current_player.getHeading());
             current_player.setSpace(space);//sets players position
             board.setCounter(board.getCounter()+1);
             //to change the player
@@ -255,7 +255,7 @@ public class GameController {
         if(current!= null && player.board == current.board){
             Space target = board.getNeighbour(current,player.getHeading());
             if (target.getPlayer() != null){
-                push(target.getPlayer());
+                push(target.getPlayer(), current.getPlayer().getHeading());
                 player.setSpace(target);
             }
             if (target != null && target.getPlayer() == null){
@@ -264,9 +264,9 @@ public class GameController {
         }
     }
 
-    public void push(@NotNull Player player) {
+    public void push(@NotNull Player player, Heading direction) {
         Space current = player.getSpace();
-        Space target = board.getNeighbour(current, player.getHeading());
+        Space target = board.getNeighbour(current, direction);
         current.getPlayer().setSpace(target);
     }
 
