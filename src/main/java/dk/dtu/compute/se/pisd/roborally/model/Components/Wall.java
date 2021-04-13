@@ -1,10 +1,14 @@
-package dk.dtu.compute.se.pisd.roborally.model;
+package dk.dtu.compute.se.pisd.roborally.model.Components;
+import dk.dtu.compute.se.pisd.roborally.model.Board;
+import dk.dtu.compute.se.pisd.roborally.model.Heading;
+import dk.dtu.compute.se.pisd.roborally.model.Space;
+
 import java.util.List;
 import java.util.ArrayList;
 
 public class Wall extends Space {
     /**
-     * @authour Lucas
+     * @author Lucas
      * Needs to be a List or Array of headings - will Implement later.
      */
     private Heading walls;
@@ -14,7 +18,4 @@ public class Wall extends Space {
         this.walls = walls;
     }
 
-    public Heading getWalls() {
-        return walls;
-    }
 }

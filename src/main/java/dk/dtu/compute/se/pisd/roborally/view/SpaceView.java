@@ -32,7 +32,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import org.jetbrains.annotations.NotNull;
-import dk.dtu.compute.se.pisd.roborally.model.Wall;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Wall;
 
 /**
  * ...
