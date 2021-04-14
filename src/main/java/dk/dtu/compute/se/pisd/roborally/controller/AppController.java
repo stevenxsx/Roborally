@@ -5,6 +5,8 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 
+import dk.dtu.compute.se.pisd.roborally.dal.GameInDB;
+import dk.dtu.compute.se.pisd.roborally.dal.RepositoryAccess;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 
@@ -13,8 +15,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +77,35 @@ public class AppController implements Observer {
     }
 
     public void saveGame() {
+        boolean savedGame = false;
+
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Save Game");
+        dialog.setHeaderText("If you wish to save, \n please type a name for your game:");
+        dialog.setContentText("Enter name");
+
+
+        Optional<String> result = dialog.showAndWait();
+
+        String Realresult = dialog.getResult();
+
+        List<GameInDB> gameIDs = RepositoryAccess.getRepository().getGames();
+
+        gameController.board.setName(Realresult);
+
+        for(GameInDB gameID : gameIDs){
+            if(gameController.board.getGameId() != null) {
+                if (gameID.id == gameController.board.getGameId()) {
+                    savedGame = true;
+                }
+            }
+        }
+        if(savedGame){
+            RepositoryAccess.getRepository().updateGameInDB(gameController.board);
+        }
+        else{
+            RepositoryAccess.getRepository().createGameInDB(gameController.board);
+        }
 
     }
 
@@ -80,7 +113,28 @@ public class AppController implements Observer {
         // XXX needs to be implememted eventually
         // for now, we just create a new game
         if (gameController == null) {
-            newGame();
+            GameInDB currentGame = null;
+            List<GameInDB> gameIDs = RepositoryAccess.getRepository().getGames();
+            List<String>  gameName = new ArrayList<String>();
+            for(GameInDB game : gameIDs){
+                gameName.add(game.name);
+            }
+            ChoiceDialog<String> dialog = new ChoiceDialog<>(gameName.get(0),gameName);
+
+            dialog.setTitle("Player number");
+            dialog.setHeaderText("Select number of players");
+            Optional<String> result = dialog.showAndWait();
+            for(GameInDB game : gameIDs){
+                if(game.name.equals(result.get())){
+                    currentGame = game;
+                }
+            }
+            //todo same name
+            //todo add a try/catch statement to handle nullpointer exception.
+            gameController = new GameController(RepositoryAccess.getRepository().loadGameFromDB(currentGame.id));
+
+            roboRally.createBoardView(gameController);
+
         }
     }
 

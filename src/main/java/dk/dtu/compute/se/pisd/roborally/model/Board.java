@@ -47,6 +47,16 @@ public class Board extends Subject {
 
     private final Space[][] spaces;
 
+    public String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private final List<Player> players = new ArrayList<>();
 
     private Player current;
