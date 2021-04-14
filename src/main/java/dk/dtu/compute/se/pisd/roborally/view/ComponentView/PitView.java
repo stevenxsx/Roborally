@@ -8,10 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
- * Riped from PriorityAntennaView*
- * TODO make pretty
- * kh Thomse
- */
+ *
+ * TODO look better
+ * */
 
 public class PitView {
     public static void drawPit(SpaceView spaceView, Space space){
