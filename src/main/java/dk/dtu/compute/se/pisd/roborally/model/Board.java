@@ -22,6 +22,10 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
+import dk.dtu.compute.se.pisd.roborally.model.Components.PriorityAntenna;
+import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -81,6 +85,10 @@ public class Board extends Subject {
             }
         }
         //spaces[5][1] = new Wall(this, 5, 1, Heading.SOUTH); //this creates a wall. commented out because collision detection isnt made yet.
+        spaces[5][2] = new Checkpoint(this, 5, 2);
+        spaces[5][3] = new Laser(this, 5, 2, 1, Heading.WEST);
+        spaces[5][4] = new PriorityAntenna(this, 5, 2);
+        spaces[5][5] = new RebootTokens(this, 5, 2);
         this.stepMode = false;
     }
 
