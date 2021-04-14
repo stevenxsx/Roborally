@@ -80,19 +80,7 @@ public class AppController implements Observer {
     public void saveGame() {
         boolean savedGame = false;
 
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Save Game");
-        dialog.setHeaderText("If you wish to save, \n please type a name for your game:");
-        dialog.setContentText("Enter name");
-
-
-        Optional<String> result = dialog.showAndWait();
-
-        String Realresult = dialog.getResult();
-
         List<GameInDB> gameIDs = RepositoryAccess.getRepository().getGames();
-
-        gameController.board.setName(Realresult);
 
         for(GameInDB gameID : gameIDs){
             if(gameController.board.getGameId() != null) {
@@ -105,6 +93,17 @@ public class AppController implements Observer {
             RepositoryAccess.getRepository().updateGameInDB(gameController.board);
         }
         else{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Save Game");
+            dialog.setHeaderText("If you wish to save, \n please type a name for your game:");
+            dialog.setContentText("Enter name");
+
+
+            Optional<String> result = dialog.showAndWait();
+
+            String Realresult = dialog.getResult();
+
+            gameController.board.setName(Realresult);
             RepositoryAccess.getRepository().createGameInDB(gameController.board);
         }
 
@@ -116,7 +115,7 @@ public class AppController implements Observer {
         if (gameController == null) {
             GameInDB currentGame = null;
             List<GameInDB> gameIDs = RepositoryAccess.getRepository().getGames();
-            List<String>  gameName = new ArrayList<String>();
+            List<String>  gameName = new ArrayList<>();
             for(GameInDB game : gameIDs){
                 gameName.add(game.name);
             }
