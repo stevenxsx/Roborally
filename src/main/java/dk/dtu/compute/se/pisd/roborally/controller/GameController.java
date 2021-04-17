@@ -267,6 +267,26 @@ public class GameController {
     public void push(@NotNull Player player, Heading direction) {
         Space current = player.getSpace();
         Space target = board.getNeighbour(current, direction);
+         while(target.getPlayer()!= null) {
+             Space currenttemp1 = target.getPlayer().getSpace();
+             Space temp1 = board.getNeighbour(currenttemp1, direction);
+             while(temp1.getPlayer()!= null) {
+                 Space currenttemp2 = temp1.getPlayer().getSpace();
+                 Space temp2 = board.getNeighbour(currenttemp2, direction);
+                 while(temp2.getPlayer()!= null) {
+                     Space currenttemp3 = temp2.getPlayer().getSpace();
+                     Space temp3 = board.getNeighbour(currenttemp3, direction);
+                     while(temp3.getPlayer()!= null) {
+                         Space currenttemp4 = temp3.getPlayer().getSpace();
+                         Space temp4 = board.getNeighbour(currenttemp4, direction);
+                         currenttemp4.getPlayer().setSpace(temp4);
+                     }
+                     currenttemp3.getPlayer().setSpace(temp3);
+                 }
+                 currenttemp2.getPlayer().setSpace(temp2);
+             }
+             currenttemp1.getPlayer().setSpace(temp1);
+         }
         current.getPlayer().setSpace(target);
     }
 
