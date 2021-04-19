@@ -90,11 +90,11 @@ public class Board extends Subject {
         headingtester2.add(Heading.SOUTH);
         headingtester2.add(Heading.NORTH);
         spaces[5][1] = new Wall(this, 5, 1, headingtester1); //this creates a wall. commented out because collision detection isnt made yet.
-        spaces[2][5] = new Wall(this, 5, 1,headingtester2);
-        spaces[5][2] = new Checkpoint(this, 5, 2);
-        spaces[5][3] = new Laser(this, 5, 2, 1, Heading.WEST);
-        spaces[5][4] = new PriorityAntenna(this, 5, 2);
-        spaces[5][5] = new RebootTokens(this, 5, 2);
+        spaces[2][5] = new Wall(this, 2, 5, headingtester2);
+       // spaces[5][2] = new Checkpoint(this, 5, 2);
+        //spaces[5][3] = new Laser(this, 5, 2, 1, Heading.WEST);
+        //spaces[5][4] = new PriorityAntenna(this, 5, 2);
+        //spaces[5][5] = new RebootTokens(this, 5, 2);
         this.stepMode = false;
     }
 

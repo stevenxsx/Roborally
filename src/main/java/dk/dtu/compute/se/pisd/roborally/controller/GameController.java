@@ -22,7 +22,10 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Wall;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * ...
@@ -248,10 +251,56 @@ public class GameController {
         }
     }
 
+    public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
+        Player other = space.getPlayer();
+        Boolean canmove = true;
+
+        if (player.getSpace() instanceof Wall){
+            List<Heading> wallHeadings = ((Wall) player.getSpace()).getHeading();
+            for(Heading h: wallHeadings){
+                if (heading == h){
+                    canmove = false;
+                    space = player.getSpace();
+                }
+            }
+        }
+
+        if(other != null && canmove ){
+            Space target = board.getNeighbour(space,heading);
+            if (target != null && !(target instanceof Wall)){
+                moveToSpace(other, target, heading);
+            }else if(target instanceof Wall ){
+                Heading[] wallHeadings = ((Wall) space).getHeading().toArray(new Heading[0]);
+                for(Heading h: wallHeadings){
+                    if (heading.next().next() == h){
+                        canmove = false;
+                    }
+                }
+                if (canmove){
+                    moveToSpace(other,target,heading);
+                }
+
+            }else{
+                throw new ImpossibleMoveException(player,space,heading);
+            }
+        }
+        player.setSpace(space);
+    }
+
     /** Moves robot one space forward in the heading it is facing*/
 
     public void moveForward(@NotNull Player player) {
         Space current = player.getSpace();
+        Space target = board.getNeighbour(player.getSpace(), player.getHeading());
+        if(target != null)
+        {
+            try
+            {
+                moveToSpace(player, target, player.getHeading());
+            } catch (ImpossibleMoveException e){
+            }
+
+        }/*
         if(current!= null && player.board == current.board){
             Space target = board.getNeighbour(current,player.getHeading());
             if (target.getPlayer() != null){
@@ -261,7 +310,7 @@ public class GameController {
             if (target != null && target.getPlayer() == null){
                 player.setSpace(target);
             }
-        }
+        }*/
     }
 
     public void push(@NotNull Player player, Heading direction) {
