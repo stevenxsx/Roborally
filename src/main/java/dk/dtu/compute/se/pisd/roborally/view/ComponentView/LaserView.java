@@ -13,10 +13,10 @@ public class LaserView {
         Laser tempSpace = (Laser) space;
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.YELLOW);
+        gc.setStroke(Color.INDIANRED);
         gc.setLineWidth(5);
-        gc.setLineCap(StrokeLineCap.ROUND);/*
-        if(tempSpace.getLaserType() == Laser.whatKindOfLaser.START){
+        gc.setLineCap(StrokeLineCap.ROUND);
+        //if(tempSpace.getLaserType() == Laser.whatKindOfLaser.START){
             switch (tempSpace.getHeadin()) {
                 case SOUTH:
                     gc.strokeLine(2, SpaceView.SPACE_HEIGHT-73, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-73);
@@ -32,7 +32,7 @@ public class LaserView {
                     gc.strokeLine(2, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-73, SpaceView.SPACE_HEIGHT-73);
                     break;
             }
-        }
+        /*
         else if(tempSpace.getLaserType() == Laser.whatKindOfLaser.END){
             switch (tempSpace.getHeadin()) {
                 case SOUTH:

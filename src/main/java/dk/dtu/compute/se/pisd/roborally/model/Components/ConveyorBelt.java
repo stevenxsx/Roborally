@@ -22,7 +22,7 @@ public class ConveyorBelt extends Space {
         this.heading = heading;
     }
 
-    public int getSpeed() {
+    public int getVelocity() {
         return velocity;
     }
 

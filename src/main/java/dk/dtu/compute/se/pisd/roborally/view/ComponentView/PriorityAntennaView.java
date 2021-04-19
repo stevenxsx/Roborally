@@ -16,6 +16,7 @@ public class PriorityAntennaView {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.strokeOval(2,2,70,70);
         spaceView.getChildren().add(canvas);
+        gc.setEffect(canvas.getEffect());
 
     }
 }

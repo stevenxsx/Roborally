@@ -22,10 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
-import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
-import dk.dtu.compute.se.pisd.roborally.model.Components.PriorityAntenna;
-import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
+import dk.dtu.compute.se.pisd.roborally.model.Components.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -84,7 +81,16 @@ public class Board extends Subject {
                 spaces[x][y] = space;
             }
         }
-        //spaces[5][1] = new Wall(this, 5, 1, Heading.SOUTH); //this creates a wall. commented out because collision detection isnt made yet.
+        List<Heading> headingtester1 = new ArrayList<>();
+        headingtester1.add(Heading.SOUTH);
+        headingtester1.add(Heading.NORTH);
+        headingtester1.add(Heading.EAST);
+        headingtester1.add(Heading.WEST);
+        List<Heading> headingtester2 = new ArrayList<>();
+        headingtester2.add(Heading.SOUTH);
+        headingtester2.add(Heading.NORTH);
+        spaces[5][1] = new Wall(this, 5, 1, headingtester1); //this creates a wall. commented out because collision detection isnt made yet.
+        spaces[2][5] = new Wall(this, 5, 1,headingtester2);
         spaces[5][2] = new Checkpoint(this, 5, 2);
         spaces[5][3] = new Laser(this, 5, 2, 1, Heading.WEST);
         spaces[5][4] = new PriorityAntenna(this, 5, 2);

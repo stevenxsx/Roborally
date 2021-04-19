@@ -11,13 +11,13 @@ public class Wall extends Space {
      * @author Lucas
      * Needs to be a List or Array of headings - will Implement later.
      */
-    private Heading heading[];
+    private List<Heading> heading;
 
-    public Wall(Board board, int x, int y, Heading heading[]) {
+    public Wall(Board board, int x, int y, List<Heading> heading) {
         super(board, x, y);
         this.heading = heading;
     }
-    public Heading[] getHeading(){
+    public List<Heading> getHeading(){
         return heading;
     }
 
