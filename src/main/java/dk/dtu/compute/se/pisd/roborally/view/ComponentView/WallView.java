@@ -18,7 +18,6 @@ public class WallView {
         gc.setLineWidth(7);
         gc.setLineCap(StrokeLineCap.ROUND);
         for (Heading header : wallSpace.getHeading()) {
-            System.out.println(header.ordinal());
             switch (header) {
                 case SOUTH:
                     gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
