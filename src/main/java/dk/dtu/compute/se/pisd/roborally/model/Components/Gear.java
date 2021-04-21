@@ -16,12 +16,13 @@ public class Gear extends Space {
      * @param x           x-coordinate position.
      * @param y           y-coordinate position.
      */
-    public Gear(Board board, int x, int y) {
+    public Gear(Board board, int x, int y, Heading heading) {
         super(board, x, y);
+        this.heading = heading;
     }
     
     public Heading getHeading(){
-        return null;
+        return heading;
     }
 
 }

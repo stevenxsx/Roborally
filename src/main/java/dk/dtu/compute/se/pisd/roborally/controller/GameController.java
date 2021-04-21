@@ -22,6 +22,9 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Gear;
+import dk.dtu.compute.se.pisd.roborally.model.Components.PushPanel;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Wall;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,6 +100,41 @@ public class GameController {
         }
     }
 
+    public void endOfTurn(@NotNull Player player) throws ImpossibleMoveException{
+        Space playerSpace = player.getSpace();
+
+        //TODO Gettting infinite recursion Stackoverflow error here.
+        if(playerSpace instanceof ConveyorBelt){
+            Space neighbourOfConveyorHeading = board.getNeighbour(playerSpace, ((ConveyorBelt) playerSpace).getHeading());
+            Heading conveyorHeading = ((ConveyorBelt) playerSpace).getHeading();
+            int velocity = ((ConveyorBelt) playerSpace).getVelocity();
+            for(int i = 0; i < velocity; i++) {
+                moveToSpace(player, neighbourOfConveyorHeading, conveyorHeading);
+            }
+        }
+
+        if(playerSpace instanceof Gear){
+            Heading pHeading = player.getHeading();
+            Heading gearheading = ((Gear) playerSpace).getHeading();
+            switch(gearheading){
+                case EAST -> {
+                    player.setHeading(pHeading.next());
+                    break;
+                }
+                case WEST -> {
+                    player.setHeading(pHeading.prev());
+                    break;
+                }
+            }
+        }
+
+        if(playerSpace instanceof PushPanel){
+            Heading pushHeading = ((PushPanel) playerSpace).getHeading();
+            moveToSpace(player, playerSpace, pushHeading);
+        }
+
+    }
+
 
     // XXX: V2
     private CommandCard generateRandomCommandCard() {
@@ -157,6 +195,12 @@ public class GameController {
 
     // XXX: V2
     private void executeNextStep() {
+        try {
+            endOfTurn(board.getCurrentPlayer());
+        }
+        catch(ImpossibleMoveException m){
+            System.out.println("Move exception");
+        }
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -265,7 +309,7 @@ public class GameController {
             }
         }
 
-        if(canmove){
+        if(canmove && neighbourPlayer!= null ){
             Space target = space;
             if (target != null && !(target instanceof Wall)){
                 try {
