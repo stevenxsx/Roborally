@@ -22,10 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.*;
 import dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt;
-import dk.dtu.compute.se.pisd.roborally.model.Components.Gear;
-import dk.dtu.compute.se.pisd.roborally.model.Components.PushPanel;
-import dk.dtu.compute.se.pisd.roborally.model.Components.Wall;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -103,12 +101,12 @@ public class GameController {
     public void endOfTurn(@NotNull Player player) throws ImpossibleMoveException{
         Space playerSpace = player.getSpace();
 
-        //TODO Gettting infinite recursion Stackoverflow error here.
+
         if(playerSpace instanceof ConveyorBelt){
-            Space neighbourOfConveyorHeading = board.getNeighbour(playerSpace, ((ConveyorBelt) playerSpace).getHeading());
             Heading conveyorHeading = ((ConveyorBelt) playerSpace).getHeading();
             int velocity = ((ConveyorBelt) playerSpace).getVelocity();
             for(int i = 0; i < velocity; i++) {
+                Space neighbourOfConveyorHeading = board.getNeighbour(player.getSpace(), ((ConveyorBelt) playerSpace).getHeading());
                 moveToSpace(player, neighbourOfConveyorHeading, conveyorHeading);
             }
         }
@@ -132,6 +130,11 @@ public class GameController {
             Heading pushHeading = ((PushPanel) playerSpace).getHeading();
             moveToSpace(player, playerSpace, pushHeading);
         }
+
+        if(playerSpace instanceof Pit){
+            //Do nothing for now - needs to be implemented with reboot token?
+        }
+
 
     }
 
