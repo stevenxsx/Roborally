@@ -252,7 +252,7 @@ public class GameController {
     }
 
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
-        Player other = space.getPlayer();
+        Player neighbourPlayer = space.getPlayer();
         Boolean canmove = true;
 
         if (player.getSpace() instanceof Wall){
@@ -265,25 +265,33 @@ public class GameController {
             }
         }
 
-        if(other != null && canmove ){
-            Space target = board.getNeighbour(space,heading);
+        if(canmove){
+            Space target = space;
             if (target != null && !(target instanceof Wall)){
-                moveToSpace(other, target, heading);
-            }else if(target instanceof Wall ){
-                Heading[] wallHeadings = ((Wall) space).getHeading().toArray(new Heading[0]);
-                for(Heading h: wallHeadings){
-                    if (heading.next().next() == h){
+                try {
+                    moveToSpace(neighbourPlayer, target, heading);
+                }
+                catch(Exception e){
+                    System.out.println("Player is null");
+                }
+            }
+            else if(target instanceof Wall ){
+                List<Heading> wallHeadings2 = ((Wall) target).getHeading();
+                for(Heading header: wallHeadings2){
+                    Heading headerlist = header.next().next();
+                    if (headerlist == heading){
                         canmove = false;
                     }
                 }
                 if (canmove){
-                    moveToSpace(other,target,heading);
+                    moveToSpace(neighbourPlayer,target,heading);
                 }
 
             }else{
                 throw new ImpossibleMoveException(player,space,heading);
             }
         }
+        if(canmove)
         player.setSpace(space);
     }
 
@@ -291,12 +299,12 @@ public class GameController {
 
     public void moveForward(@NotNull Player player) {
         Space current = player.getSpace();
-        Space target = board.getNeighbour(player.getSpace(), player.getHeading());
-        if(target != null)
+        Space neighbourSpace = board.getNeighbour(player.getSpace(), player.getHeading());
+        if(neighbourSpace != null)
         {
             try
             {
-                moveToSpace(player, target, player.getHeading());
+                moveToSpace(player, neighbourSpace, player.getHeading());
             } catch (ImpossibleMoveException e){
             }
 
