@@ -132,6 +132,7 @@ public class GameController {
         }
 
         if(playerSpace instanceof Pit){
+            //TODO fix pit
             //Do nothing for now - needs to be implemented with reboot token?
         }
 
