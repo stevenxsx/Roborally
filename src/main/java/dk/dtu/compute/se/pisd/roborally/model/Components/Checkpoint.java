@@ -4,6 +4,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 public class Checkpoint extends Space {
+    private int checkpoints;
     /**
      * @param board       The board that space is part of.
      * @param x           x-coordinate on the board.
@@ -13,4 +14,9 @@ public class Checkpoint extends Space {
         super(board, x, y);
     }
 
+    public int getCheckpoints(){
+        return checkpoints;
+    }
 }
+
+

@@ -135,6 +135,11 @@ public class GameController {
             //TODO fix pit
             //Do nothing for now - needs to be implemented with reboot token?
         }
+        if(playerSpace instanceof Checkpoint){
+            if(player.getCheckpoints() == ((Checkpoint) playerSpace).getCheckpoints() -1){
+                player.setCheckpoints(player.getCheckpoints()+1);
+            }
+        }
 
 
     }
