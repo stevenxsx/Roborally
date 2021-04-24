@@ -1,18 +1,15 @@
-package dk.dtu.compute.se.pisd.roborally.model.Components;
+package dk.dtu.compute.se.pisd.roborally.controller.Components;
 
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
-public class Pit extends Space {
+public class PriorityAntenna extends Space {
     /**
-     * @param board       Board that spaces are put on.
+     * @param board       Board game is played with.
      * @param x           x-position on board.
      * @param y           y-position on board.
      */
-    public Pit(Board board, int x, int y, String description) {
+    public PriorityAntenna(Board board, int x, int y) {
         super(board, x, y);
     }
-
-
 }
-

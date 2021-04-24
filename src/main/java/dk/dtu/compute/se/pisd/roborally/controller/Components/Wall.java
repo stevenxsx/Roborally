@@ -1,10 +1,9 @@
-package dk.dtu.compute.se.pisd.roborally.model.Components;
+package dk.dtu.compute.se.pisd.roborally.controller.Components;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class Wall extends Space {
     /**

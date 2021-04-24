@@ -1,6 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view.ComponentView;
 
-import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
+import dk.dtu.compute.se.pisd.roborally.controller.Components.Laser;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import dk.dtu.compute.se.pisd.roborally.view.SpaceView;
 import javafx.scene.canvas.Canvas;

@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.roborally.model.Components;
+package dk.dtu.compute.se.pisd.roborally.controller.Components;
 
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 

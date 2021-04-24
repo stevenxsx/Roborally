@@ -22,8 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import dk.dtu.compute.se.pisd.roborally.model.Components.*;
-import dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt;
+import dk.dtu.compute.se.pisd.roborally.controller.Components.*;
+import dk.dtu.compute.se.pisd.roborally.controller.Components.ConveyorBelt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
