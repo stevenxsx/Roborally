@@ -330,20 +330,20 @@ public class GameController {
 
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
         Player neighbourPlayer = space.getPlayer();
-        boolean canmove = true;
+        boolean movePossible = true;
         boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
 
         if (!hasAnyWalls){
             for(Heading header: player.getSpace().getWalls()){
                 if (player.getHeading() == header){
-                    canmove = false;
+                    movePossible = false;
                     space = player.getSpace();
                     break;
                 }
             }
         }
 
-        if(canmove && neighbourPlayer!= null ){
+        if(movePossible && neighbourPlayer!= null ){
             Space target = space;
             boolean targetHasWalls = target.getWalls().isEmpty();
             if (target != null && targetHasWalls){
@@ -360,10 +360,10 @@ public class GameController {
                 for(Heading header: target.getWalls()){
                     Heading headerlist = header.next().next();
                     if (headerlist == heading){
-                        canmove = false;
+                        movePossible = false;
                     }
                 }
-                if (canmove){
+                if (movePossible){
                     moveToSpace(neighbourPlayer,target,heading);
                 }
 
@@ -372,7 +372,7 @@ public class GameController {
                 throw new ImpossibleMoveException(player,space,heading);
             }
         }
-        if(canmove)
+        if(movePossible)
         player.setSpace(space);
     }
 
