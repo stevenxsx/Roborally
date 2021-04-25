@@ -1,14 +1,15 @@
 package dk.dtu.compute.se.pisd.roborally.view.ComponentView;
 
-import dk.dtu.compute.se.pisd.roborally.controller.Components.ConveyorBelt;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.view.SpaceView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public class ConveyorBeltView {
-    public static void drawConveyorBeltView(SpaceView spaceView, Space space) {
-        ConveyorBelt tempSpace = (ConveyorBelt) space;
+    public static void drawConveyorBeltView(SpaceView spaceView, FieldAction fieldAction) {
+        ConveyorBelt tempSpace = (ConveyorBelt) fieldAction;
+
         spaceView.getChildren().clear();
 
             Polygon arrow = new Polygon(1.0, 1.0,

@@ -1,7 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.view.ComponentView;
 
-import dk.dtu.compute.se.pisd.roborally.controller.Components.Laser;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.view.SpaceView;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,8 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
 public class LaserView {
-        public  static void drawLaser(SpaceView spaceView, Space space) {
-        Laser tempSpace = (Laser) space;
+        public  static void drawLaser(SpaceView spaceView, FieldAction fa) {
+        Laser tempSpace = (Laser) fa;
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.INDIANRED);
@@ -18,19 +18,10 @@ public class LaserView {
         gc.setLineCap(StrokeLineCap.ROUND);
         //if(tempSpace.getLaserType() == Laser.whatKindOfLaser.START){
             switch (tempSpace.getHeadin()) {
-                case SOUTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-73, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-73);
-                    break;
-                case NORTH:
-
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
-                    break;
-                case WEST:
-                    gc.strokeLine(73, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-73);
-                    break;
-                case EAST:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-73, SpaceView.SPACE_HEIGHT-73);
-                    break;
+                case SOUTH -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 73, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 73);
+                case NORTH -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
+                case WEST -> gc.strokeLine(73, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 73);
+                case EAST -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 73, SpaceView.SPACE_HEIGHT - 73);
             }
         /*
         else if(tempSpace.getLaserType() == Laser.whatKindOfLaser.END){

@@ -4,26 +4,16 @@
   "spaces": [
     {
       "walls": [
-        "SOUTH"
-      ],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "WEST"
-          }
-        }
       ],
       "x": 0,
       "y": 0
     },
     {
       "walls": [
-        "NORTH"
       ],
       "actions": [
         {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Gear",
           "INSTANCE": {
             "heading": "WEST"
           }
@@ -34,42 +24,19 @@
     },
     {
       "walls": [
-        "WEST"
+        "EAST"
       ],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "NORTH"
-          }
-        }
-      ],
+
       "x": 1,
       "y": 1
     },
     {
       "walls": [],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "NORTH"
-          }
-        }
-      ],
       "x": 1,
       "y": 2
     },
     {
       "walls": [],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "NORTH"
-          }
-        }
-      ],
       "x": 1,
       "y": 3
     },
@@ -77,9 +44,9 @@
       "walls": [],
       "actions": [
         {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Gear",
           "INSTANCE": {
-            "heading": "NORTH"
+            "heading": "WEST"
           }
         }
       ],
@@ -88,37 +55,21 @@
     },
     {
       "walls": [],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "NORTH"
-          }
-        }
-      ],
       "x": 1,
       "y": 5
     },
     {
       "walls": [],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "NORTH"
-          }
-        }
-      ],
+
       "x": 1,
       "y": 6
     },
     {
       "walls": [
-        "NORTH"
       ],
       "actions": [
         {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Gear",
           "INSTANCE": {
             "heading": "EAST"
           }
@@ -129,28 +80,21 @@
     },
     {
       "walls": [
-        "EAST"
+        "SOUTH"
       ],
       "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "SOUTH"
-          }
-        }
       ],
       "x": 3,
       "y": 3
     },
     {
       "walls": [
-        "SOUTH"
       ],
       "actions": [
         {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint",
           "INSTANCE": {
-            "heading": "WEST"
+            "checkpoints": "1"
           }
         }
       ],
@@ -159,13 +103,12 @@
     },
     {
       "walls": [
-        "WEST"
       ],
       "actions": [
         {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.PushPanel",
           "INSTANCE": {
-            "heading": "NORTH"
+            "heading": "EAST"
           }
         }
       ],
@@ -174,16 +117,8 @@
     },
     {
       "walls": [
-        "NORTH"
       ],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "EAST"
-          }
-        }
-      ],
+
       "x": 6,
       "y": 6
     },
@@ -191,16 +126,22 @@
       "walls": [
         "EAST"
       ],
+      "x": 7,
+      "y": 7
+    },
+    {
+      "walls": [
+      ],
       "actions": [
         {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt",
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint",
           "INSTANCE": {
-            "heading": "SOUTH"
+            "checkpoints": "2"
           }
         }
       ],
       "x": 7,
-      "y": 7
+      "y": 6
     }
   ]
 }

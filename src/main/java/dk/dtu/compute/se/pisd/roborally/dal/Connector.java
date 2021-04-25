@@ -39,9 +39,9 @@ class Connector {
 
     private static final String HOST     = "localhost";
     private static final int    PORT     = 3306;
-    private static final String DATABASE = "databasename";
+    private static final String DATABASE = "didofjg";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "newPW";
+    private static final String PASSWORD = "kusser";
 
     private static final String DELIMITER = ";;";
 

@@ -22,11 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import dk.dtu.compute.se.pisd.roborally.controller.Components.*;
-import dk.dtu.compute.se.pisd.roborally.controller.Components.ConveyorBelt;
+import javafx.scene.control.Alert;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * ...
@@ -37,6 +34,8 @@ import java.util.List;
 public class GameController {
 
     final public Board board;
+
+    public boolean winnerFound = false;
 
     public GameController(@NotNull Board board) {
         this.board = board;
@@ -100,8 +99,7 @@ public class GameController {
 
     public void endOfTurn(@NotNull Player player) throws ImpossibleMoveException{
         Space playerSpace = player.getSpace();
-
-
+        /*
         if(playerSpace instanceof ConveyorBelt){
             Heading conveyorHeading = ((ConveyorBelt) playerSpace).getHeading();
             int velocity = ((ConveyorBelt) playerSpace).getVelocity();
@@ -141,6 +139,8 @@ public class GameController {
             }
         }
 
+         */
+
 
     }
 
@@ -150,6 +150,19 @@ public class GameController {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
+    }
+
+    /**
+     *
+     *
+     * @param player takes the current player
+     *
+     */
+
+    public void chooseWinner(Player player){
+        Alert winMsg = new Alert(Alert.AlertType.INFORMATION, "Player \"" + player.getName() + "\" won.");
+        this.winnerFound = true;
+        winMsg.showAndWait();
     }
 
     // XXX: V2
@@ -204,12 +217,14 @@ public class GameController {
 
     // XXX: V2
     private void executeNextStep() {
+        /*
         try {
             endOfTurn(board.getCurrentPlayer());
         }
         catch(ImpossibleMoveException m){
             System.out.println("Move exception");
         }
+         */
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -227,6 +242,15 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+
+                    for(Player player : this.board.getPlayers()){
+                        for(FieldAction fieldAction : player.getSpace().getActions()){
+                            if(winnerFound){
+                                break;
+                            }
+                            fieldAction.doAction(this, player.getSpace());
+                        }
+                    }
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -306,21 +330,23 @@ public class GameController {
 
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
         Player neighbourPlayer = space.getPlayer();
-        Boolean canmove = true;
+        boolean canmove = true;
+        boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
 
-        if (player.getSpace() instanceof Wall){
-            List<Heading> wallHeadings = ((Wall) player.getSpace()).getHeading();
-            for(Heading h: wallHeadings){
-                if (heading == h){
+        if (!hasAnyWalls){
+            for(Heading header: player.getSpace().getWalls()){
+                if (player.getHeading() == header){
                     canmove = false;
                     space = player.getSpace();
+                    break;
                 }
             }
         }
 
         if(canmove && neighbourPlayer!= null ){
             Space target = space;
-            if (target != null && !(target instanceof Wall)){
+            boolean targetHasWalls = target.getWalls().isEmpty();
+            if (target != null && targetHasWalls){
                 try {
                     moveToSpace(neighbourPlayer, target, heading);
                 }
@@ -328,9 +354,10 @@ public class GameController {
                     System.out.println("Player is null");
                 }
             }
-            else if(target instanceof Wall ){
-                List<Heading> wallHeadings2 = ((Wall) target).getHeading();
-                for(Heading header: wallHeadings2){
+            else if(targetHasWalls){
+                //List<Heading> wallHeadings2 = ((Wall) target).getHeading();
+
+                for(Heading header: target.getWalls()){
                     Heading headerlist = header.next().next();
                     if (headerlist == heading){
                         canmove = false;
@@ -340,7 +367,8 @@ public class GameController {
                     moveToSpace(neighbourPlayer,target,heading);
                 }
 
-            }else{
+            }
+            else{
                 throw new ImpossibleMoveException(player,space,heading);
             }
         }

@@ -1,5 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view.ComponentView;
 
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import dk.dtu.compute.se.pisd.roborally.view.SpaceView;
 import javafx.scene.canvas.Canvas;
@@ -8,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
 public class PriorityAntennaView {
-    public static void drawPriorityAntenna(SpaceView spaceView, Space space){
+    public static void drawPriorityAntenna(SpaceView spaceView, FieldAction fieldAction){
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.GREY);

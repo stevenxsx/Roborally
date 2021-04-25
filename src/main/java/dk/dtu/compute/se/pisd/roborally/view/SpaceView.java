@@ -22,7 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.Components.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.*;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -95,34 +96,37 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     @Override
     public void updateView(Subject subject) {
+        //TODO drawWall method
         if (subject == this.space) {
             updatePlayer();
-            if(this.space instanceof Wall){
-                WallView.drawWall(this,space);
+            if(!this.space.getWalls().isEmpty()){
+                WallView.drawWall(this, this.space);
             }
-            if (this.space instanceof PushPanel) {
-                PushPanelView.drawPushPanel(this,space);
-            }
-            if (this.space instanceof Gear) {
-                GearView.drawGear(this,space);
-            }
-            if(this.space instanceof Laser){
-                LaserView.drawLaser(this,space);
-            }
-            if(this.space instanceof Checkpoint){
-                CheckpointView.drawCheckpoint(this,space);
-            }
-            if(this.space instanceof RebootTokens){
-                RebootTokensView.drawRebootTokens(this,space);
-            }
-            if(this.space instanceof PriorityAntenna){
-                PriorityAntennaView.drawPriorityAntenna(this,space);
-            }
-            if(this.space instanceof Pit){
-                PitView.drawPit(this,space);
-            }
-            if(this.space instanceof ConveyorBelt){
-                ConveyorBeltView.drawConveyorBeltView(this,space);
+            for(FieldAction fa : space.getActions()) {
+                if (fa instanceof PushPanel) {
+                    PushPanelView.drawPushPanel(this, fa);
+                }
+                if (fa instanceof Gear) {
+                    GearView.drawGear(this, fa);
+                }
+                if (fa instanceof Laser) {
+                    LaserView.drawLaser(this, fa);
+                }
+                if (fa instanceof Checkpoint) {
+                    CheckpointView.drawCheckpoint(this, fa);
+                }
+                if (fa instanceof RebootTokens) {
+                    RebootTokensView.drawRebootTokens(this, fa);
+                }
+                if (fa instanceof PriorityAntenna) {
+                    PriorityAntennaView.drawPriorityAntenna(this, fa);
+                }
+                if (fa instanceof Pit) {
+                    PitView.drawPit(this, fa);
+                }
+                if (fa instanceof ConveyorBelt) {
+                    ConveyorBeltView.drawConveyorBeltView(this, fa);
+                }
             }
         }
     }
@@ -136,7 +140,6 @@ public class SpaceView extends StackPane implements ViewObserver {
      */
 
     public void updateWallView(Space space) {
-        Wall tWall = (Wall) space;
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.RED);

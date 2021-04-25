@@ -61,6 +61,8 @@ class Repository implements IRepository {
 
     private static final String PLAYER_HEADING = "heading";
 
+    private static final String CHECKPOINT = "checkpoint";
+
     private Connector connector;
 
     Repository(Connector connector){
@@ -105,6 +107,7 @@ class Repository implements IRepository {
 				/* TOODO this method needs to be implemented first
 				createCardFieldsInDB(game);
 				 */
+                createCardRegisterInDB(game);
 
                 // since current player is a foreign key, it can oly be
                 // inserted after the players are created, since MySQL does
@@ -167,6 +170,7 @@ class Repository implements IRepository {
             rs.close();
 
             updatePlayersInDB(game);
+            updateCardsInDB(game);
 			/* TOODO this method needs to be implemented first
 			updateCardFieldsInDB(game);
 			*/
@@ -216,6 +220,7 @@ class Repository implements IRepository {
                 }
                 playerNo = rs.getInt(GAME_CURRENTPLAYER);
                 // TODO currently we do not set the games name (needs to be added)
+
                 game.setPhase(Phase.values()[rs.getInt(GAME_PHASE)]);
                 game.setStep(rs.getInt(GAME_STEP));
             } else {
@@ -226,6 +231,7 @@ class Repository implements IRepository {
 
             game.setGameId(id);
             loadPlayersFromDB(game);
+            loadCards(game);
 
             if (playerNo >= 0 && playerNo < game.getPlayersNumber()) {
                 game.setCurrentPlayer(game.getPlayer(playerNo));
@@ -286,10 +292,62 @@ class Repository implements IRepository {
             rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
             rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
             rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
+            rs.updateInt(CHECKPOINT, player.getCheckpoints());
+
             rs.insertRow();
         }
 
         rs.close();
+    }
+
+    private void createCardRegisterInDB(Board game) throws SQLException{
+        PreparedStatement ps = getSelectPlayerHandStatement();
+        ps.setInt(1, game.getGameId());
+        ResultSet rs = ps.executeQuery();
+
+
+        for (int i = 0; i < game.getPlayersNumber(); i++) {
+            for(int j=0; j<8; j++) {
+                rs.moveToInsertRow();
+                rs.updateInt(PLAYER_GAMEID, game.getGameId());
+                rs.updateInt(PLAYER_PLAYERID, i);
+                rs.updateInt("Number", j);
+                CommandCard commandCard = game.getPlayer(i).getCardField(j).getCard();
+                if(commandCard != null){
+                    rs.updateInt("Ordinal", commandCard.command.ordinal());
+                }
+                else{
+                    rs.updateInt("Ordinal", -5);
+                }
+                rs.insertRow();
+            }
+        }
+        rs.close();
+
+        PreparedStatement ps2 = getSelectPlayerRegisterStatement();
+        ps2.setInt(1, game.getGameId());
+        ResultSet rs2 = ps2.executeQuery();
+
+        for (int n = 0; n < game.getPlayersNumber(); n++){
+            Player player = game.getPlayer(n);
+            for(int k = 0; k < 5; k++){
+                rs2.moveToInsertRow();
+                rs2.updateInt(PLAYER_GAMEID, game.getGameId());
+                rs2.updateInt(PLAYER_PLAYERID, n);
+                rs2.updateInt("RegNumber", k);
+
+                CommandCard commandCard = game.getPlayer(n).getProgramField(k).getCard();
+                if(commandCard != null){
+                    rs2.updateInt("Ordinal", commandCard.command.ordinal());
+                }
+                else{
+                    rs2.updateInt("Ordinal",-99);
+                }
+                rs2.insertRow();
+            }
+
+        }
+        rs2.close();
     }
 
     private void loadPlayersFromDB(Board game) throws SQLException {
@@ -320,6 +378,89 @@ class Repository implements IRepository {
             }
         }
         rs.close();
+        ps.close();
+    }
+
+    private void loadCards(Board game) throws SQLException{
+        PreparedStatement ps = getSelectPlayerRegisterStatement();
+        ps.setInt(1, game.getGameId());
+        ResultSet rs = ps.executeQuery();
+
+        Command[] cArray = Command.values();
+        while (rs.next()){
+            int ID = rs.getInt(PLAYER_PLAYERID);
+            int cardOrdinal = rs.getInt("Ordinal");
+            int number = rs.getInt("RegNumber");
+            if(cardOrdinal >= 0){
+                game.getPlayer(ID).getProgramField(number).setCard(new CommandCard(cArray[cardOrdinal]));
+            }
+        }
+        rs.close();
+        ps.close();
+        PreparedStatement ps2 = getSelectPlayerHandStatement();
+        ps2.setInt(1, game.getGameId());
+        ResultSet rs2 = ps2.executeQuery();
+        while(rs2.next()){
+            int ID = rs2.getInt(PLAYER_PLAYERID);
+            int cardOrdinal = rs2.getInt("Ordinal");
+            int number = rs2.getInt("Number");
+            if(cardOrdinal >= 0){
+                game.getPlayer(ID).getCardField(number).setCard(new CommandCard(cArray[cardOrdinal]));
+            }
+        }
+        rs2.close();
+        ps2.close();
+    }
+
+    private void updateCardsInDB(Board game) throws SQLException{
+        PreparedStatement ps1 = getSelectPlayerHandStatement();
+        ps1.setInt(1,game.getGameId());
+
+        ResultSet rs1 = ps1.executeQuery();
+        for(int i = 0; i < game.getPlayersNumber(); i++) {
+            if (rs1.next()) {
+                int playerId = rs1.getInt(PLAYER_PLAYERID);
+                Player player = game.getPlayer(playerId);
+                for (int m = 0; m < 8; m++) {
+                    rs1.updateInt("Number", m);
+                    CommandCard cmdCard = player.getCardField(m).getCard();
+                    if(cmdCard != null) {
+                        rs1.updateInt("Number", player.getCardField(m).getCard().command.ordinal());
+                    }
+                    else{
+                        rs1.updateInt("Number", -99);
+                    }
+                    rs1.updateRow();
+                }
+            }
+        }
+        rs1.close();
+
+        PreparedStatement ps2 = getSelectPlayerRegisterStatement();
+        ps2.setInt(1,game.getGameId());
+
+        ResultSet rs2 = ps2.executeQuery();
+        for(int i = 0; i < game.getPlayersNumber(); i++) {
+            if (rs2.next()) {
+                int playerId = rs2.getInt(PLAYER_PLAYERID);
+                Player player = game.getPlayer(playerId);
+                for (int m = 0; m < 5; m++) {
+                    rs1.updateInt("RegNumber", m);
+                    CommandCardField cmdCard = player.getProgramField(m);
+                    if(cmdCard != null) {
+                        rs1.updateInt("RegNumber", player.getProgramField(m).getCard().command.ordinal());
+                    }
+                    else{
+                        rs1.updateInt("RegNumber", -99);
+                    }
+                    rs1.updateRow();
+                }
+            }
+        }
+        ps2.close();
+        rs2.close();
+
+
     }
 
     private void updatePlayersInDB(Board game) throws SQLException {
@@ -404,6 +545,82 @@ class Repository implements IRepository {
             }
         }
         return select_players_stmt;
+    }
+
+    private static final String SQL_CREATE_PLAYER_HAND =
+            "INSERT INTO playerHand(playerID, gameID, card0, card1, card2, card3, card4, card5, card6, card7) VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+    private PreparedStatement create_player_hand_stmt = null;
+
+    private PreparedStatement getCreatePlayerHandStatement() {
+        if (create_player_hand_stmt == null) {
+            Connection connection = connector.getConnection();
+            try {
+                create_player_hand_stmt = connection.prepareStatement(SQL_CREATE_PLAYER_HAND);
+            } catch (SQLException e) {
+                // TODO error handling
+                e.printStackTrace();
+            }
+        }
+        return create_player_hand_stmt;
+    }
+
+    private static final String SQL_SELECT_PLAYER_HAND =
+            "SELECT * FROM PlayerHand WHERE gameID = ?";
+
+    private PreparedStatement select_player_hand_stmt = null;
+
+    private PreparedStatement getSelectPlayerHandStatement() {
+        if (select_player_hand_stmt == null) {
+            Connection connection = connector.getConnection();
+            try {
+                select_player_hand_stmt = connection.prepareStatement(SQL_SELECT_PLAYER_HAND,
+                        ResultSet.TYPE_FORWARD_ONLY,
+                        ResultSet.CONCUR_UPDATABLE);
+            } catch (SQLException e) {
+                // TODO error handling
+                e.printStackTrace();
+            }
+        }
+        return select_player_hand_stmt;
+    }
+
+    private static final String SQL_SELECT_PLAYER_REGISTER =
+            "SELECT * FROM PlayerRegister WHERE gameID = ?";
+
+    private PreparedStatement select_player_register_stmt = null;
+
+    private PreparedStatement getSelectPlayerRegisterStatement() {
+        if (select_player_register_stmt == null) {
+            Connection connection = connector.getConnection();
+            try {
+                select_player_register_stmt = connection.prepareStatement(SQL_SELECT_PLAYER_REGISTER,
+                        ResultSet.TYPE_FORWARD_ONLY,
+                        ResultSet.CONCUR_UPDATABLE);
+            } catch (SQLException e) {
+                // TODO error handling
+                e.printStackTrace();
+            }
+        }
+        return select_player_register_stmt;
+    }
+
+    private static final String SQL_CREATE_PLAYER_REGISTER =
+            "INSERT INTO playerRegister(playerID, gameID, card0, card1, card2, card3, card4) VALUES (?,?,?,?,?,?,?)";
+
+    private PreparedStatement create_player_register_stmt = null;
+
+    private PreparedStatement getCreatePlayerRegisterStatement() {
+        if (create_player_register_stmt == null) {
+            Connection connection = connector.getConnection();
+            try {
+                create_player_register_stmt = connection.prepareStatement(SQL_CREATE_PLAYER_REGISTER);
+            } catch (SQLException e) {
+                // TODO error handling
+                e.printStackTrace();
+            }
+        }
+        return create_player_register_stmt;
     }
 
     private static final String SQL_SELECT_PLAYERS_ASC =

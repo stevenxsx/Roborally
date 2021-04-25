@@ -22,10 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.Components.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
@@ -60,6 +61,16 @@ public class Board extends Subject {
 
     private final List<Player> players = new ArrayList<>();
 
+    public int getCheckpointCounter() {
+        return checkpointCounter;
+    }
+
+    public void setCheckpointCounter(int checkpointCounter) {
+        this.checkpointCounter += checkpointCounter;
+    }
+
+    private int checkpointCounter;
+
     private Player current;
 
     private Phase phase = INITIALISATION;
@@ -81,6 +92,7 @@ public class Board extends Subject {
                 spaces[x][y] = space;
             }
         }
+        /*
         List<Heading> headingtester1 = new ArrayList<>();
         headingtester1.add(Heading.SOUTH);
         headingtester1.add(Heading.NORTH);
@@ -93,6 +105,7 @@ public class Board extends Subject {
         spaces[2][5] = new Wall(this, 2, 5, headingtester2);
         spaces[5][2] = new Gear(this, 5, 2, Heading.EAST);
         spaces[7][3] = new ConveyorBelt(this, 7, 3, 2,Heading.SOUTH);
+        */
        // spaces[5][2] = new Checkpoint(this, 5, 2);
         //spaces[5][3] = new Laser(this, 5, 2, 1, Heading.WEST);
         //spaces[5][4] = new PriorityAntenna(this, 5, 2);
@@ -129,6 +142,10 @@ public class Board extends Subject {
 
     public int getPlayersNumber() {
         return players.size();
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public void addPlayer(@NotNull Player player) {
