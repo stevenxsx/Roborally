@@ -396,7 +396,6 @@ class Repository implements IRepository {
             }
         }
         rs.close();
-        ps.close();
         PreparedStatement ps2 = getSelectPlayerHandStatement();
         ps2.setInt(1, game.getGameId());
         ResultSet rs2 = ps2.executeQuery();
@@ -409,7 +408,6 @@ class Repository implements IRepository {
             }
         }
         rs2.close();
-        ps2.close();
     }
 
     private void updateCardsInDB(Board game) throws SQLException{
@@ -425,10 +423,10 @@ class Repository implements IRepository {
                     rs1.updateInt("Number", m);
                     CommandCard cmdCard = player.getCardField(m).getCard();
                     if(cmdCard != null) {
-                        rs1.updateInt("Number", player.getCardField(m).getCard().command.ordinal());
+                        rs1.updateInt("Ordinal", player.getCardField(m).getCard().command.ordinal());
                     }
                     else{
-                        rs1.updateInt("Number", -99);
+                        rs1.updateInt("Ordinal", -99);
                     }
                     rs1.updateRow();
                 }
@@ -448,10 +446,10 @@ class Repository implements IRepository {
                     rs1.updateInt("RegNumber", m);
                     CommandCardField cmdCard = player.getProgramField(m);
                     if(cmdCard != null) {
-                        rs1.updateInt("RegNumber", player.getProgramField(m).getCard().command.ordinal());
+                        rs1.updateInt("Ordinal", player.getProgramField(m).getCard().command.ordinal());
                     }
                     else{
-                        rs1.updateInt("RegNumber", -99);
+                        rs1.updateInt("Ordinal", -99);
                     }
                     rs1.updateRow();
                 }
@@ -476,6 +474,7 @@ class Repository implements IRepository {
             rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
             rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
             rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
+            rs.updateInt("checkpoint", player.getCheckpoints());
             // TODO error handling
             // TODO take care of case when number of players changes, etc
             rs.updateRow();
