@@ -144,6 +144,6 @@ public class Player extends Subject {
         return cards[i];
     }
 
-    public void clearProgramField(int i ){program[i] = null; }
+    public void clearProgramField(int i ){program[i] = new CommandCardField(this); }
 
 }
