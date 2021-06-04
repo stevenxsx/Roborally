@@ -13,9 +13,17 @@ public class Pit extends FieldAction {
     //samt man sendes til en reboot-token på samme board man er på.
     public boolean doAction(GameController gameController, Space space) {
         Player player = space.getPlayer();
+
+        //Bør give dmg til robotten der falder i Pit
         //player.setdmg(player.getdmg());
-        //tøm registeret
-        gameController.moveToSpace(space.getPlayer(), space.board., player.getHeading());
+
+        //burde tømme registeret
+        int step = space.board.getStep();
+        for (int i = step; i < 5; i++)
+        player.clearProgramField(i);
+
+        //Working on how to move to a specific token/space spot on the board
+        // gameController.moveToSpace(space.getPlayer(), space , player.getHeading());
 
 
 
@@ -31,3 +39,5 @@ public class Pit extends FieldAction {
         gameController.moveToSpace(space.getPlayer(), neighbourOfConveyorHeading, this.heading);
         }
         catch(Exception e){
+
+*/
