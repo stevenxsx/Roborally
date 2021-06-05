@@ -20,7 +20,7 @@ public class PitView {
         gc.setStroke(Color.GREY);
         gc.setLineWidth(50);
         gc.setLineCap(StrokeLineCap.SQUARE);
-        gc.strokeOval(2,2,70,70);
+        gc.strokeOval(2,2,50,50);
         spaceView.getChildren().add(canvas);
     }
 }

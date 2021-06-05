@@ -39,6 +39,12 @@
     },
     {
       "walls": [],
+      "actions": [{
+        "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens",
+        "INSTANCE": {
+          "token": "NORTH"
+        }
+      }],
       "x": 1,
       "y": 3,
       "startPoint": true
@@ -65,7 +71,12 @@
     },
     {
       "walls": [],
-
+      "actions": [{
+        "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Pit",
+        "INSTANCE": {
+          "pit": "WEST"
+        }
+      }],
       "x": 1,
       "y": 6
     },

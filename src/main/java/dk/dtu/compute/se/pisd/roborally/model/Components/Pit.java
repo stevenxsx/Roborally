@@ -15,10 +15,7 @@ public class Pit extends FieldAction {
     public boolean doAction(GameController gameController, Space space) {
         Player player = space.getPlayer();
 
-        //Bør give dmg til robotten der falder i Pit
-        //player.setdmg(player.getdmg());
-
-        //Clears the register for the player landing on the Pit
+        //Clears the register for the player landing on the Pit, to ensure that they dont more from it.
         clearRegister(player, space);
 
         //Working on how to move to a specific token/space spot on the board
@@ -30,7 +27,7 @@ public class Pit extends FieldAction {
         return false;
     }
 
-    /** Author Mike
+    /** @Author Mike
      * Clears the register for the currentplayer on the pit from the next card to execute
      * when they land on the Pit
      * @param player
