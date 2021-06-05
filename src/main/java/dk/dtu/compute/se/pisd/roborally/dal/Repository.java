@@ -169,9 +169,9 @@ class Repository implements IRepository {
                 // TODO error handling
             }
             rs.close();
-
-            updatePlayersInDB(game);
             updateCardsInDB(game);
+            updatePlayersInDB(game);
+
 			/* TOODO this method needs to be implemented first
 			updateCardFieldsInDB(game);
 			*/
@@ -200,23 +200,17 @@ class Repository implements IRepository {
     public Board loadGameFromDB(int id) {
         Board game;
         try {
-            // TODO here, we could actually use a simpler statement
-            //      which is not updatable, but reuse the one from
-            //      above for the pupose
             PreparedStatement ps = getSelectGameStatementU();
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
             int playerNo = -1;
             if (rs.next()) {
-                // TODO and we should also store the used game board in the database
-                //      for now, we use the default game board
                 game = LoadBoard.loadBoard(null);
                 if (game == null) {
                     return null;
                 }
                 playerNo = rs.getInt(GAME_CURRENTPLAYER);
-                // TODO currently we do not set the games name (needs to be added)
 
                 game.setPhase(Phase.values()[rs.getInt(GAME_PHASE)]);
                 game.setStep(rs.getInt(GAME_STEP));
@@ -240,7 +234,6 @@ class Repository implements IRepository {
 			/* TOODO this method needs to be implemented first
 			loadCardFieldsFromDB(game);
 			*/
-
             return game;
         } catch (SQLException e) {
             // TODO error handling
@@ -375,7 +368,6 @@ class Repository implements IRepository {
             }
         }
         rs.close();
-        ps.close();
     }
 
     private void loadCards(Board game) throws SQLException{
@@ -408,79 +400,89 @@ class Repository implements IRepository {
     }
 
     private void updateCardsInDB(Board game) throws SQLException{
+
         try {
             PreparedStatement ps1 = getSelectPlayerHandStatement();
             ps1.setInt(1, game.getGameId());
 
 
             ResultSet rs1 = ps1.executeQuery();
-            for (int i = 0; i < game.getPlayersNumber(); i++) {
-                if (rs1.next()) {
+            int m = 0;
+                while (rs1.next()) {
                     int playerId = rs1.getInt(PLAYER_PLAYERID);
                     Player player = game.getPlayer(playerId);
-                    for (int m = 0; m < 8; m++) {
-                        rs1.updateInt("Number", m);
+                    if(m == 8){
+                        m = 0;
+                    }
+                        //rs1.updateInt("Number", m);
                         CommandCard cmdCard = player.getCardField(m).getCard();
                         if (cmdCard != null) {
                             rs1.updateInt("Ordinal", player.getCardField(m).getCard().command.ordinal());
                         } else {
                             rs1.updateInt("Ordinal", -99);
                         }
-                        rs1.updateRow();
-                    }
+                    rs1.updateRow();
+                        m++;
                 }
-            }
+
             rs1.close();
 
             PreparedStatement ps2 = getSelectPlayerRegisterStatement();
             ps2.setInt(1, game.getGameId());
 
             ResultSet rs2 = ps2.executeQuery();
-            for (int i = 0; i < game.getPlayersNumber(); i++) {
-                if (rs2.next()) {
+            m = 0;
+                while (rs2.next()) {
                     int playerId = rs2.getInt(PLAYER_PLAYERID);
                     Player player = game.getPlayer(playerId);
-                    for (int m = 0; m < 5; m++) {
-                        rs1.updateInt("RegNumber", m);
-                        CommandCardField cmdCard = player.getProgramField(m);
-                        if (cmdCard != null) {
-                            rs1.updateInt("Ordinal", player.getProgramField(m).getCard().command.ordinal());
-                        } else {
-                            rs1.updateInt("Ordinal", -99);
-                        }
-                        rs1.updateRow();
+                    if(m == 5){
+                        m = 0;
                     }
+                        rs2.moveToCurrentRow();
+                        //rs2.updateInt("RegNumber", m);
+                        CommandCardField cmdCard = player.getProgramField(m);
+                        if (cmdCard.getCard() != null) {
+                            rs2.updateInt("Ordinal", player.getProgramField(m).getCard().command.ordinal());
+                        } else {
+                            rs2.updateInt("Ordinal", -99);
+                        }
+
+                    rs2.updateRow();
+                        m++;
                 }
-            }
-            ps2.close();
+
             rs2.close();
         }
         catch(Exception e){
-            System.out.println("Failed updateCardsInDB");
+            e.printStackTrace();
         }
 
     }
 
     private void updatePlayersInDB(Board game) throws SQLException {
-        PreparedStatement ps = getSelectPlayersStatementU();
-        ps.setInt(1, game.getGameId());
+        try {
+            PreparedStatement ps = getSelectPlayersStatementU();
+            ps.setInt(1, game.getGameId());
 
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            int playerId = rs.getInt(PLAYER_PLAYERID);
-            // TODO should be more defensive
-            Player player = game.getPlayer(playerId);
-            // rs.updateString(PLAYER_NAME, player.getName()); // not needed: player's names does not change
-            rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
-            rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
-            rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
-            rs.updateInt("checkpoint", player.getCheckpoints());
-            // TODO error handling
-            // TODO take care of case when number of players changes, etc
-            rs.updateRow();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int playerId = rs.getInt(PLAYER_PLAYERID);
+                // TODO should be more defensive
+                Player player = game.getPlayer(playerId);
+                // rs.updateString(PLAYER_NAME, player.getName()); // not needed: player's names does not change
+                rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
+                rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
+                rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
+                rs.updateInt("checkpoint", player.getCheckpoints());
+                // TODO error handling
+                // TODO take care of case when number of players changes, etc
+                rs.updateRow();
+            }
+            rs.close();
         }
-        rs.close();
-
+        catch (SQLException e){
+            e.printStackTrace();
+        }
         // TODO error handling/consistency check: check whether all players were updated
     }
 
