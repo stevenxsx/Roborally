@@ -81,6 +81,10 @@ public class Player extends Subject {
         return checkpoints;
     }
 
+    public void placeOnStartingPoint(Space space) {
+        this.space = space;
+    }
+
     public void setName(String name) {
         if (name != null && !name.equals(this.name)) {
             this.name = name;
@@ -144,4 +148,14 @@ public class Player extends Subject {
         return cards[i];
     }
 
+    /** Author Mike
+     * Clears the i card in the register for the currentplayer
+     * @param i
+     */
+    public void clearRegister(int i ){
+        CommandCardField field = this.getProgramField(i);
+        field.setCard(null);
+        field.setVisible(true);
+    }
 }
+

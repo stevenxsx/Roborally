@@ -85,6 +85,25 @@ public class AppController implements Observer {
                     board.addPlayer(player);
                     player.setSpace(board.getSpace(i % board.width, i));
                 }
+            // XXX the board should eventually be created programmatically or loaded from a file
+            //     here we just create an empty board with the required number of players.
+            // TODO use method loadBoard(String) from LoadBoard class to create a new board
+            //Board board = new Board(8,8);
+            Board board = LoadBoard.loadBoard("DEFAULTBOARD");
+            gameController = new GameController(board); //replace board parameter with loadBoard(DEFAULTBOARD)
+            int no = result.get();
+            for (int i = 0; i < no; i++) {
+                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
+                board.addPlayer(player);
+                //player.setSpace(board.getSpace(i % board.width, i));
+            }
+            int k = 0;
+            for (int i = 0; i < board.height*board.width; i++) {
+                if (board.getSpace(i/board.width,i%board.width).getStartPoint()) {
+                        board.getPlayer(k++).setSpace(board.getSpace(i/board.width,i%board.width));
+                        if (k == board.getPlayersNumber()) {break;}
+                }
+            }
 
                 // XXX: V2
                 // board.setCurrentPlayer(board.getPlayer(0));

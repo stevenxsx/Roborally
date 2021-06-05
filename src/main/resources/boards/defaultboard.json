@@ -20,7 +20,8 @@
         }
       ],
       "x": 1,
-      "y": 0
+      "y": 0,
+      "startPoint": true
     },
     {
       "walls": [
@@ -33,12 +34,14 @@
     {
       "walls": [],
       "x": 1,
-      "y": 2
+      "y": 2,
+      "startPoint": true
     },
     {
       "walls": [],
       "x": 1,
-      "y": 3
+      "y": 3,
+      "startPoint": true
     },
     {
       "walls": [],
@@ -51,7 +54,8 @@
         }
       ],
       "x": 1,
-      "y": 4
+      "y": 4,
+      "startPoint": true
     },
     {
       "walls": [],
@@ -64,7 +68,8 @@
           }
         }],
       "x": 1,
-      "y": 5
+      "y": 5,
+      "startPoint": true
     },
     {
       "walls": [],
@@ -127,8 +132,9 @@
       "walls": [
       ],
 
-      "x": 6,
-      "y": 6
+      "x": 5,
+      "y": 1,
+      "startPoint": true
     },
     {
       "walls": [

@@ -40,5 +40,6 @@ public class SpaceTemplate {
 
     public int x;
     public int y;
+    public boolean startPoint;
 
 }
