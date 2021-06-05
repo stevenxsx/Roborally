@@ -49,6 +49,9 @@ public class Board extends Subject {
 
     private final Space[][] spaces;
 
+    private final Space[] startingPoints = new Space[6];
+    public int startingPointsIncrementer = 0;
+
     public String name;
 
     public String getName() {

@@ -79,6 +79,7 @@ public class LoadBoard {
 			    if (space != null) {
                     space.getActions().addAll(spaceTemplate.actions);
                     space.getWalls().addAll(spaceTemplate.walls);
+                    space.setStartPoint(spaceTemplate.startPoint);
                     if(space.getActions().size() != 0){
                         if(space.getActions().get(0) instanceof Checkpoint){
                             result.setCheckpointCounter(1);

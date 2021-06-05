@@ -81,6 +81,10 @@ public class Player extends Subject {
         return checkpoints;
     }
 
+    public void placeOnStartingPoint(Space space) {
+        this.space = space;
+    }
+
     public void setName(String name) {
         if (name != null && !name.equals(this.name)) {
             this.name = name;
