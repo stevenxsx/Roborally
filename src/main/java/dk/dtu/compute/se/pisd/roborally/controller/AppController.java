@@ -19,6 +19,7 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.Optional;
 /**
  * ...
  *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * @author s205444, Lucas Loft Skals
  *
  */
 public class AppController implements Observer {
@@ -43,6 +44,11 @@ public class AppController implements Observer {
         this.roboRally = roboRally;
     }
 
+    /**
+     * Presents two choice dialog options when starting a new game. Here, a pop up window
+     * shows asking for player number and the board you wish to play on.
+     */
+
     public void newGame() {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
@@ -57,25 +63,35 @@ public class AppController implements Observer {
                     return;
                 }
             }
-
-            // XXX the board should eventually be created programmatically or loaded from a file
-            //     here we just create an empty board with the required number of players.
-            // TODO use method loadBoard(String) from LoadBoard class to create a new board
-            //Board board = new Board(8,8);
-            Board board = LoadBoard.loadBoard("DEFAULTBOARD");
-            gameController = new GameController(board); //replace board parameter with loadBoard(DEFAULTBOARD)
-            int no = result.get();
-            for (int i = 0; i < no; i++) {
-                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
-                board.addPlayer(player);
-                player.setSpace(board.getSpace(i % board.width, i));
+            File f = new File("src/main/resources/boards");
+            String[] boardNames = f.list();
+            for(int i = 0; i < boardNames.length; i++){
+                boardNames[i] = boardNames[i].substring(0, boardNames[i].length() - 5);
             }
 
-            // XXX: V2
-            // board.setCurrentPlayer(board.getPlayer(0));
-            gameController.startProgrammingPhase();
+            ChoiceDialog<String> boarddialog = new ChoiceDialog<>(boardNames[0], boardNames);
+            boarddialog.setTitle("Choose board");
+            boarddialog.setContentText("List of boards:");
+            boarddialog.setHeaderText("Please, choose a board from the list below.");
+            Optional<String> boardChosen = boarddialog.showAndWait();
 
-            roboRally.createBoardView(gameController);
+            if(boardChosen.isPresent()) {
+                String boardConcave = boardChosen.get();
+                Board board = LoadBoard.loadBoard(boardConcave);
+                gameController = new GameController(board); //replace board parameter with loadBoard(DEFAULTBOARD)
+                int no = result.get();
+                for (int i = 0; i < no; i++) {
+                    Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
+                    board.addPlayer(player);
+                    player.setSpace(board.getSpace(i % board.width, i));
+                }
+
+                // XXX: V2
+                // board.setCurrentPlayer(board.getPlayer(0));
+                gameController.startProgrammingPhase();
+
+                roboRally.createBoardView(gameController);
+            }
         }
     }
 
@@ -123,20 +139,20 @@ public class AppController implements Observer {
             }
             ChoiceDialog<String> dialog = new ChoiceDialog<>(gameName.get(0),gameName);
 
-            dialog.setTitle("Player number");
-            dialog.setHeaderText("Select number of players");
+            dialog.setTitle("Load game");
+            dialog.setHeaderText("Select a game");
             Optional<String> result = dialog.showAndWait();
-            for(GameInDB game : gameIDs){
-                if(game.name.equals(result.get())){
-                    currentGame = game;
+            if(result.isPresent()) {
+                for (GameInDB game : gameIDs) {
+                    if (game.name.equals(result.get())) {
+                        currentGame = game;
+                    }
                 }
+                //todo add a try/catch statement to handle nullpointer exception.
+                gameController = new GameController(RepositoryAccess.getRepository().loadGameFromDB(currentGame.id));
+
+                roboRally.createBoardView(gameController);
             }
-            //todo same name
-            //todo add a try/catch statement to handle nullpointer exception.
-            gameController = new GameController(RepositoryAccess.getRepository().loadGameFromDB(currentGame.id));
-
-            roboRally.createBoardView(gameController);
-
         }
     }
 

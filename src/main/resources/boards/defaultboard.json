@@ -55,6 +55,14 @@
     },
     {
       "walls": [],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
+          "INSTANCE": {
+            "heading": "WEST",
+            "velocity": "2"
+          }
+        }],
       "x": 1,
       "y": 5
     },

@@ -43,7 +43,7 @@ public class Board extends Subject {
 
     public final int height;
 
-    public final String boardName;
+    public String boardName;
 
     private Integer gameId;
 
@@ -213,6 +213,10 @@ public class Board extends Subject {
         } else {
             return -1;
         }
+    }
+
+    public String getBoardName(){
+        return boardName;
     }
 
     /**

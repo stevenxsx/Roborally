@@ -47,6 +47,8 @@ public class LoadBoard {
     private static final String BOARDSFOLDER = "boards";
     private static final String DEFAULTBOARD = "defaultboard";
     private static final String JSON_EXT = "json";
+    private static final int WIDTH = 8;
+    private static final int HEIGHT = 8;
 
     public static Board loadBoard(String boardname) {
         if (boardname == null) {
@@ -56,8 +58,7 @@ public class LoadBoard {
         ClassLoader classLoader = LoadBoard.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + boardname + "." + JSON_EXT);
         if (inputStream == null) {
-            // TODO these constants should be defined somewhere
-            return new Board(8,8);
+            return new Board(WIDTH,HEIGHT);
         }
 
 		// In simple cases, we can create a Gson object with new Gson():
@@ -74,6 +75,7 @@ public class LoadBoard {
 			BoardTemplate template = gson.fromJson(reader, BoardTemplate.class);
 
 			result = new Board(template.width, template.height);
+			result.boardName = boardname;
 			for (SpaceTemplate spaceTemplate: template.spaces) {
 			    Space space = result.getSpace(spaceTemplate.x, spaceTemplate.y);
 			    if (space != null) {

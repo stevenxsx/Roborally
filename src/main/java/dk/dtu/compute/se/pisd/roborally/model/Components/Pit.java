@@ -8,6 +8,7 @@ public class Pit extends FieldAction {
 
     @Override
     public boolean doAction(GameController gameController, Space space) {
+
         return false;
     }
 }

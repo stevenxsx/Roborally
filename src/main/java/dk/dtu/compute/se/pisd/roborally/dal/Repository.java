@@ -84,6 +84,7 @@ class Repository implements IRepository {
                 ps.setNull(2, Types.TINYINT); // game.getPlayerNumber(game.getCurrentPlayer())); is inserted after players!
                 ps.setInt(3, game.getPhase().ordinal());
                 ps.setInt(4, game.getStep());
+                ps.setString(5, game.getBoardName());
 
                 // If you have a foreign key constraint for current players,
                 // the check would need to be temporarily disabled, since
@@ -208,10 +209,6 @@ class Repository implements IRepository {
             ResultSet rs = ps.executeQuery();
             int playerNo = -1;
             if (rs.next()) {
-                // TODO the width and height could eventually come from the database
-                // int width = AppController.BOARD_WIDTH;
-                // int height = AppController.BOARD_HEIGHT;
-                // game = new Board(width,height);
                 // TODO and we should also store the used game board in the database
                 //      for now, we use the default game board
                 game = LoadBoard.loadBoard(null);
@@ -411,53 +408,56 @@ class Repository implements IRepository {
     }
 
     private void updateCardsInDB(Board game) throws SQLException{
-        PreparedStatement ps1 = getSelectPlayerHandStatement();
-        ps1.setInt(1,game.getGameId());
+        try {
+            PreparedStatement ps1 = getSelectPlayerHandStatement();
+            ps1.setInt(1, game.getGameId());
 
-        ResultSet rs1 = ps1.executeQuery();
-        for(int i = 0; i < game.getPlayersNumber(); i++) {
-            if (rs1.next()) {
-                int playerId = rs1.getInt(PLAYER_PLAYERID);
-                Player player = game.getPlayer(playerId);
-                for (int m = 0; m < 8; m++) {
-                    rs1.updateInt("Number", m);
-                    CommandCard cmdCard = player.getCardField(m).getCard();
-                    if(cmdCard != null) {
-                        rs1.updateInt("Ordinal", player.getCardField(m).getCard().command.ordinal());
+
+            ResultSet rs1 = ps1.executeQuery();
+            for (int i = 0; i < game.getPlayersNumber(); i++) {
+                if (rs1.next()) {
+                    int playerId = rs1.getInt(PLAYER_PLAYERID);
+                    Player player = game.getPlayer(playerId);
+                    for (int m = 0; m < 8; m++) {
+                        rs1.updateInt("Number", m);
+                        CommandCard cmdCard = player.getCardField(m).getCard();
+                        if (cmdCard != null) {
+                            rs1.updateInt("Ordinal", player.getCardField(m).getCard().command.ordinal());
+                        } else {
+                            rs1.updateInt("Ordinal", -99);
+                        }
+                        rs1.updateRow();
                     }
-                    else{
-                        rs1.updateInt("Ordinal", -99);
-                    }
-                    rs1.updateRow();
                 }
             }
-        }
-        rs1.close();
+            rs1.close();
 
-        PreparedStatement ps2 = getSelectPlayerRegisterStatement();
-        ps2.setInt(1,game.getGameId());
+            PreparedStatement ps2 = getSelectPlayerRegisterStatement();
+            ps2.setInt(1, game.getGameId());
 
-        ResultSet rs2 = ps2.executeQuery();
-        for(int i = 0; i < game.getPlayersNumber(); i++) {
-            if (rs2.next()) {
-                int playerId = rs2.getInt(PLAYER_PLAYERID);
-                Player player = game.getPlayer(playerId);
-                for (int m = 0; m < 5; m++) {
-                    rs1.updateInt("RegNumber", m);
-                    CommandCardField cmdCard = player.getProgramField(m);
-                    if(cmdCard != null) {
-                        rs1.updateInt("Ordinal", player.getProgramField(m).getCard().command.ordinal());
+            ResultSet rs2 = ps2.executeQuery();
+            for (int i = 0; i < game.getPlayersNumber(); i++) {
+                if (rs2.next()) {
+                    int playerId = rs2.getInt(PLAYER_PLAYERID);
+                    Player player = game.getPlayer(playerId);
+                    for (int m = 0; m < 5; m++) {
+                        rs1.updateInt("RegNumber", m);
+                        CommandCardField cmdCard = player.getProgramField(m);
+                        if (cmdCard != null) {
+                            rs1.updateInt("Ordinal", player.getProgramField(m).getCard().command.ordinal());
+                        } else {
+                            rs1.updateInt("Ordinal", -99);
+                        }
+                        rs1.updateRow();
                     }
-                    else{
-                        rs1.updateInt("Ordinal", -99);
-                    }
-                    rs1.updateRow();
                 }
             }
+            ps2.close();
+            rs2.close();
         }
-        ps2.close();
-        rs2.close();
-
+        catch(Exception e){
+            System.out.println("Failed updateCardsInDB");
+        }
 
     }
 
@@ -485,7 +485,7 @@ class Repository implements IRepository {
     }
 
     private static final String SQL_INSERT_GAME =
-            "INSERT INTO Game(name, currentPlayer, phase, step) VALUES (?, ?, ?, ?)";
+            "INSERT INTO Game(name, currentPlayer, phase, step, board) VALUES (?, ?, ?, ?, ?)";
 
     private PreparedStatement insert_game_stmt = null;
 

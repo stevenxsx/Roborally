@@ -109,18 +109,10 @@ public class SpaceView extends StackPane implements ViewObserver {
                 if (fa instanceof Gear) {
                     GearView.drawGear(this, fa);
                 }
-                if (fa instanceof Laser) {
-                    LaserView.drawLaser(this, fa);
-                }
                 if (fa instanceof Checkpoint) {
                     CheckpointView.drawCheckpoint(this, fa);
                 }
-                if (fa instanceof RebootTokens) {
-                    RebootTokensView.drawRebootTokens(this, fa);
-                }
-                if (fa instanceof PriorityAntenna) {
-                    PriorityAntennaView.drawPriorityAntenna(this, fa);
-                }
+
                 if (fa instanceof Pit) {
                     PitView.drawPit(this, fa);
                 }
@@ -138,31 +130,5 @@ public class SpaceView extends StackPane implements ViewObserver {
      * @param space takes a space as object to identify spaces that need an updated view.
      *
      */
-
-    public void updateWallView(Space space) {
-        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(5);
-        gc.setLineCap(StrokeLineCap.ROUND);
-        for (Heading heading : Heading.values()) {
-            switch (heading) {
-                case SOUTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
-                    break;
-                case NORTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-70, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-70);
-                    break;
-                case WEST:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-70, SpaceView.SPACE_HEIGHT-70);
-                    break;
-                case EAST:
-                    gc.strokeLine(70, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-70);
-                    break;
-            }
-
-        }
-        getChildren().add(canvas);
-    }
 
 }

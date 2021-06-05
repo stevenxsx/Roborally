@@ -8,15 +8,15 @@ import javafx.scene.shape.Polygon;
 
 public class ConveyorBeltView {
     public static void drawConveyorBeltView(SpaceView spaceView, FieldAction fieldAction) {
-        ConveyorBelt tempSpace = (ConveyorBelt) fieldAction;
+        ConveyorBelt conveyorBelt = (ConveyorBelt) fieldAction;
 
         spaceView.getChildren().clear();
 
             Polygon arrow = new Polygon(1.0, 1.0,
                     25.0, 50.0,
                     50.0, 0.0 );
-            arrow.setFill(Color.BLUE);
-            arrow.setRotate((90*tempSpace.getHeading().ordinal())%360);
+            arrow.setFill(Color.PURPLE);
+            arrow.setRotate((90*conveyorBelt.getHeading().ordinal())%360);
             spaceView.getChildren().add(arrow);
     }
 }

@@ -8,19 +8,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
-/**
- *
- * TODO look better
- * */
+
 
 public class PitView {
     public static void drawPit(SpaceView spaceView, FieldAction fieldAction){
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.GREY);
-        gc.setLineWidth(50);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(25);
         gc.setLineCap(StrokeLineCap.SQUARE);
-        gc.strokeOval(2,2,70,70);
+        gc.strokeOval(2,2,48,48);
         spaceView.getChildren().add(canvas);
     }
 }

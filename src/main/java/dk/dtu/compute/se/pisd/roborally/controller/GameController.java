@@ -97,6 +97,12 @@ public class GameController {
         }
     }
 
+    /**
+     * remove this method as it is now redundant
+     * @param player
+     * @throws ImpossibleMoveException
+     */
+
     public void endOfTurn(@NotNull Player player) throws ImpossibleMoveException{
         Space playerSpace = player.getSpace();
         /*

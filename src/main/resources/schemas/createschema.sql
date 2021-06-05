@@ -1,11 +1,10 @@
 /* Need to switch of FK check for MySQL since there are crosswise FK references */
 SET FOREIGN_KEY_CHECKS = 0;;
-
 CREATE TABLE IF NOT EXISTS Game (
   gameID int NOT NULL UNIQUE AUTO_INCREMENT,
   
-  name varchar(255),
-
+  name varchar(50),
+  board varchar(50),
   phase tinyint,
   step tinyint,
   currentPlayer tinyint NULL,
