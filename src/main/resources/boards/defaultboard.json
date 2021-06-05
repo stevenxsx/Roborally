@@ -73,6 +73,13 @@
     },
     {
       "walls": [],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Pit",
+          "INSTANCE": {
+          }
+        }
+      ],
 
       "x": 1,
       "y": 6
