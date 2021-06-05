@@ -24,8 +24,10 @@ public class Checkpoint extends FieldAction {
                 space.getPlayer().setCheckpoints(space.getPlayer().getCheckpoints() + 1);
             }
 
-            if(player.getCheckpoints() == gameController.board.getCheckpointCounter());
-            gameController.chooseWinner(player);
+            if(player.getCheckpoints() == gameController.board.getCheckpointCounter()) {
+                gameController.chooseWinner(player);
+            }
+            return true;
         }
         return false;
     }

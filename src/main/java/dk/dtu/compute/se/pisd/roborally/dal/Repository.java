@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * ...
  *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * @author s205444, Lucas
  *
  */
 class Repository implements IRepository {
@@ -68,6 +68,11 @@ class Repository implements IRepository {
     Repository(Connector connector){
         this.connector = connector;
     }
+
+    /**
+     * @param game game board used to save details about the board such as name in the database.
+     * @return true if game is saved successfully.
+     */
 
     @Override
     public boolean createGameInDB(Board game) {
@@ -148,6 +153,11 @@ class Repository implements IRepository {
         return false;
     }
 
+    /**
+     * @author s205444, Lucas
+     * @param game Object of type Game that is currently being played with.
+     * @return true if updated sucesfully.
+     */
     @Override
     public boolean updateGameInDB(Board game) {
         assert game.getGameId() != null;
@@ -196,6 +206,11 @@ class Repository implements IRepository {
         return false;
     }
 
+    /**
+     * @author s205444, Lucas
+     * @param id chosen id amongst the games in the database already.
+     * @return returns the current gamestate from the database if no errors occured. Otherwise, returns NULL.
+     */
     @Override
     public Board loadGameFromDB(int id) {
         Board game;
@@ -215,7 +230,7 @@ class Repository implements IRepository {
                 game.setPhase(Phase.values()[rs.getInt(GAME_PHASE)]);
                 game.setStep(rs.getInt(GAME_STEP));
             } else {
-                // TODO error handling
+                System.out.println("Error: database is empty");
                 return null;
             }
             rs.close();
@@ -227,28 +242,20 @@ class Repository implements IRepository {
             if (playerNo >= 0 && playerNo < game.getPlayersNumber()) {
                 game.setCurrentPlayer(game.getPlayer(playerNo));
             } else {
-                // TODO  error handling
+                System.out.println("Error: Wrong game fetched from database");
                 return null;
             }
 
-			/* TOODO this method needs to be implemented first
-			loadCardFieldsFromDB(game);
-			*/
             return game;
         } catch (SQLException e) {
-            // TODO error handling
             e.printStackTrace();
-            System.err.println("Some DB error");
+            System.err.println("Some DB error - SQL Exception");
         }
         return null;
     }
 
     @Override
     public List<GameInDB> getGames() {
-        // TODO when there many games in the DB, fetching all available games
-        //      from the DB is a bit extreme; eventually there should a
-        //      methods that can filter the returned games in order to
-        //      reduce the number of the returned games.
         List<GameInDB> result = new ArrayList<>();
         try {
             PreparedStatement ps = getSelectGameIdsStatement();
@@ -260,34 +267,39 @@ class Repository implements IRepository {
             }
             rs.close();
         } catch (SQLException e) {
-            // TODO proper error handling
+            System.out.println("Could not fetch games form database");
             e.printStackTrace();
         }
         return result;
     }
 
     private void createPlayersInDB(Board game) throws SQLException {
-        // TODO code should be more defensive
-        PreparedStatement ps = getSelectPlayersStatementU();
-        ps.setInt(1, game.getGameId());
+        try {
+            PreparedStatement ps = getSelectPlayersStatementU();
+            ps.setInt(1, game.getGameId());
 
-        ResultSet rs = ps.executeQuery();
-        for (int i = 0; i < game.getPlayersNumber(); i++) {
-            Player player = game.getPlayer(i);
-            rs.moveToInsertRow();
-            rs.updateInt(PLAYER_GAMEID, game.getGameId());
-            rs.updateInt(PLAYER_PLAYERID, i);
-            rs.updateString(PLAYER_NAME, player.getName());
-            rs.updateString(PLAYER_COLOUR, player.getColor());
-            rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
-            rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
-            rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
-            rs.updateInt(CHECKPOINT, player.getCheckpoints());
+            ResultSet rs = ps.executeQuery();
+            for (int i = 0; i < game.getPlayersNumber(); i++) {
+                Player player = game.getPlayer(i);
+                rs.moveToInsertRow();
+                rs.updateInt(PLAYER_GAMEID, game.getGameId());
+                rs.updateInt(PLAYER_PLAYERID, i);
+                rs.updateString(PLAYER_NAME, player.getName());
+                rs.updateString(PLAYER_COLOUR, player.getColor());
+                rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
+                rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
+                rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
+                rs.updateInt(CHECKPOINT, player.getCheckpoints());
 
-            rs.insertRow();
+                rs.insertRow();
+            }
+
+            rs.close();
         }
-
-        rs.close();
+        catch(SQLException e){
+            System.out.print("Could not save game. An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     private void createCardRegisterInDB(Board game) throws SQLException{
@@ -474,8 +486,6 @@ class Repository implements IRepository {
                 rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
                 rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
                 rs.updateInt("checkpoint", player.getCheckpoints());
-                // TODO error handling
-                // TODO take care of case when number of players changes, etc
                 rs.updateRow();
             }
             rs.close();
@@ -483,7 +493,6 @@ class Repository implements IRepository {
         catch (SQLException e){
             e.printStackTrace();
         }
-        // TODO error handling/consistency check: check whether all players were updated
     }
 
     private static final String SQL_INSERT_GAME =

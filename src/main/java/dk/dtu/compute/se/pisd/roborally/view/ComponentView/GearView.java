@@ -21,7 +21,7 @@ public class GearView {
         }
         gc.setLineWidth(7);
         gc.setLineCap(StrokeLineCap.ROUND);
-        gc.strokeOval(2,2,50,50);
+        gc.strokeOval(2,2,45,45);
 
         spaceView.getChildren().add(canvas);
 
