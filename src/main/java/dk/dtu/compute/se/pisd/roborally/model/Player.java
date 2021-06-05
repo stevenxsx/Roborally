@@ -144,6 +144,14 @@ public class Player extends Subject {
         return cards[i];
     }
 
-    public void clearProgramField(int i ){program[i] = new CommandCardField(this); }
-
+    /** Author Mike
+     * Clears the i card in the register for the currentplayer
+     * @param i
+     */
+    public void clearRegister(int i ){
+        CommandCardField field = this.getProgramField(i);
+        field.setCard(null);
+        field.setVisible(true);
+    }
 }
+
