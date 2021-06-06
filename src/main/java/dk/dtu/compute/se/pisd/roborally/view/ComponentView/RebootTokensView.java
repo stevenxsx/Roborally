@@ -25,9 +25,6 @@ public class RebootTokensView {
         Image rebootToken = new Image("Components/Reboot.png", 50,50,true,true);
         gc.drawImage(rebootToken,0,0);
 
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(0.5);
-        gc.strokeText("RebooT", SpaceView.SPACE_WIDTH/5, SpaceView.SPACE_WIDTH/2);
         spaceView.getChildren().add(canvas);
     }
 }
