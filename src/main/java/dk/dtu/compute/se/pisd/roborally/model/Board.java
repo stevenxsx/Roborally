@@ -95,24 +95,6 @@ public class Board extends Subject {
                 spaces[x][y] = space;
             }
         }
-        /*
-        List<Heading> headingtester1 = new ArrayList<>();
-        headingtester1.add(Heading.SOUTH);
-        headingtester1.add(Heading.NORTH);
-        headingtester1.add(Heading.EAST);
-        headingtester1.add(Heading.WEST);
-        List<Heading> headingtester2 = new ArrayList<>();
-        headingtester2.add(Heading.SOUTH);
-        headingtester2.add(Heading.NORTH);
-        spaces[5][1] = new Wall(this, 5, 1, headingtester1); //this creates a wall. commented out because collision detection isnt made yet.
-        spaces[2][5] = new Wall(this, 2, 5, headingtester2);
-        spaces[5][2] = new Gear(this, 5, 2, Heading.EAST);
-        spaces[7][3] = new ConveyorBelt(this, 7, 3, 2,Heading.SOUTH);
-        */
-       // spaces[5][2] = new Checkpoint(this, 5, 2);
-        //spaces[5][3] = new Laser(this, 5, 2, 1, Heading.WEST);
-        //spaces[5][4] = new PriorityAntenna(this, 5, 2);
-        //spaces[5][5] = new RebootTokens(this, 5, 2);
         this.stepMode = false;
     }
 

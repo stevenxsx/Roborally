@@ -16,10 +16,6 @@ public class RebootTokens extends FieldAction {
         clearPlayerRegister(player);
 
        //player.getProgramField(player.NO_REGISTERS).setCard(new CommandCard(Command.CHOOSE_HEADING));
-
-
-
-
         return false;
     }
 
