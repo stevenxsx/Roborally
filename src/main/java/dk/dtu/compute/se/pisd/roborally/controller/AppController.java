@@ -164,6 +164,7 @@ public class AppController implements Observer {
                 for (GameInDB game : gameIDs) {
                     gameName.add(game.name);
                 }
+
                 ChoiceDialog<String> dialog = new ChoiceDialog<>(gameName.get(0), gameName);
 
                 dialog.setTitle("Load game");
