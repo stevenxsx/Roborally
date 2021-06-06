@@ -23,7 +23,12 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * ...
@@ -36,6 +41,8 @@ public class GameController {
     final public Board board;
 
     public boolean winnerFound = false;
+
+    final private List<String> UPGRADE_CARDS = Arrays.asList("1", "2", "3", "4", "5");
 
     public GameController(@NotNull Board board) {
         this.board = board;
@@ -505,6 +512,17 @@ public class GameController {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void shop(){
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);
+        dialog.setTitle("Upgrade shop");
+        dialog.setHeaderText("Select a card to buy:");
+        Optional<String> result = dialog.showAndWait();
+
+        if(result.isPresent()){
+            String upgradeChosen = result.get();
         }
     }
 
