@@ -42,7 +42,7 @@ public class GameController {
 
     public boolean winnerFound = false;
 
-    final private List<String> UPGRADE_CARDS = Arrays.asList("1", "2", "3", "4", "5");
+    final private List<String> UPGRADE_CARDS = Arrays.asList("Brakes", "Virus_Module", "Trojan Needler", "Rear Laser");
 
     public GameController(@NotNull Board board) {
         this.board = board;
