@@ -30,6 +30,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
 import dk.dtu.compute.se.pisd.roborally.view.ComponentView.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -61,6 +62,8 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
+
+
         if ((space.x + space.y) % 2 == 0) {
             this.setStyle("-fx-background-color: white;");
         } else {
@@ -71,7 +74,9 @@ public class SpaceView extends StackPane implements ViewObserver {
 
         // This space view should listen to changes of the space
         space.attach(this);
+
         update(space);
+
 
     }
 
@@ -97,6 +102,11 @@ public class SpaceView extends StackPane implements ViewObserver {
     public void updateView(Subject subject) {
         this.getChildren().clear();
         if (subject == this.space) {
+            Image image = new Image("Components/Space.png", 50, 50, true, true);
+            Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.drawImage(image, 0,0);
+            this.getChildren().add(canvas);
 
             if(!this.space.getWalls().isEmpty()){
                 WallView.drawWall(this, this.space);
@@ -105,31 +115,25 @@ public class SpaceView extends StackPane implements ViewObserver {
                 if (fa instanceof PushPanel) {
                     PushPanelView.drawPushPanel(this, fa);
                 }
-                if (fa instanceof Gear) {
+                else if (fa instanceof Gear) {
                     GearView.drawGear(this, fa);
                 }
-                if (fa instanceof Checkpoint) {
+                else if (fa instanceof Checkpoint) {
                     CheckpointView.drawCheckpoint(this, fa);
                 }
 
-                if (fa instanceof Pit) {
+                else if (fa instanceof Pit) {
                     PitView.drawPit(this, fa);
                 }
-                if (fa instanceof ConveyorBelt) {
+                else if (fa instanceof ConveyorBelt) {
                     ConveyorBeltView.drawConveyorBeltView(this, fa);
                 }
             }
+
             updatePlayer();
         }
 
     }
 
-    /**
-     *
-     * @author Lucas
-     *
-     * @param space takes a space as object to identify spaces that need an updated view.
-     *
-     */
 
 }

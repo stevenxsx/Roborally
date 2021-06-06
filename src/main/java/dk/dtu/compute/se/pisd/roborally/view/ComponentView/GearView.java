@@ -22,9 +22,6 @@ public class GearView {
             case WEST -> {gc.setStroke(Color.GREEN); gc.drawImage(gearLeft, 0,0);}
             case EAST -> {gc.setStroke(Color.RED); gc.drawImage(gearRight,0,0);}
         }
-
-
         spaceView.getChildren().add(canvas);
-
     }
 }
