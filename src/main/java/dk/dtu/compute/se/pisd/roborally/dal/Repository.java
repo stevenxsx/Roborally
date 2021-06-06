@@ -21,9 +21,12 @@
  */
 package dk.dtu.compute.se.pisd.roborally.dal;
 
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.EnergyCube;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,6 +66,8 @@ class Repository implements IRepository {
 
     private static final String CHECKPOINT = "checkpoint";
 
+    private static final String ENERGY = "energy";
+
     private Connector connector;
 
     Repository(Connector connector){
@@ -82,9 +87,6 @@ class Repository implements IRepository {
                 connection.setAutoCommit(false);
 
                 PreparedStatement ps = getInsertGameStatementRGK();
-                // TODO: the name should eventually set by the user
-                //       for the game and should be then used
-                //       game.getName();
                 ps.setString(1, game.getName()); // instead of name
                 ps.setNull(2, Types.TINYINT); // game.getPlayerNumber(game.getCurrentPlayer())); is inserted after players!
                 ps.setInt(3, game.getPhase().ordinal());
@@ -114,6 +116,7 @@ class Repository implements IRepository {
 				createCardFieldsInDB(game);
 				 */
                 createCardRegisterInDB(game);
+                createSpacesInDB(game);
 
                 // since current player is a foreign key, it can oly be
                 // inserted after the players are created, since MySQL does
@@ -127,7 +130,6 @@ class Repository implements IRepository {
                     rs.updateInt(GAME_CURRENTPLAYER, game.getPlayerNumber(game.getCurrentPlayer()));
                     rs.updateRow();
                 } else {
-                    // TODO error handling
                 }
                 rs.close();
 
@@ -176,21 +178,17 @@ class Repository implements IRepository {
                 rs.updateInt(GAME_STEP, game.getStep());
                 rs.updateRow();
             } else {
-                // TODO error handling
+
             }
             rs.close();
             updateCardsInDB(game);
             updatePlayersInDB(game);
-
-			/* TOODO this method needs to be implemented first
-			updateCardFieldsInDB(game);
-			*/
+            updateSpaceInDB(game);
 
             connection.commit();
             connection.setAutoCommit(true);
             return true;
         } catch (SQLException e) {
-            // TODO error handling
             e.printStackTrace();
             System.err.println("Some DB error");
 
@@ -198,7 +196,7 @@ class Repository implements IRepository {
                 connection.rollback();
                 connection.setAutoCommit(true);
             } catch (SQLException e1) {
-                // TODO error handling
+                System.out.print("Failed rollback");
                 e1.printStackTrace();
             }
         }
@@ -238,6 +236,7 @@ class Repository implements IRepository {
             game.setGameId(id);
             loadPlayersFromDB(game);
             loadCards(game);
+            loadSpacesFromDB(game);
 
             if (playerNo >= 0 && playerNo < game.getPlayersNumber()) {
                 game.setCurrentPlayer(game.getPlayer(playerNo));
@@ -290,8 +289,43 @@ class Repository implements IRepository {
                 rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
                 rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
                 rs.updateInt(CHECKPOINT, player.getCheckpoints());
+                rs.updateInt(ENERGY, player.getEnergy());
 
                 rs.insertRow();
+            }
+
+            rs.close();
+        }
+        catch(SQLException e){
+            System.out.print("Could not save game. An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    private void createSpacesInDB(Board game) throws SQLException {
+        try {
+            PreparedStatement ps = getSelectSpaceSTMT();
+            ps.setInt(1, game.getGameId());
+
+            ResultSet rs = ps.executeQuery();
+            for (int i = 0; i < game.width; i++) {
+                for(int k = 0; k < game.height; k++) {
+                    Space space = game.getSpace(i,k);
+                    int energy = 0;
+                    for(FieldAction fa : space.getActions()) {
+                        if(fa instanceof EnergyCube) {
+                            EnergyCube energyCube = (EnergyCube) fa;
+                            energy = energyCube.getEnergy();
+                        }
+                    }
+                    rs.moveToInsertRow();
+                    rs.updateInt(PLAYER_GAMEID, game.getGameId());
+                    rs.updateInt("x", i);
+                    rs.updateInt("y", k);
+                    rs.updateInt("energy", energy );
+
+                    rs.insertRow();
+                }
             }
 
             rs.close();
@@ -361,7 +395,6 @@ class Repository implements IRepository {
         while (rs.next()) {
             int playerId = rs.getInt(PLAYER_PLAYERID);
             if (i++ == playerId) {
-                // TODO this should be more defensive
                 String name = rs.getString(PLAYER_NAME);
                 String colour = rs.getString(PLAYER_COLOUR);
                 Player player = new Player(game, colour ,name);
@@ -372,11 +405,34 @@ class Repository implements IRepository {
                 player.setSpace(game.getSpace(x,y));
                 int heading = rs.getInt(PLAYER_HEADING);
                 player.setHeading(Heading.values()[heading]);
-
-                // TODO  should also load players program and hand here
+                int checkpoint = rs.getInt(CHECKPOINT);
+                int energy = rs.getInt(ENERGY);
+                player.setCheckpoints(checkpoint);
+                player.setEnergy(energy);
             } else {
-                // TODO error handling
                 System.err.println("Game in DB does not have a player with id " + i +"!");
+            }
+        }
+        rs.close();
+    }
+
+    private void loadSpacesFromDB(Board game) throws SQLException {
+        PreparedStatement ps = getSelectSpaceSTMT();
+        ps.setInt(1, game.getGameId());
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+
+            int x = rs.getInt("x");
+            int y = rs.getInt("y");
+            int energy = rs.getInt("energy");
+            Space space = game.getSpace(x,y);
+            for(FieldAction fa : space.getActions()){
+                if (fa instanceof EnergyCube){
+                    EnergyCube energyCube = (EnergyCube) fa;
+                    energyCube.setEnergy(energy);
+                }
             }
         }
         rs.close();
@@ -479,18 +535,44 @@ class Repository implements IRepository {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int playerId = rs.getInt(PLAYER_PLAYERID);
-                // TODO should be more defensive
                 Player player = game.getPlayer(playerId);
                 // rs.updateString(PLAYER_NAME, player.getName()); // not needed: player's names does not change
                 rs.updateInt(PLAYER_POSITION_X, player.getSpace().x);
                 rs.updateInt(PLAYER_POSITION_Y, player.getSpace().y);
                 rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
                 rs.updateInt("checkpoint", player.getCheckpoints());
+                rs.updateInt("energy", player.getEnergy());
                 rs.updateRow();
             }
             rs.close();
         }
         catch (SQLException e){
+            System.out.print("Could not update players in database");
+            e.printStackTrace();
+        }
+    }
+
+    private void updateSpaceInDB(Board game) throws SQLException {
+        try {
+            PreparedStatement ps = getSelectSpaceSTMT();
+            ps.setInt(1, game.getGameId());
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int x = rs.getInt("x");
+                int y = rs.getInt("y");
+                Space space = game.getSpace(x,y);
+                for(FieldAction fa : space.getActions()){
+                    if(fa instanceof EnergyCube){
+                        rs.updateInt("energy", ((EnergyCube) fa).getEnergy());
+                    }
+                }
+                rs.updateRow();
+            }
+            rs.close();
+        }
+        catch (SQLException e){
+            System.out.println("Could not update Spaces in database");
             e.printStackTrace();
         }
     }
@@ -508,7 +590,6 @@ class Repository implements IRepository {
                         SQL_INSERT_GAME,
                         Statement.RETURN_GENERATED_KEYS);
             } catch (SQLException e) {
-                // TODO error handling
                 e.printStackTrace();
             }
         }
@@ -670,5 +751,46 @@ class Repository implements IRepository {
             }
         }
         return select_games_stmt;
+    }
+
+
+    private static final String SQL_INSERT_SPACE =
+            "INSERT INTO Space(gameID, x, y, energy) VALUES (?, ?, ?, ?)";
+
+    private PreparedStatement insert_space_stmt = null;
+
+    private PreparedStatement getInsertSpaceSTMT() {
+        if (insert_space_stmt == null) {
+            Connection connection = connector.getConnection();
+            try {
+                insert_game_stmt = connection.prepareStatement(
+                        SQL_INSERT_SPACE,
+                        Statement.RETURN_GENERATED_KEYS);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return insert_space_stmt;
+    }
+
+    private static final String SQL_SELECT_SPACE =
+            "SELECT * FROM Spaces WHERE gameID = ?";
+
+    private PreparedStatement select_space_stmt = null;
+
+    private PreparedStatement getSelectSpaceSTMT() {
+        if (select_space_stmt == null) {
+            Connection connection = connector.getConnection();
+            try {
+                select_space_stmt = connection.prepareStatement(
+                        SQL_SELECT_SPACE,
+                        ResultSet.TYPE_FORWARD_ONLY,
+                        ResultSet.CONCUR_UPDATABLE);
+            } catch (SQLException e) {
+                System.out.println("Could not connect to database.");
+                e.printStackTrace();
+            }
+        }
+        return select_space_stmt;
     }
 }

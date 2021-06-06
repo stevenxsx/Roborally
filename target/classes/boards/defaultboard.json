@@ -108,6 +108,12 @@
         "NORTH"
       ],
       "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.EnergyCube",
+          "INSTANCE": {
+            "energy": 5
+          }
+        }
       ],
       "x": 3,
       "y": 3

@@ -5,28 +5,27 @@ import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
-public class Checkpoint extends FieldAction {
-    private int checkpoints;
+public class EnergyCube extends FieldAction {
+    private int energy;
 
-    public int getCheckpoints() {
-        return checkpoints;
+
+
+    public int getEnergy() {
+        return this.energy;
+    }
+    public void setEnergy(int energy){
+        this.energy = energy;
     }
 
     @Override
     public boolean doAction(GameController gameController, Space space) {
         Player player = space.getPlayer();
         if (player != null) {
-            if (player.getCheckpoints() == this.checkpoints - 1) {
-                space.getPlayer().setCheckpoints(space.getPlayer().getCheckpoints() + 1);
-            }
-
-            if(player.getCheckpoints() == gameController.board.getCheckpointCounter()) {
-                gameController.chooseWinner(player);
-            }
+            player.setEnergy(this.getEnergy());
+            this.setEnergy(0);
             return true;
         }
         return false;
     }
 }
-
 

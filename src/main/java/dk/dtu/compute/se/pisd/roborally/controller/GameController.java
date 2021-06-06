@@ -179,7 +179,6 @@ public class GameController {
      * Executes the next steps in the game.
      */
     private void executeNextStep() {
-
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();

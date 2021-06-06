@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS Player (
   positionY int,
   heading tinyint,
   checkpoint int,
+  energy int,
   
   PRIMARY KEY (gameID, playerID),
   FOREIGN KEY (gameID) REFERENCES Game(gameID)
@@ -47,6 +48,15 @@ CREATE TABLE IF NOT EXISTS PlayerRegister (
 
                                                      PRIMARY KEY(PlayerID, GameID,RegNumber),
                                                      FOREIGN KEY(gameID, playerID) REFERENCES Player(gameID, playerID)
+);;
+
+CREATE TABLE IF NOT EXISTS Spaces(
+    GameID INT NOT NULL,
+    x INT,
+    y INT,
+    energy INT,
+    PRIMARY KEY(GameID, X, Y),
+    FOREIGN KEY(GameID) references Game(gameID)
 );;
 
 SET FOREIGN_KEY_CHECKS = 1;;

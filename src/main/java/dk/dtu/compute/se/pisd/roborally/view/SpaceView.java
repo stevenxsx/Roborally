@@ -95,6 +95,16 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
 
             arrow.setRotate((90*player.getHeading().ordinal())%360);
+            Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_WIDTH);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setStroke(Color.GREEN);
+            gc.setLineWidth(1);
+            gc.strokeText(String.valueOf(player.getCheckpoints()), SpaceView.SPACE_WIDTH*0.8, SpaceView.SPACE_WIDTH*0.8);
+
+            this.getChildren().add(canvas);
+            gc.setStroke(Color.YELLOW);
+            gc.setLineWidth(1);
+            gc.strokeText(String.valueOf(player.getEnergy()), SpaceView.SPACE_WIDTH*0.2, SpaceView.SPACE_WIDTH*0.8);
             this.getChildren().add(arrow);
         }
     }
@@ -124,6 +134,9 @@ public class SpaceView extends StackPane implements ViewObserver {
                 }
                 else if (fa instanceof ConveyorBelt) {
                     ConveyorBeltView.drawConveyorBeltView(this, fa);
+                }
+                else if (fa instanceof EnergyCube){
+                    EnergyView.drawEnergy(this, fa);
                 }
             }
 
