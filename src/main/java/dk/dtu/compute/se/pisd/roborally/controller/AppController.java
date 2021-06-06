@@ -148,7 +148,6 @@ public class AppController implements Observer {
                 System.out.println("You cancelled the save operation");
             }
         }
-
     }
 
     /**

@@ -5,6 +5,7 @@
     {
       "walls": [
       ],
+      "startpoint": true,
       "x": 0,
       "y": 0
     },
@@ -20,8 +21,7 @@
         }
       ],
       "x": 1,
-      "y": 0,
-      "startPoint": true
+      "y": 0
     },
     {
       "walls": [
@@ -33,8 +33,8 @@
     },
     {
       "walls": [],
-      "x": 1,
-      "y": 2,
+      "x": 15,
+      "y": 7,
       "startPoint": true
     },
     {
@@ -46,33 +46,16 @@
         }
       }],
       "x": 1,
-      "y": 3,
+      "y": 3
+    },
+    {
+      "walls": [],
+      "x": 15,
+      "y": 0,
       "startPoint": true
     },
     {
       "walls": [],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Gear",
-          "INSTANCE": {
-            "heading": "WEST"
-          }
-        }
-      ],
-      "x": 1,
-      "y": 4,
-      "startPoint": true
-    },
-    {
-      "walls": [],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
-          "INSTANCE": {
-            "heading": "WEST",
-            "velocity": "2"
-          }
-        }],
       "x": 1,
       "y": 5,
       "startPoint": true
@@ -271,6 +254,18 @@
       ],
       "x": 10,
       "y": 5
+    },
+    {
+      "walls": [],
+      "x": 0,
+      "y": 0,
+      "startPoint": true
+    },
+    {
+      "walls": [],
+      "x": 8,
+      "y": 3,
+      "startPoint": true
     }
   ]
 }

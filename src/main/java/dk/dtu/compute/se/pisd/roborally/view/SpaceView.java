@@ -114,6 +114,9 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.getChildren().clear();
         if (subject == this.space) {
             updateNormalSpace();
+            if(this.space.getStartPoint()){
+                StartpointView.drawStartpoint(this);
+            }
 
             if(!this.space.getWalls().isEmpty()){
                 WallView.drawWall(this, this.space);
