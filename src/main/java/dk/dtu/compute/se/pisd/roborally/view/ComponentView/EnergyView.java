@@ -9,7 +9,18 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+/**
+ * @author s205444, Lucas
+ *
+ */
+
 public class EnergyView {
+    /**
+     * Draws an energy cube on a specified space.
+     * @author s205444, Lucas
+     * @param spaceView Used to update the view of the space.
+     * @param fieldA Used to check the amount of energy on an energy object space.
+     */
     public static void drawEnergy(SpaceView spaceView, FieldAction fieldA){
         EnergyCube energyCube = (EnergyCube) fieldA;
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_WIDTH);

@@ -10,7 +10,15 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
+/**
+ * @author s205444, Lucas
+ */
 public class GearView {
+    /**
+     * Draws a gear on the given space.
+     * @param spaceView used to update the view.
+     * @param fieldAction used to specify the gear's direction.
+     */
     public static void drawGear(SpaceView spaceView, FieldAction fieldAction) {
         Gear gear = (Gear) fieldAction;
         Heading header = gear.getHeading();

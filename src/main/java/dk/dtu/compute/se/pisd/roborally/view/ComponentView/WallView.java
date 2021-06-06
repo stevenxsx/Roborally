@@ -11,24 +11,40 @@ import javafx.scene.shape.StrokeLineCap;
 
 import java.util.List;
 
-public class WallView {
-    public static void drawWall(SpaceView spaceView, Space space) {
-        List<Heading> walls = space.getWalls();
-        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        Image wallNorthSouth = new Image("Components/WallNORTHSOUTH.png", 50, 50, true, true);
-        Image wallWestEast = new Image("Components/WallWESTEAST.png", 50, 50, true, true);
+/**
+ * @author s205444, Lucas
+ *
+ */
 
-        for (int i = 0; i < walls.size(); i++) {
-            Heading header = walls.get(i);
-            switch (header) {
-                case SOUTH -> gc.drawImage(wallNorthSouth,0,44);
-                case NORTH -> gc.drawImage(wallNorthSouth,0,0);
-                case WEST ->  gc.drawImage(wallWestEast,0,0);
-                case EAST ->  gc.drawImage(wallWestEast,44,0);
+public class WallView {
+    /**
+     * Updates the view of a wall on the board.
+     * @author s20544, Lucas
+     * @param spaceView used to update the view.
+     * @param space Used to check the position of the wall as specified in the .JSON file.
+     */
+    public static void drawWall(SpaceView spaceView, Space space) {
+        try {
+            List<Heading> walls = space.getWalls();
+            Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            Image wallNorthSouth = new Image("Components/WallNORTHSOUTH.png", 50, 50, true, true);
+            Image wallWestEast = new Image("Components/WallWESTEAST.png", 50, 50, true, true);
+
+            for (int i = 0; i < walls.size(); i++) {
+                Heading header = walls.get(i);
+                switch (header) {
+                    case SOUTH -> gc.drawImage(wallNorthSouth, 0, 44);
+                    case NORTH -> gc.drawImage(wallNorthSouth, 0, 0);
+                    case WEST -> gc.drawImage(wallWestEast, 0, 0);
+                    case EAST -> gc.drawImage(wallWestEast, 44, 0);
+                }
             }
+            spaceView.getChildren().add(canvas);
         }
-        spaceView.getChildren().add(canvas);
+        catch(Exception e){
+            System.out.println("Image file for walls could not be found");
+        }
 
     }
 }

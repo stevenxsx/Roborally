@@ -310,7 +310,6 @@ public class GameController {
      */
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
         Player neighbourPlayer = space.getPlayer();
-        Heading headingRecursion = heading;
         boolean movePossible = true;
         boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
 
@@ -369,19 +368,10 @@ public class GameController {
             {
                 moveToSpace(player, neighbourSpace, player.getHeading());
             } catch (ImpossibleMoveException e){
+                System.out.println("Move impossible");
             }
 
-        }/*
-        if(current!= null && player.board == current.board){
-            Space target = board.getNeighbour(current,player.getHeading());
-            if (target.getPlayer() != null){
-                push(target.getPlayer(), current.getPlayer().getHeading());
-                player.setSpace(target);
-            }
-            if (target != null && target.getPlayer() == null){
-                player.setSpace(target);
-            }
-        }*/
+        }
     }
 
     public void push(@NotNull Player player, Heading direction) {
@@ -543,6 +533,10 @@ public class GameController {
         player.setHeading(Heading.WEST);
     }
 
+    /**
+     * Used to open a shop for upgrade cards. Can be bought if energy is sufficient.
+     * @author s205444, Lucas
+     */
 
     public void shop(){
         ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);

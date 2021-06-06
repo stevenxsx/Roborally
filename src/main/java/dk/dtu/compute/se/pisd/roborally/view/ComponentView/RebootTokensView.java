@@ -8,7 +8,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
+/**
+ * @author Mike
+ */
 public class RebootTokensView {
+    /**
+     * Updates the view of a space with reboot tokens.
+     * @param spaceView Used to update the view.
+     * @param fieldAction Not needed here - delete at some point.
+     */
     public static void drawRebootTokens(SpaceView spaceView, FieldAction fieldAction) {
 
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);

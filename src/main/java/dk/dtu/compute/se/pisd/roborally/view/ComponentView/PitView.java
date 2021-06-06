@@ -10,9 +10,16 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
-
+/**
+ * @author s205444, Lucas
+ */
 
 public class PitView {
+    /**
+     * Used to update the view of a Pit.
+     * @param spaceView Used to update the view.
+     * @param fieldAction Needs to be deleted - we do not need it for PitView.
+     */
     public static void drawPit(SpaceView spaceView, FieldAction fieldAction){
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
