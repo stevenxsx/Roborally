@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
 import javafx.scene.control.Alert;
 import org.jetbrains.annotations.NotNull;
 
@@ -294,7 +295,23 @@ public class GameController {
 
     }
 
-    // XXX: V2
+
+    private void addUpgrade(@NotNull Player player, Upgrade upgrade) {
+        if (player.board == board && upgrade != null) {
+            switch (upgrade) {
+                case BRAKES:
+                    //Fill in code to add the upgrade to the player permanently
+                    break;
+                case VIRUS_MODULE:
+                    break;
+                case TROJAN_NEEDLER:
+                    break;
+                case REAR_LASER:
+                    break;
+            }
+        }
+    }
+
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
