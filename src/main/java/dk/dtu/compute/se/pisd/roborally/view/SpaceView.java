@@ -138,6 +138,9 @@ public class SpaceView extends StackPane implements ViewObserver {
                 else if (fa instanceof EnergyCube){
                     EnergyView.drawEnergy(this, fa);
                 }
+                else if(fa instanceof RebootTokens){
+                    RebootTokensView.drawRebootTokens(this, fa);
+                }
             }
 
             updatePlayer();

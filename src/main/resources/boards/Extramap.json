@@ -168,6 +168,109 @@
       ],
       "x": 7,
       "y": 6
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
+          "INSTANCE": {
+            "heading": "EAST",
+            "velocity": 1
+          }
+        }
+      ],
+      "x": 6,
+      "y": 0
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
+          "INSTANCE": {
+            "heading": "EAST",
+            "velocity": 1
+          }
+        }
+      ],
+      "x": 7,
+      "y": 0
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
+          "INSTANCE": {
+            "heading": "EAST",
+            "velocity": 1
+          }
+        }
+      ],
+      "x": 8,
+      "y": 0
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
+          "INSTANCE": {
+            "heading": "SOUTH",
+            "velocity": 1
+          }
+        }
+      ],
+      "x": 9,
+      "y": 0
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.ConveyorBelt",
+          "INSTANCE": {
+            "heading": "SOUTH",
+            "velocity": 1
+          }
+        }
+      ],
+      "x": 9,
+      "y": 1
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint",
+          "INSTANCE": {
+            "checkpoints": 3
+          }
+        }
+      ],
+      "x": 10,
+      "y": 6
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.PushPanel",
+          "INSTANCE": {
+            "heading": "NORTH"
+          }
+        }
+      ],
+      "x": 10,
+      "y": 5
     }
   ]
 }
