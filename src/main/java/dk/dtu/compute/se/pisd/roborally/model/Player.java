@@ -148,12 +148,22 @@ public class Player extends Subject {
         return cards[i];
     }
 
-    /** Author Mike
+    /** @Author Mike
      * Clears the i card in the register for the currentplayer
      * @param i
      */
     public void clearRegister(int i ){
         CommandCardField field = this.getProgramField(i);
+        field.setCard(null);
+        field.setVisible(true);
+    }
+
+    /** @Author Mike
+     * Clears the card the player has in their hand
+     * @param i
+     */
+    public void clearCards(int i){
+        CommandCardField field = this.getCardField(i);
         field.setCard(null);
         field.setVisible(true);
     }

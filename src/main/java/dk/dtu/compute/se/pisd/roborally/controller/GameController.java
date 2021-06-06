@@ -281,6 +281,20 @@ public class GameController {
                     break;
                 case BACK_UP:
                     this.backUp(player);
+                    break;
+                    /*
+                case EAST:
+                    this.East(player);
+                    break;
+                case WEST:
+                    this.West(player);
+                    break;
+                case SOUTH:
+                    this.South(player);
+                    break;
+                case NORTH:
+                    this.North(player);
+                    */
                 default:
                     // DO NOTHING (for now)
             }
@@ -514,6 +528,22 @@ public class GameController {
             return false;
         }
     }
+    public void North(@NotNull Player player) {
+        player.setHeading(Heading.NORTH);
+    }
+
+    public void East(@NotNull Player player) {
+        player.setHeading(Heading.EAST);
+    }
+
+    public void South(@NotNull Player player) {
+        player.setHeading(Heading.SOUTH);
+    }
+
+    public void West(@NotNull Player player) {
+        player.setHeading(Heading.WEST);
+    }
+
 
     public void shop(){
         ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);
