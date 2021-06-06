@@ -63,12 +63,13 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMaxHeight(SPACE_HEIGHT);
 
 
-
+/*
         if ((space.x + space.y) % 2 == 0) {
             this.setStyle("-fx-background-color: white;");
         } else {
             this.setStyle("-fx-background-color: black;");
         }
+*/
 
         // updatePlayer();
 
@@ -102,11 +103,7 @@ public class SpaceView extends StackPane implements ViewObserver {
     public void updateView(Subject subject) {
         this.getChildren().clear();
         if (subject == this.space) {
-            Image image = new Image("Components/Space.png", 50, 50, true, true);
-            Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.drawImage(image, 0,0);
-            this.getChildren().add(canvas);
+            updateNormalSpace();
 
             if(!this.space.getWalls().isEmpty()){
                 WallView.drawWall(this, this.space);
@@ -133,6 +130,14 @@ public class SpaceView extends StackPane implements ViewObserver {
             updatePlayer();
         }
 
+    }
+
+    public void updateNormalSpace(){
+        Image image = new Image("Components/Space.png", 50, 50, true, true);
+        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(image, 0,0);
+        this.getChildren().add(canvas);
     }
 
 
