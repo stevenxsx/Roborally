@@ -100,7 +100,8 @@
     },
     {
       "walls": [
-        "SOUTH"
+        "SOUTH",
+        "NORTH"
       ],
       "actions": [
       ],

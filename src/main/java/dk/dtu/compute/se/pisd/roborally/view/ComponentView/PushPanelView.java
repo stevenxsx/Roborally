@@ -5,6 +5,7 @@ import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.view.SpaceView;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -12,21 +13,26 @@ import java.awt.*;
 
 public class PushPanelView {
     /**
-     *
+     * Blueprint for printing a view of a pushpanel.
+     * @author s205444, Lucas
+     * @param fa takes the FieldAction object to determine heading.
+     * @param spaceView takes a SpaceView object to update view for the corresponding space.
      */
     // TODO: Fix headings (reverse)
     public static void drawPushPanel(SpaceView spaceView, FieldAction fa) {
         PushPanel pushPanel = (PushPanel) fa;
         Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.DARKTURQUOISE);
-        gc.setLineWidth(10);
-        gc.setLineCap(StrokeLineCap.ROUND);
+        javafx.scene.image.Image right = new javafx.scene.image.Image("Components/PushWEST.png", 50, 50, true, true);
+        javafx.scene.image.Image left = new javafx.scene.image.Image("Components/PushEAST.png", 50, 50, true, true);
+        javafx.scene.image.Image Up = new javafx.scene.image.Image("Components/PushSOUTH.png", 50, 50, true, true);
+        javafx.scene.image.Image Down = new Image("Components/PushNORTH.png", 50, 50, true, true);
+
         switch (pushPanel.getHeading()) {
-            case SOUTH -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 48, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 48);
-            case NORTH -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
-            case WEST -> gc.strokeLine(48, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 48);
-            case EAST -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 48, SpaceView.SPACE_HEIGHT - 48);
+            case SOUTH -> gc.drawImage(Down,0,0);
+            case NORTH -> gc.drawImage(Up,0,0);
+            case WEST ->  gc.drawImage(left,0,0);
+            case EAST ->  gc.drawImage(right,0,0);
         }
         spaceView.getChildren().add(canvas);
 
