@@ -11,14 +11,7 @@
     {
       "walls": [
       ],
-      "actions": [
-        {
-          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Gear",
-          "INSTANCE": {
-            "heading": "WEST"
-          }
-        }
-      ],
+      "actions": [],
       "x": 1,
       "y": 0,
       "startPoint": true
@@ -33,8 +26,8 @@
     },
     {
       "walls": [],
-      "x": 1,
-      "y": 2,
+      "x": 8,
+      "y": 0,
       "startPoint": true
     },
     {
@@ -46,8 +39,7 @@
         }
       }],
       "x": 1,
-      "y": 3,
-      "startPoint": true
+      "y": 3
     },
     {
       "walls": [],
@@ -60,8 +52,7 @@
         }
       ],
       "x": 1,
-      "y": 4,
-      "startPoint": true
+      "y": 4
     },
     {
       "walls": [],
@@ -74,8 +65,7 @@
           }
         }],
       "x": 1,
-      "y": 5,
-      "startPoint": true
+      "y": 5
     },
     {
       "walls": [],
@@ -173,7 +163,26 @@
         }
       ],
       "x": 7,
-      "y": 6
+      "y": 4,
+      "startPoint": true
+    },
+    {
+      "walls": [],
+      "x": 4,
+      "y": 7,
+      "startPoint": true
+    },
+    {
+      "walls": [],
+      "x": 0,
+      "y": 7,
+      "startPoint": true
+    },
+    {
+      "walls": [],
+      "x": 7,
+      "y": 0,
+      "startPoint": true
     }
   ]
 }
