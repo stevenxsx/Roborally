@@ -29,6 +29,7 @@ public class RebootTokens extends FieldAction {
             CommandCardField field = player.getProgramField(4);
             field.setCard2(new rebootCard(Choose.CHOOSE_HEADING));
             field.setVisible(true);
+            DamageCards.WormCard(player);
             //player.setNeedReboot(false);
 
         }
