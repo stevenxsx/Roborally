@@ -11,6 +11,13 @@
     {
       "walls": [
       ],
+      "antenna": true,
+      "x": 0,
+      "y": 3
+    },
+    {
+      "walls": [
+      ],
       "actions": [],
       "x": 1,
       "y": 0,
