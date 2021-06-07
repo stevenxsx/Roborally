@@ -41,7 +41,6 @@ public class Player extends Subject {
 
     private String name;
     private String color;
-    private int SPAMCards = 0;
 
     private Space space;
     private Heading heading = SOUTH;
@@ -49,12 +48,15 @@ public class Player extends Subject {
     private CommandCardField[] program;
     private CommandCardField[] cards;
 
-    public Player(@NotNull Board board, String color, @NotNull String name, int SPAMCards) {
+    private int checkpoints;
+    private int energy;
+
+    public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
         this.name = name;
         this.color = color;
-        this.SPAMCards = SPAMCards;
-
+        this.checkpoints = 0;
+        this.energy = 0;
         this.space = null;
 
         program = new CommandCardField[NO_REGISTERS];
@@ -70,6 +72,24 @@ public class Player extends Subject {
 
     public String getName() {
         return name;
+    }
+
+    public void setCheckpoints(int checkpointCounter){
+        this.checkpoints = checkpointCounter;
+    }
+
+    public int getCheckpoints(){
+        return checkpoints;
+    }
+    public void setEnergy(int energy){
+        this.energy += energy;
+    }
+    public int getEnergy(){
+        return energy;
+    }
+
+    public void placeOnStartingPoint(Space space) {
+        this.space = space;
     }
 
     public void setName(String name) {
@@ -135,11 +155,24 @@ public class Player extends Subject {
         return cards[i];
     }
 
-    public int getSPAMCards() {
-        return SPAMCards;
+    /** @Author Mike
+     * Clears the i card in the register for the currentplayer
+     * @param i
+     */
+    public void clearRegister(int i ){
+        CommandCardField field = this.getProgramField(i);
+        field.setCard(null);
+        field.setVisible(true);
     }
 
-    public void setSPAMCards(int SPAMCards) {
-        this.SPAMCards = SPAMCards;
+    /** @Author Mike
+     * Clears the card the player has in their hand
+     * @param i
+     */
+    public void clearCards(int i){
+        CommandCardField field = this.getCardField(i);
+        field.setCard(null);
+        field.setVisible(true);
     }
 }
+

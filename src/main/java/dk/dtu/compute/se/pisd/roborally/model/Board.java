@@ -22,9 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
@@ -41,13 +43,36 @@ public class Board extends Subject {
 
     public final int height;
 
-    public final String boardName;
+    public String boardName;
 
     private Integer gameId;
 
     private final Space[][] spaces;
 
+    private final Space[] startingPoints = new Space[6];
+    public int startingPointsIncrementer = 0;
+
+    public String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private final List<Player> players = new ArrayList<>();
+
+    public int getCheckpointCounter() {
+        return checkpointCounter;
+    }
+
+    public void setCheckpointCounter(int checkpointCounter) {
+        this.checkpointCounter += checkpointCounter;
+    }
+
+    private int checkpointCounter;
 
     private Player current;
 
@@ -70,7 +95,6 @@ public class Board extends Subject {
                 spaces[x][y] = space;
             }
         }
-        //spaces[5][1] = new Wall(this, 5, 1, Heading.SOUTH); //this creates a wall. commented out because collision detection isnt made yet.
         this.stepMode = false;
     }
 
@@ -103,6 +127,10 @@ public class Board extends Subject {
 
     public int getPlayersNumber() {
         return players.size();
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public void addPlayer(@NotNull Player player) {
@@ -170,6 +198,10 @@ public class Board extends Subject {
         } else {
             return -1;
         }
+    }
+
+    public String getBoardName(){
+        return boardName;
     }
 
     /**

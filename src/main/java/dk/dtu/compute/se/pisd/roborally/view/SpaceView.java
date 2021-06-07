@@ -22,17 +22,20 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.model.Components.*;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.view.ComponentView.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import org.jetbrains.annotations.NotNull;
-import dk.dtu.compute.se.pisd.roborally.model.Wall;
 
 /**
  * ...
@@ -59,22 +62,26 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
+
+/*
         if ((space.x + space.y) % 2 == 0) {
             this.setStyle("-fx-background-color: white;");
         } else {
             this.setStyle("-fx-background-color: black;");
         }
+*/
 
         // updatePlayer();
 
         // This space view should listen to changes of the space
         space.attach(this);
+
         update(space);
+
 
     }
 
     private void updatePlayer() {
-        this.getChildren().clear();
 
         Player player = space.getPlayer();
         if (player != null) {
@@ -88,52 +95,72 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
 
             arrow.setRotate((90*player.getHeading().ordinal())%360);
+            Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_WIDTH);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setStroke(Color.GREEN);
+            gc.setLineWidth(1);
+            gc.strokeText(String.valueOf(player.getCheckpoints()), SpaceView.SPACE_WIDTH*0.8, SpaceView.SPACE_WIDTH*0.8);
+
+            this.getChildren().add(canvas);
+            gc.setStroke(Color.YELLOW);
+            gc.setLineWidth(1);
+            gc.strokeText(String.valueOf(player.getEnergy()), SpaceView.SPACE_WIDTH*0.2, SpaceView.SPACE_WIDTH*0.8);
             this.getChildren().add(arrow);
         }
     }
 
     @Override
     public void updateView(Subject subject) {
+        this.getChildren().clear();
         if (subject == this.space) {
-            updatePlayer();
-            if(this.space instanceof Wall){
-            updateWallView(space);}
-        }
-    }
-
-    /**
-     *
-     * @author Lucas
-     *
-     * @param space takes a space as object to identify spaces that need an updated view.
-     *
-     */
-
-    public void updateWallView(Space space) {
-        Wall tWall = (Wall) space;
-        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(5);
-        gc.setLineCap(StrokeLineCap.ROUND);
-        for (Heading heading : Heading.values()) {
-            switch (heading) {
-                case SOUTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
-                    break;
-                case NORTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-70, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-70);
-                    break;
-                case WEST:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-70, SpaceView.SPACE_HEIGHT-70);
-                    break;
-                case EAST:
-                    gc.strokeLine(70, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-70);
-                    break;
+            updateNormalSpace();
+            if(this.space.getStartPoint()){
+                StartpointView.drawStartpoint(this);
             }
 
+            if(!this.space.getWalls().isEmpty()){
+                WallView.drawWall(this, this.space);
+            }
+            for(FieldAction fa : space.getActions()) {
+                if (fa instanceof PushPanel) {
+                    PushPanelView.drawPushPanel(this, fa);
+                }
+                else if (fa instanceof Gear) {
+                    GearView.drawGear(this, fa);
+                }
+                else if (fa instanceof Checkpoint) {
+                    CheckpointView.drawCheckpoint(this, fa);
+                }
+
+                else if (fa instanceof Pit) {
+                    PitView.drawPit(this, fa);
+                }
+                else if (fa instanceof ConveyorBelt) {
+                    ConveyorBeltView.drawConveyorBeltView(this, fa);
+                }
+                else if (fa instanceof EnergyCube){
+                    EnergyView.drawEnergy(this, fa);
+                }
+                else if(fa instanceof RebootTokens){
+                    RebootTokensView.drawRebootTokens(this, fa);
+                }
+                else if(fa instanceof Laser){
+                    LaserView.drawLaser(this, fa);
+                }
+            }
+
+            updatePlayer();
         }
-        getChildren().add(canvas);
+
     }
+
+    public void updateNormalSpace(){
+        Image image = new Image("Components/Space.png", 50, 50, true, true);
+        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(image, 0,0);
+        this.getChildren().add(canvas);
+    }
+
 
 }

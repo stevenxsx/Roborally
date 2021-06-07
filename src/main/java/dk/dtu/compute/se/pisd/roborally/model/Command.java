@@ -43,7 +43,12 @@ public enum Command {
     U_TURN("U-turn"),
     BACK_UP("Back up"),
 
-
+/*
+    NORTH("North"),
+    SOUTH("South"),
+    EAST("East"),
+    WEST("West"),
+    CHOOSE_HEADING("North, South, East or West", NORTH, SOUTH, EAST, WEST),*/
 
     // XXX Assignment V3
     OPTION_LEFT_RIGHT("left OR Right", LEFT, RIGHT);
@@ -58,6 +63,7 @@ public enum Command {
     // replaced by the code below:
 
     final private List<Command> options;
+
 
     Command(String displayName, Command... options) {
         this.displayName = displayName;

@@ -22,7 +22,13 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * ...
@@ -33,6 +39,10 @@ import org.jetbrains.annotations.NotNull;
 public class GameController {
 
     final public Board board;
+
+    public boolean winnerFound = false;
+
+    final private List<String> UPGRADE_CARDS = Arrays.asList("Brakes", "Virus_Module", "Trojan Needler", "Rear Laser");
 
     public GameController(@NotNull Board board) {
         this.board = board;
@@ -102,6 +112,18 @@ public class GameController {
         return new CommandCard(commands[random]);
     }
 
+    /**
+     * Checks for a winner in the game.
+     * @param player takes the current player
+     *
+     */
+
+    public void chooseWinner(Player player){
+        Alert winMsg = new Alert(Alert.AlertType.INFORMATION, "Player \"" + player.getName() + "\" won.");
+        this.winnerFound = true;
+        winMsg.showAndWait();
+    }
+
     // XXX: V2
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
@@ -152,7 +174,10 @@ public class GameController {
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
     }
 
-    // XXX: V2
+    /**
+     * @author s205444, Lucas
+     * Executes the next steps in the game.
+     */
     private void executeNextStep() {
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
@@ -171,6 +196,15 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+
+                    for(Player player : this.board.getPlayers()){
+                        for(FieldAction fieldAction : player.getSpace().getActions()){
+                            if(winnerFound){
+                                break;
+                            }
+                            fieldAction.doAction(this, player.getSpace());
+                        }
+                    }
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -190,6 +224,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Executes a specific command for a robot.
+     * @param option One of the command ENUMS, i.e. LEFT, RIGHT, FORWARD.
+     */
     public void executeCommandOptionAndContinue(@NotNull Command option){
         Player currentPlayer = board.getCurrentPlayer();
         if (currentPlayer != null && board.getPhase() == Phase.PLAYER_INTERACTION && option != null){
@@ -242,35 +280,130 @@ public class GameController {
                     break;
                 case BACK_UP:
                     this.backUp(player);
+                    break;
+                    /*
+                case EAST:
+                    this.East(player);
+                    break;
+                case WEST:
+                    this.West(player);
+                    break;
+                case SOUTH:
+                    this.South(player);
+                    break;
+                case NORTH:
+                    this.North(player);
+                    */
                 default:
                     // DO NOTHING (for now)
             }
         }
     }
 
+    /**
+     * Moves a player to a certain space depending on the parameters's values.
+     *
+     * @param player the player being moved
+     * @param space the space being moved to.
+     * @param heading the heading of the intially moving player.
+     * @throws ImpossibleMoveException If a move is not possible, an impossibleMoveException is thrown.
+     */
+    public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
+        Player neighbourPlayer = space.getPlayer();
+        boolean movePossible = true;
+        boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
+
+        if (!hasAnyWalls){
+            for(Heading header: player.getSpace().getWalls()){
+                if (player.getHeading() == header){
+                    movePossible = false;
+                    space = player.getSpace();
+                    break;
+                }
+            }
+        }
+
+        if(movePossible && neighbourPlayer!= null ){
+            Space target = space;
+            boolean targetHasWalls = target.getWalls().isEmpty();
+            if (target != null && targetHasWalls){
+                try {
+                    Space neighbourSpace = board.getNeighbour(neighbourPlayer.getSpace(),heading);
+                    moveToSpace(neighbourPlayer, neighbourSpace, heading);
+                }
+                catch(Exception e){
+                    System.out.println("Player is null");
+                }
+            }
+            else if(targetHasWalls){
+                //List<Heading> wallHeadings2 = ((Wall) target).getHeading();
+
+                for(Heading header: target.getWalls()){
+                    Heading headerlist = header.next().next();
+                    if (headerlist == heading){
+                        movePossible = false;
+                    }
+                }
+                if (movePossible){
+                    moveToSpace(neighbourPlayer,target,heading);
+                }
+
+            }
+            else{
+                throw new ImpossibleMoveException(player,space,heading);
+            }
+        }
+        if(movePossible)
+        player.setSpace(space);
+    }
+
     /** Moves robot one space forward in the heading it is facing*/
 
     public void moveForward(@NotNull Player player) {
         Space current = player.getSpace();
-        if(current!= null && player.board == current.board){
-            Space target = board.getNeighbour(current,player.getHeading());
-            if (target.getPlayer() != null){
-                push(target.getPlayer(), current.getPlayer().getHeading());
-                player.setSpace(target);
+        Space neighbourSpace = board.getNeighbour(player.getSpace(), player.getHeading());
+        if(neighbourSpace != null)
+        {
+            try
+            {
+                moveToSpace(player, neighbourSpace, player.getHeading());
+            } catch (ImpossibleMoveException e){
+                System.out.println("Move impossible");
             }
-            if (target != null && target.getPlayer() == null){
-                player.setSpace(target);
-            }
+
         }
     }
 
     public void push(@NotNull Player player, Heading direction) {
         Space current = player.getSpace();
         Space target = board.getNeighbour(current, direction);
+         while(target.getPlayer()!= null) {
+             Space currenttemp1 = target.getPlayer().getSpace();
+             Space temp1 = board.getNeighbour(currenttemp1, direction);
+             while(temp1.getPlayer()!= null) {
+                 Space currenttemp2 = temp1.getPlayer().getSpace();
+                 Space temp2 = board.getNeighbour(currenttemp2, direction);
+                 while(temp2.getPlayer()!= null) {
+                     Space currenttemp3 = temp2.getPlayer().getSpace();
+                     Space temp3 = board.getNeighbour(currenttemp3, direction);
+                     while(temp3.getPlayer()!= null) {
+                         Space currenttemp4 = temp3.getPlayer().getSpace();
+                         Space temp4 = board.getNeighbour(currenttemp4, direction);
+                         currenttemp4.getPlayer().setSpace(temp4);
+                     }
+                     currenttemp3.getPlayer().setSpace(temp3);
+                 }
+                 currenttemp2.getPlayer().setSpace(temp2);
+             }
+             currenttemp1.getPlayer().setSpace(temp1);
+         }
         current.getPlayer().setSpace(target);
     }
 
-    /** Moves robot 2 spaces forward in the heading it is facing */
+    /**
+     * Moves a player two steps forward.
+     * @param player the currentplayer trying to move.
+     */
 
     public void fastForward(@NotNull Player player) {
         for (int i=0;i<2;i++) {
@@ -278,7 +411,11 @@ public class GameController {
         }
 
     }
-    /** Moves robot 3 spaces forward in the heading it is facing*/
+
+    /**
+     * Moves a player three steps forward.
+     * @param player the current player being moved.
+     */
 
     public void tripleForward(@NotNull Player player) {
         moveForward(board.getCurrentPlayer());
@@ -289,10 +426,14 @@ public class GameController {
             moveForward(board.getCurrentPlayer()); } */
 
     }
-    /** Makes the player move one space backwards
+    /**
+     *
+     * Makes the player move one space backwards
      but does not change heading
      The method should in the future be
-     changed as for now there is no boundaries on the board*/
+     changed as for now there is no boundaries on the board
+     @param player the current player.
+     */
 
     public void backUp(@NotNull Player player){
         uTurn(player);
@@ -301,7 +442,9 @@ public class GameController {
 
     }
 
-    /** Makes the robot shift heading to the right, but stays on the same space  */
+    /** Makes the robot shift heading to the right, but stays on the same space
+     * @param player  the current player.
+     * */
 
     public void turnRight(@NotNull Player player) {
         switch (player.getHeading()) {
@@ -319,7 +462,10 @@ public class GameController {
         }
     }
 
-    /** Makes the robot shift heading to the left, but stays on the same space */
+    /** Makes the robot shift heading to the left, but stays on the same space
+     * @param player current player
+     *
+     * */
 
     public void turnLeft(@NotNull Player player) {
         switch (player.getHeading()) {
@@ -336,7 +482,9 @@ public class GameController {
                 player.setHeading(Heading.SOUTH);
         }
     }
-    /** Rotates the players heading 180 degrees*/
+    /** Rotates the players heading 180 degrees
+     * @param player the current player.
+     * */
 
     public void uTurn(@NotNull Player player){
         switch (player.getHeading()){
@@ -369,14 +517,36 @@ public class GameController {
             return false;
         }
     }
+    public void North(@NotNull Player player) {
+        player.setHeading(Heading.NORTH);
+    }
+
+    public void East(@NotNull Player player) {
+        player.setHeading(Heading.EAST);
+    }
+
+    public void South(@NotNull Player player) {
+        player.setHeading(Heading.SOUTH);
+    }
+
+    public void West(@NotNull Player player) {
+        player.setHeading(Heading.WEST);
+    }
 
     /**
-     * A method called when no corresponding controller operation is implemented yet. This
-     * should eventually be removed.
+     * Used to open a shop for upgrade cards. Can be bought if energy is sufficient.
+     * @author s205444, Lucas
      */
-    public void notImplemented() {
-        // XXX just for now to indicate that the actual method is not yet implemented
-        assert false;
+
+    public void shop(){
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);
+        dialog.setTitle("Upgrade shop");
+        dialog.setHeaderText("Select a card to buy:");
+        Optional<String> result = dialog.showAndWait();
+
+        if(result.isPresent()){
+            String upgradeChosen = result.get();
+        }
     }
 
 }
