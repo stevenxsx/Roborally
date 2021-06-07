@@ -266,6 +266,86 @@
       "x": 8,
       "y": 3,
       "startPoint": true
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "SOUTH",
+            "laserStrength": 3,
+            "middle": false
+          }
+        }
+      ],
+      "x": 11,
+      "y": 0
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "SOUTH",
+            "laserStrength": 3,
+            "middle": true
+          }
+        }
+      ],
+      "x": 11,
+      "y": 1
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "NORTH",
+            "laserStrength": 3,
+            "middle": false
+          }
+        }
+      ],
+      "x": 11,
+      "y": 2
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "EAST",
+            "laserStrength": 1,
+            "middle": false
+          }
+        }
+      ],
+      "x": 10,
+      "y": 4
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "WEST",
+            "laserStrength": 1,
+            "middle": false
+          }
+        }
+      ],
+      "x": 11,
+      "y": 4
     }
   ]
 }

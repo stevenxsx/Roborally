@@ -144,6 +144,9 @@ public class SpaceView extends StackPane implements ViewObserver {
                 else if(fa instanceof RebootTokens){
                     RebootTokensView.drawRebootTokens(this, fa);
                 }
+                else if(fa instanceof Laser){
+                    LaserView.drawLaser(this, fa);
+                }
             }
 
             updatePlayer();
