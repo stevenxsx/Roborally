@@ -45,6 +45,7 @@ public class Player extends Subject {
 
     private Space space;
     private Heading heading = SOUTH;
+    private int SPAMCards = 0;
 
     private CommandCardField[] program;
     private CommandCardField[] cards;
@@ -52,7 +53,7 @@ public class Player extends Subject {
     private int checkpoints;
     private int energy;
 
-    public Player(@NotNull Board board, String color, @NotNull String name) {
+    public Player(@NotNull Board board, String color, @NotNull String name, int SPAMCards) {
         this.board = board;
         this.name = name;
         this.color = color;
@@ -62,6 +63,7 @@ public class Player extends Subject {
 
         this.NeedReboot = false;
         this.space = null;
+        this.SPAMCards = SPAMCards;
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -193,6 +195,14 @@ public class Player extends Subject {
      */
     public void setNeedReboot(boolean reboot){
         this.NeedReboot = reboot;
+    }
+
+    public int getSPAMCards() {
+        return SPAMCards;
+    }
+
+    public void setSPAMCards(int SPAMCards) {
+        this.SPAMCards = SPAMCards;
     }
 }
 
