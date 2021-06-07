@@ -41,7 +41,7 @@ public class Player extends Subject {
 
     private String name;
     private String color;
-    private int SPAMCards;
+    private int SPAMCards = 0;
 
     private Space space;
     private Heading heading = SOUTH;
@@ -53,7 +53,7 @@ public class Player extends Subject {
         this.board = board;
         this.name = name;
         this.color = color;
-        this.SPAMCards = 0;
+        this.SPAMCards = SPAMCards;
 
         this.space = null;
 
