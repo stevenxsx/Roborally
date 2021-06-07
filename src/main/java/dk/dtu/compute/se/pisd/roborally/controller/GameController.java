@@ -91,7 +91,12 @@ public class GameController {
                 }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
+                    //if statement to ensure that the player that is rebooting cant get any cards
+                    if(player.NeedReboot()!= true)
                     field.setCard(generateRandomCommandCard());
+                    else
+                        //makes sure that the player cant program anything since they are rebooting
+                        field.setCard(null);
                     field.setVisible(true);
                 }
             }
@@ -240,7 +245,10 @@ public class GameController {
                     }
                     executeCommand(currentPlayer, command);
                 }
-                else if (choice != null) {
+                /** @Author Mike
+                 * this else if statement is to makesure that the player only can activate the effect of the reboot once
+                 */
+                else if (choice != null && currentPlayer.NeedReboot()!=false) {
                     RebootTokens.Choose choose = choice.choose;
                     if (choose.Interactive()) {
                         board.setPhase(Phase.PLAYER_INTERACTION);

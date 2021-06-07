@@ -12,18 +12,27 @@ public class RebootTokens extends FieldAction {
 
     @Override
     public boolean doAction(GameController gameController, Space space) {
+        /**@Author Mike
+         * This field action is made so that it can only happen when the player is in need of reboot
+         */
         Player player = space.getPlayer();
-        Board board = gameController.board;
+        Board board = space.board;
 
         if (player.NeedReboot()!= false){
-            clearPlayerRegister(player);
-            CommandCardField field = player.getProgramField(space.getPlayer().board.getStep());
+            //makes sure that there are no cards left in the register for the player.
+            for(int i = 0; i < Player.NO_REGISTERS; i++){
+                CommandCardField field = player.getProgramField(i);
+                if(field.getCard2()==null)
+                    player.clearCards(i);
+            }
+            //clearPlayerRegister(player);
+            CommandCardField field = player.getProgramField(4);
             field.setCard2(new rebootCard(Choose.CHOOSE_HEADING));
+            field.setVisible(true);
             //player.setNeedReboot(false);
-            //board.setPhase(Phase.PLAYER_INTERACTION);
+
         }
-        //gameController.Reboot_choose(Choose.CHOOSE_HEADING);
-       //player.getProgramField(player.NO_REGISTERS).setCard(new CommandCard(Command.CHOOSE_HEADING));
+
 
 
 
@@ -43,8 +52,9 @@ public class RebootTokens extends FieldAction {
     }
 
 
-
-
+    /** @Author Mike
+     * Enum that gives the different headings for a player when they need to reboot
+     */
     public enum Choose{
         NORTH("North"),
         SOUTH("South"),
