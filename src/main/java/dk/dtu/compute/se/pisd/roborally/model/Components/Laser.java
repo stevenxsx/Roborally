@@ -10,14 +10,19 @@ public class Laser extends FieldAction {
 
     private int laserStrength;
     private Heading heading;
+    boolean middle;
 
-    public Heading getHeadin() {
+    public Heading getHeading() {
         return heading;
     }
 
 
     public int getLaserStrength() {
         return laserStrength;
+    }
+
+    public boolean getMiddle(){
+        return middle;
     }
 
 

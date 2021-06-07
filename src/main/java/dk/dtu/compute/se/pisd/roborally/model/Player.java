@@ -50,11 +50,14 @@ public class Player extends Subject {
     private CommandCardField[] cards;
 
     private int checkpoints;
+    private int energy;
 
     public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
         this.name = name;
         this.color = color;
+        this.checkpoints = 0;
+        this.energy = 0;
         this.checkpoints = checkpoints;
 
         this.NeedReboot = false;
@@ -81,6 +84,12 @@ public class Player extends Subject {
 
     public int getCheckpoints(){
         return checkpoints;
+    }
+    public void setEnergy(int energy){
+        this.energy += energy;
+    }
+    public int getEnergy(){
+        return energy;
     }
 
     public void placeOnStartingPoint(Space space) {

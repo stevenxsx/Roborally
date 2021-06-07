@@ -1,60 +1,119 @@
 package dk.dtu.compute.se.pisd.roborally.view.ComponentView;
 
-import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
+import com.sun.scenario.effect.impl.sw.java.JSWBlend_BLUEPeer;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
 import dk.dtu.compute.se.pisd.roborally.view.SpaceView;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.image.Image;
+
+import java.io.FileNotFoundException;
+
+import static dk.dtu.compute.se.pisd.roborally.model.Heading.NORTH;
+import static javafx.scene.paint.Color.RED;
+
+/**
+ * @author s205444 Lucas
+ */
 
 public class LaserView {
-        public  static void drawLaser(SpaceView spaceView, FieldAction fa) {
-        Laser tempSpace = (Laser) fa;
-        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT);
+    /**
+     * Draws a startpoint on a specific space if it has a checkpoint object.
+     * @author s205444, Lucas
+     * @param spaceView SpaceView object used to update the view.
+     */
+    public static void drawLaser(SpaceView spaceView, FieldAction fa){
+        Laser laser = (Laser) fa;
+        try{
+            Image north = new Image("Components/LaserNORTH.png",30,30, true, true);
+            Image south = new Image("Components/LaserSOUTH.png",30,30, true, true);
+            Image west = new Image("Components/LaserWEST.png",30,30, true, true);
+            Image east = new Image("Components/LaserEAST.png",30,30, true, true);
+
+        Canvas canvas = new Canvas(SpaceView.SPACE_WIDTH, SpaceView.SPACE_WIDTH);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.INDIANRED);
-        gc.setLineWidth(5);
-        gc.setLineCap(StrokeLineCap.ROUND);
-        //if(tempSpace.getLaserType() == Laser.whatKindOfLaser.START){
-            switch (tempSpace.getHeadin()) {
-                case SOUTH -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 73, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 73);
-                case NORTH -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
-                case WEST -> gc.strokeLine(73, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 73);
-                case EAST -> gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 73, SpaceView.SPACE_HEIGHT - 73);
+        gc.setStroke(RED);
+        gc.setLineWidth(2);
+
+        switch(laser.getHeading()){
+            case SOUTH -> {
+                    if(laser.getLaserStrength() == 3) {
+                        gc.strokeLine(SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/2, 0);
+                        gc.strokeLine(SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/3, 0);
+                        gc.strokeLine(SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT*0.65, 0);
+                    }
+                    else if(laser.getLaserStrength() == 2){
+                        gc.strokeLine(SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/3, 0);
+                        gc.strokeLine(SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT*0.65, 0);
+                    }
+                    else
+                        gc.strokeLine(SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/2, 0);
+
+                if (!laser.getMiddle()) {
+                    gc.drawImage(south,SpaceView.SPACE_WIDTH/5,0);
+                }
+                break;
             }
-        /*
-        else if(tempSpace.getLaserType() == Laser.whatKindOfLaser.END){
-            switch (tempSpace.getHeadin()) {
-                case SOUTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT - 2, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - 2);
-                    break;
-                case NORTH:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-73, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-73);
-                    break;
-                case WEST:
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-73, SpaceView.SPACE_HEIGHT-73);
-                    break;
-                case EAST:
-                    gc.strokeLine(73, SpaceView.SPACE_HEIGHT-2, SpaceView.SPACE_WIDTH-2, SpaceView.SPACE_HEIGHT-73);
-                    break;
+            case NORTH -> {
+                if(laser.getLaserStrength() == 3) {
+                    gc.strokeLine(SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/2, 0);
+                    gc.strokeLine(SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/3, 0);
+                    gc.strokeLine(SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT*0.65, 0);
+                }
+                else if(laser.getLaserStrength() == 2){
+                    gc.strokeLine(SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/3, 0);
+                    gc.strokeLine(SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT*0.65, 0);
+                }
+                else
+                    gc.strokeLine(SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/2, 0);
+
+                if (!laser.getMiddle()) {
+                    gc.drawImage(north,SpaceView.SPACE_WIDTH/5,SpaceView.SPACE_HEIGHT*0.70);
+                }
+                break;
+            }
+            case WEST -> {
+                if(laser.getLaserStrength() == 3) {
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/2);
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT/3);
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT*0.65);
+                }
+                else if(laser.getLaserStrength() == 2){
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT/3);
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT*0.65);
+                }
+                else
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT/2);
+
+                if (!laser.getMiddle()) {
+                    gc.drawImage(west,SpaceView.SPACE_WIDTH*0.7,SpaceView.SPACE_HEIGHT/5);
+                }
+                break;
+            }
+            case EAST -> {
+                if(laser.getLaserStrength() == 3) {
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_WIDTH, SpaceView.SPACE_HEIGHT/2);
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT/3);
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT*0.65);
+                }
+                else if(laser.getLaserStrength() == 2){
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/3, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT/3);
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH*0.65, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT*0.65);
+                }
+                else
+                    gc.strokeLine(0, SpaceView.SPACE_WIDTH/2, SpaceView.SPACE_HEIGHT, SpaceView.SPACE_HEIGHT/2);
+
+                if (!laser.getMiddle()) {
+                    gc.drawImage(east,0,SpaceView.SPACE_HEIGHT/5);
+                }
+                break;
             }
         }
-        gc.setStroke(Color.RED);
-        switch (tempSpace.getHeadin()){
-            case EAST:
-            case WEST:
-                for(int i = 1;i<tempSpace.getAmountOFLaser()+1;i++) {
-                    gc.strokeLine(2, SpaceView.SPACE_HEIGHT - i * 20, SpaceView.SPACE_WIDTH - 2, SpaceView.SPACE_HEIGHT - i * 20);
-                }
-                break;
-            case NORTH:
-            case SOUTH:
-                for(int i = 1;i<tempSpace.getAmountOFLaser()+1;i++) {
-                    gc.strokeLine(SpaceView.SPACE_WIDTH -i*20, 2, SpaceView.SPACE_WIDTH -i*20, SpaceView.SPACE_HEIGHT - 2);
-                }
-                break;
-        }*/
         spaceView.getChildren().add(canvas);
+        }
+        catch(Exception e){
+            System.out.println("Image file not found");
+        }
     }
 }

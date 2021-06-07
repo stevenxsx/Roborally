@@ -58,6 +58,7 @@ public class PlayerView extends Tab implements ViewObserver {
     private Button finishButton;
     private Button executeButton;
     private Button stepButton;
+    private Button buyButton;
 
     private VBox playerInteractionPanel;
 
@@ -100,7 +101,10 @@ public class PlayerView extends Tab implements ViewObserver {
         stepButton = new Button("Execute Current Register");
         stepButton.setOnAction( e-> gameController.executeStep());
 
-        buttonPanel = new VBox(finishButton, executeButton, stepButton);
+        buyButton = new Button("Buy upgrade");
+        buyButton.setOnAction(e-> gameController.shop());
+        buttonPanel = new VBox(finishButton, executeButton, stepButton, buyButton);
+
         buttonPanel.setAlignment(Pos.CENTER_LEFT);
         buttonPanel.setSpacing(3.0);
         // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now

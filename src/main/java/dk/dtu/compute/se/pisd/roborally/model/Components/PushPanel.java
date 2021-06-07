@@ -6,7 +6,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 /**
- * Class for the push panel board element
+ * @author s205444, Lucas
  */
 public class PushPanel extends FieldAction {
     private Heading heading;
@@ -16,12 +16,20 @@ public class PushPanel extends FieldAction {
         return heading;
     }
 
+    /**
+     * Pushes a robot in the direction of the Push panel.
+     * @param gameController the gameController of the respective game
+     * @param space the space this action should be executed for
+     * @return
+     */
+
     @Override
     public boolean doAction(GameController gameController, Space space) {
         Heading pushHeading = this.heading;
         Space neighourSpace = gameController.board.getNeighbour(space, pushHeading);
         try {
             gameController.moveToSpace(space.getPlayer(), neighourSpace, pushHeading);
+            return true;
         }
         catch(Exception e){}
 
