@@ -301,8 +301,8 @@ public class GameController {
     }
 
     /**
-     * Moves a player to a certain space depending on the parameters's values.
-     *
+     * Recursive method that moves a player to a certain space depending on the parameters's values.
+     * @author s205444 Lucas
      * @param player  the player being moved
      * @param space   the space being moved to.
      * @param heading the heading of the intially moving player.
@@ -320,8 +320,6 @@ public class GameController {
                 }
             }
         }
-
-
         Space target = space;
         boolean targetHasWalls = target.getWalls().isEmpty();
         if (!targetHasWalls) {
