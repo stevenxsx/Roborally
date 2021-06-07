@@ -41,6 +41,7 @@ public class Player extends Subject {
 
     private String name;
     private String color;
+    private int SPAMCards;
 
     private Space space;
     private Heading heading = SOUTH;
@@ -48,10 +49,11 @@ public class Player extends Subject {
     private CommandCardField[] program;
     private CommandCardField[] cards;
 
-    public Player(@NotNull Board board, String color, @NotNull String name) {
+    public Player(@NotNull Board board, String color, @NotNull String name, int SPAMCards) {
         this.board = board;
         this.name = name;
         this.color = color;
+        this.SPAMCards = 0;
 
         this.space = null;
 
@@ -133,4 +135,11 @@ public class Player extends Subject {
         return cards[i];
     }
 
+    public int getSPAMCards() {
+        return SPAMCards;
+    }
+
+    public void setSPAMCards(int SPAMCards) {
+        this.SPAMCards = SPAMCards;
+    }
 }
