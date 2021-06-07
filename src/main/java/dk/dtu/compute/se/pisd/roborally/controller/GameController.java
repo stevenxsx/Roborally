@@ -296,17 +296,27 @@ public class GameController {
     }
 
 
+    /**
+     * Method for adding an upgrade to a player.
+     * @param player the player who will receive the upgrade
+     * @param upgrade the type of upgrade to be added to the player
+     *
+     * Currently using print statements for debugging. This should be changed later
+     */
     private void addUpgrade(@NotNull Player player, Upgrade upgrade) {
         if (player.board == board && upgrade != null) {
             switch (upgrade) {
                 case BRAKES:
-                    //Fill in code to add the upgrade to the player permanently
+                    System.out.println(player.addUpgrade(1));
                     break;
                 case VIRUS_MODULE:
+                    System.out.println(player.addUpgrade(2));
                     break;
                 case TROJAN_NEEDLER:
+                    System.out.println(player.addUpgrade(3));
                     break;
                 case REAR_LASER:
+                    System.out.println(player.addUpgrade(4));
                     break;
             }
         }

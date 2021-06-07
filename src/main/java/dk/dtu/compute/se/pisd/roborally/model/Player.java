@@ -48,6 +48,8 @@ public class Player extends Subject {
     private CommandCardField[] program;
     private CommandCardField[] cards;
 
+    private int[] permanentUpgrades = new int[3];
+
     private int checkpoints;
 
     public Player(@NotNull Board board, String color, @NotNull String name) {
@@ -68,6 +70,35 @@ public class Player extends Subject {
             cards[i] = new CommandCardField(this);
         }
     }
+
+    public String addUpgrade(int upgradeID) {
+        boolean upgradeAdded = false;
+
+        for (int i = 0; i < 3; i++) {
+            if (permanentUpgrades[i] == 0) {
+                permanentUpgrades[i] = upgradeID;
+                upgradeAdded = true;
+                break;
+            }
+        }
+
+        if (upgradeAdded) {
+            return "Upgrade successfully added";
+        }
+        else {
+            return "You're maxed out on upgrades.";
+        }
+    }
+
+    public String removeUpgrade(int slotToRemove) {
+        if (permanentUpgrades[slotToRemove] == 0) {
+            return "There is no upgrade in the selected slot right now.";
+        } else {
+            permanentUpgrades[slotToRemove] = 0;
+            return "Upgrade successfully removed.";
+        }
+    }
+
 
     public String getName() {
         return name;

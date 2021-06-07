@@ -10,8 +10,8 @@ public enum Upgrade {
 
 
 
-    BRAKES("Brakes"),
-    VIRUS_MODULE("Virus Module"),
+    BRAKES("Brakes"), //Upgrade ID 1
+    VIRUS_MODULE("Virus Module"), //ID 2 etc.
     TROJAN_NEEDLER("Trojan Needler"),
     REAR_LASER("Rear Laser");
 
