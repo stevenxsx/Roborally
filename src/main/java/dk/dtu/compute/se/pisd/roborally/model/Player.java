@@ -38,12 +38,14 @@ public class Player extends Subject {
     final public static int NO_CARDS = 8;
 
     final public Board board;
+    public boolean NeedReboot;
 
     private String name;
     private String color;
 
     private Space space;
     private Heading heading = SOUTH;
+    private int SPAMCards = 0;
 
     private CommandCardField[] program;
     private CommandCardField[] cards;
@@ -51,13 +53,17 @@ public class Player extends Subject {
     private int checkpoints;
     private int energy;
 
-    public Player(@NotNull Board board, String color, @NotNull String name) {
+    public Player(@NotNull Board board, String color, @NotNull String name, int SPAMCards) {
         this.board = board;
         this.name = name;
         this.color = color;
         this.checkpoints = 0;
         this.energy = 0;
+        this.checkpoints = checkpoints;
+
+        this.NeedReboot = false;
         this.space = null;
+        this.SPAMCards = SPAMCards;
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -173,6 +179,30 @@ public class Player extends Subject {
         CommandCardField field = this.getCardField(i);
         field.setCard(null);
         field.setVisible(true);
+    }
+
+    /** @Author Mike
+     * To get the status of a robot is needing to reboot or not
+     * @return
+     */
+    public boolean NeedReboot(){
+        return NeedReboot;
+    }
+
+    /** @Author Mike
+     * To make a parameter for methods so that the robots dont reboot all the time but it can be turned off again
+     * @param reboot
+     */
+    public void setNeedReboot(boolean reboot){
+        this.NeedReboot = reboot;
+    }
+
+    public int getSPAMCards() {
+        return SPAMCards;
+    }
+
+    public void setSPAMCards(int SPAMCards) {
+        this.SPAMCards = SPAMCards;
     }
 }
 
