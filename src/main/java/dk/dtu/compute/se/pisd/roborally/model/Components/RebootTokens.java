@@ -2,10 +2,11 @@ package dk.dtu.compute.se.pisd.roborally.model.Components;
 
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.Command;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class RebootTokens extends FieldAction {
 

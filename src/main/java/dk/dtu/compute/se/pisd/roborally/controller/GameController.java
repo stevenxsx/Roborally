@@ -95,7 +95,10 @@ public class GameController {
                     CommandCardField field = player.getProgramField(j);
                     field.setCard(null);
                     field.setVisible(true);
-                }
+                    if(player.NeedReboot()!= true)
+                        field.setCard2(null);
+
+                    }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
                     //if statement to ensure that the player that is rebooting cant get any cards
