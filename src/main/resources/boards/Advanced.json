@@ -346,6 +346,54 @@
       ],
       "x": 11,
       "y": 4
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "EAST",
+            "laserStrength": 2,
+            "middle": false
+          }
+        }
+      ],
+      "x": 8,
+      "y": 1
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "EAST",
+            "laserStrength": 2,
+            "middle": true
+          }
+        }
+      ],
+      "x": 9,
+      "y": 1
+    },
+    {
+      "walls": [
+      ],
+      "actions": [
+        {
+          "CLASSNAME": "dk.dtu.compute.se.pisd.roborally.model.Components.Laser",
+          "INSTANCE": {
+            "heading": "WEST",
+            "laserStrength": 2,
+            "middle": false
+          }
+        }
+      ],
+      "x": 10,
+      "y": 1
     }
   ]
 }
