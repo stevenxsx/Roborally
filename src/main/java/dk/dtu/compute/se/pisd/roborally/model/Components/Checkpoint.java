@@ -5,12 +5,23 @@ import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
+/**
+ * @author s205444, Lucas
+ *
+ */
 public class Checkpoint extends FieldAction {
     private int checkpoints;
 
     public int getCheckpoints() {
         return checkpoints;
     }
+
+    /**
+     * Increases a player's checkpoint counter if they are collected in ascending order.
+     * @param gameController the gameController of the respective game
+     * @param space the space this action should be executed for
+     * @return
+     */
 
     @Override
     public boolean doAction(GameController gameController, Space space) {

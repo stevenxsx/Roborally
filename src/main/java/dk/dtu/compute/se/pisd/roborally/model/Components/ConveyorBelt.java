@@ -7,6 +7,10 @@ import dk.dtu.compute.se.pisd.roborally.controller.*;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
+/**
+ * @author s205444, Lucas
+ */
+
 public class ConveyorBelt extends FieldAction {
 
     private int velocity;
@@ -20,6 +24,14 @@ public class ConveyorBelt extends FieldAction {
     public Heading getHeading() {
         return heading;
     }
+
+    /**
+     * Moves a player in the conveyorbelt heading either one step or twice dependent on the velocity.
+     * @author s205444, Lucas
+     * @param gameController the gameController of the respective game
+     * @param space the space this action should be executed for
+     * @return true or false depending on whether action was performed.
+     */
 
     @Override
     public boolean doAction(GameController gameController, Space space){
