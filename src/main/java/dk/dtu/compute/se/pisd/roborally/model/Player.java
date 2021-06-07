@@ -38,6 +38,7 @@ public class Player extends Subject {
     final public static int NO_CARDS = 8;
 
     final public Board board;
+    public boolean NeedReboot;
 
     private String name;
     private String color;
@@ -56,6 +57,7 @@ public class Player extends Subject {
         this.color = color;
         this.checkpoints = checkpoints;
 
+        this.NeedReboot = false;
         this.space = null;
 
         program = new CommandCardField[NO_REGISTERS];
@@ -166,6 +168,22 @@ public class Player extends Subject {
         CommandCardField field = this.getCardField(i);
         field.setCard(null);
         field.setVisible(true);
+    }
+
+    /** @Author Mike
+     * To get the status of a robot is needing to reboot or not
+     * @return
+     */
+    public boolean NeedReboot(){
+        return NeedReboot;
+    }
+
+    /** @Author Mike
+     * To make a parameter for methods so that the robots dont reboot all the time but it can be turned off again
+     * @param reboot
+     */
+    public void setNeedReboot(boolean reboot){
+        this.NeedReboot = reboot;
     }
 }
 

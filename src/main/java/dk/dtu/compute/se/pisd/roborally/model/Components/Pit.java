@@ -17,7 +17,7 @@ public class Pit extends FieldAction {
 
         //Clears the register for the player landing on the Pit, to ensure that they dont more from it.
         clearRegister(player, space);
-
+        player.setNeedReboot(true);
         //Working on how to move to a specific token/space spot on the board
         // gameController.moveToSpace(space.getPlayer(), space , player.getHeading());
 

@@ -35,11 +35,14 @@ public class CommandCardField extends Subject {
 
     private CommandCard card;
 
+    private rebootCard card2;
+
     private boolean visible;
 
     public CommandCardField(Player player) {
         this.player = player;
-        this. card = null;
+        this.card = null;
+        this.card2  = null;
         this.visible = true;
     }
 
@@ -50,6 +53,25 @@ public class CommandCardField extends Subject {
     public void setCard(CommandCard card) {
         if (card != this.card) {
             this.card = card;
+            notifyChange();
+        }
+    }
+
+    /** @Author Mike
+     * gets the reboot heading card
+     * @return
+     */
+    public rebootCard getCard2() {
+        return card2;
+    }
+
+    /** @Author Mike
+     * to give a player the reboot heading card
+     * @param card2
+     */
+    public void setCard2(rebootCard card2) {
+        if (card2 != this.card2) {
+            this.card2 = card2;
             notifyChange();
         }
     }

@@ -24,6 +24,7 @@ package dk.dtu.compute.se.pisd.roborally.view;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -198,7 +199,7 @@ public class PlayerView extends Tab implements ViewObserver {
                 }
                 playerInteractionPanel.getChildren().clear();
 
-                if (player.board.getCurrentPlayer() == player) {
+                if (player.board.getCurrentPlayer() == player && player.NeedReboot() != true) {
                     // TODO Assignment V3: these buttons should be shown only when there is
                     //      an interactive command card, and the buttons should represent
                     //      the player's choices of the interactive command card. The
@@ -222,6 +223,23 @@ public class PlayerView extends Tab implements ViewObserver {
                             for (Command option: card.command.getOptions()) {
                                 Button optionButton = new Button(option.displayName);
                                 optionButton.setOnAction(e -> gameController.executeCommandOptionAndContinue(option));
+                                optionButton.setDisable(false);
+                                playerInteractionPanel.getChildren().add(optionButton);
+                            }
+                        }
+                    }
+                }
+                /** @Author Mike
+                 * This should be able to make the options for choosing your heading when doing a reboot to an Player interphase
+                 */
+                else if (player.board.getCurrentPlayer() == player && player.NeedReboot() != false){
+                    CommandCardField field = player.getProgramField(player.board.getStep());
+                    if (field != null) {
+                        rebootCard card = field.getCard2();
+                        if (card != null) {
+                            for (RebootTokens.Choose option: card.choose.getOptions()) {
+                                Button optionButton = new Button(option.displayName);
+                                optionButton.setOnAction(e -> gameController.Reboot_choose(option));
                                 optionButton.setDisable(false);
                                 playerInteractionPanel.getChildren().add(optionButton);
                             }

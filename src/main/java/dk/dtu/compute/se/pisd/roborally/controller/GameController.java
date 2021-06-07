@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import javafx.scene.control.Alert;
 import org.jetbrains.annotations.NotNull;
 
@@ -230,6 +231,7 @@ public class GameController {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
+                rebootCard choice = currentPlayer.getProgramField(step).getCard2();
                 if (card != null) {
                     Command command = card.command;
                     if(command.isInteractive()) {
@@ -237,6 +239,14 @@ public class GameController {
                         return;
                     }
                     executeCommand(currentPlayer, command);
+                }
+                else if (choice != null) {
+                    RebootTokens.Choose choose = choice.choose;
+                    if (choose.Interactive()) {
+                        board.setPhase(Phase.PLAYER_INTERACTION);
+                        return;
+                    }
+                    PickReboot_heading(currentPlayer, choose);
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -322,20 +332,6 @@ public class GameController {
                     break;
                 case BACK_UP:
                     this.backUp(player);
-                    break;
-                    /*
-                case EAST:
-                    this.East(player);
-                    break;
-                case WEST:
-                    this.West(player);
-                    break;
-                case SOUTH:
-                    this.South(player);
-                    break;
-                case NORTH:
-                    this.North(player);
-                    */
                 default:
                     // DO NOTHING (for now)
             }
@@ -541,6 +537,67 @@ public class GameController {
             return false;
         }
     }
+
+    /** @Author Mike
+     * Made to use in the player Interaction when choosing the heading for the player on the reboot token
+     * @param option
+     */
+    public void Reboot_choose(@NotNull RebootTokens.Choose option){
+        Player player = board.getCurrentPlayer();
+        if (player != null && board.getPhase() == Phase.PLAYER_INTERACTION && option != null){
+            board.setPhase(Phase.ACTIVATION);
+            PickReboot_heading(player, option);
+
+
+            int nextPlayerNumber = board.getPlayerNumber(player) + 1;
+            if (nextPlayerNumber < board.getPlayersNumber()) {
+                board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+            } else {
+                int step = board.getStep() +1;
+                if (step < Player.NO_REGISTERS) {
+                    makeProgramFieldsVisible(step);
+                    board.setStep(step);
+                    board.setCurrentPlayer(board.getPlayer(0));
+                } else {
+                    startProgrammingPhase();
+                }
+            }
+        }
+
+    }
+
+
+    /** @Author Mike
+     * This method is meant to when the player choose their heading once when they are on the reboot token
+      * @param player
+     * @param option
+     */
+    public void PickReboot_heading(@NotNull Player player, RebootTokens.Choose option) {
+        if (player.NeedReboot != false &&  player != null && player.board == board && option != null) {
+            // XXX This is a very simplistic way of dealing with some basic cards and
+            //     their execution. This should eventually be done in a more elegant way
+            //     (this concerns the way cards are modelled as well as the way they are executed).
+
+            switch (option) {
+                case EAST:
+                    this.East(player);
+                    break;
+                case WEST:
+                    this.West(player);
+                    break;
+                case SOUTH:
+                    this.South(player);
+                    break;
+                case NORTH:
+                    this.North(player);
+                default:
+                    // DO NOTHING (for now)
+            }
+            player.setNeedReboot(false);
+        }
+
+    }
+
     public void North(@NotNull Player player) {
         player.setHeading(Heading.NORTH);
     }
@@ -568,3 +625,4 @@ public class GameController {
     }
 
 }
+
