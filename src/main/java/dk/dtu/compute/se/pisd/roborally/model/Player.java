@@ -24,6 +24,8 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
@@ -45,25 +47,24 @@ public class Player extends Subject {
 
     private Space space;
     private Heading heading = SOUTH;
-    private int SPAMCards = 0;
 
     private CommandCardField[] program;
     private CommandCardField[] cards;
+    private ArrayList<Command> damagecards;
 
     private int checkpoints;
     private int energy;
 
-    public Player(@NotNull Board board, String color, @NotNull String name, int SPAMCards) {
+    public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
         this.name = name;
         this.color = color;
         this.checkpoints = 0;
         this.energy = 0;
         this.checkpoints = checkpoints;
-
+        this.damagecards = new ArrayList<>();
         this.NeedReboot = false;
         this.space = null;
-        this.SPAMCards = SPAMCards;
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -197,12 +198,11 @@ public class Player extends Subject {
         this.NeedReboot = reboot;
     }
 
-    public int getSPAMCards() {
-        return SPAMCards;
+    public void setDamagecards(Command card){
+        this.damagecards.add(card);
     }
-
-    public void setSPAMCards(int SPAMCards) {
-        this.SPAMCards = SPAMCards;
+    public ArrayList<Command> getDamagecards(){
+        return this.damagecards;
     }
 }
 

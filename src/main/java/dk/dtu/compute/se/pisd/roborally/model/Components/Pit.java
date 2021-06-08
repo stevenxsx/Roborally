@@ -2,10 +2,7 @@ package dk.dtu.compute.se.pisd.roborally.model.Components;
 
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 
 public class Pit extends FieldAction {
 
@@ -27,6 +24,8 @@ public class Pit extends FieldAction {
                 for(FieldAction fa: rebootSpace.getActions()){
                     if(fa instanceof RebootTokens){
                         player.setSpace(rebootSpace);
+                        player.getDamagecards().add(Command.SPAM);
+                        player.getDamagecards().add(Command.SPAM);
                         return true;
                     }
                 }

@@ -18,7 +18,7 @@ public class RebootTokens extends FieldAction {
         Player player = space.getPlayer();
         Board board = space.board;
 
-        if (player.NeedReboot()!= false){
+        if (player.NeedReboot()){
             //makes sure that there are no cards left in the register for the player.
             for(int i = 0; i < Player.NO_REGISTERS; i++){
                 CommandCardField field = player.getProgramField(i);
@@ -29,7 +29,6 @@ public class RebootTokens extends FieldAction {
             CommandCardField field = player.getProgramField(4);
             field.setCard2(new rebootCard(Choose.CHOOSE_HEADING));
             field.setVisible(true);
-            DamageCards.WormCard(player);
             //player.setNeedReboot(false);
 
         }

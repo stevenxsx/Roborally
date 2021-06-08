@@ -42,16 +42,12 @@ public enum Command {
     TRIPLE_FORWARD("Triple Fwd"),
     U_TURN("U-turn"),
     BACK_UP("Back up"),
+    OPTION_LEFT_RIGHT("left OR Right", LEFT, RIGHT),
+    SPAM("SPAM"),
+    VIRUS("VIRUS"),
+    WORM("WORM"),
+    TROJAN_HORS("TROJAN HORSE");
 
-/*
-    NORTH("North"),
-    SOUTH("South"),
-    EAST("East"),
-    WEST("West"),
-    CHOOSE_HEADING("North, South, East or West", NORTH, SOUTH, EAST, WEST),*/
-
-    // XXX Assignment V3
-    OPTION_LEFT_RIGHT("left OR Right", LEFT, RIGHT);
 
     final public String displayName;
 

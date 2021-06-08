@@ -5,6 +5,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * @author Mike
  * entire class made for the purpose of letting the player choose their heading when rebooting
  */
 public class rebootCard extends Subject {

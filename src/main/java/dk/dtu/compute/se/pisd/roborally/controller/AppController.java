@@ -82,7 +82,7 @@ public class AppController implements Observer {
                 gameController = new GameController(board); //replace board parameter with loadBoard(DEFAULTBOARD)
                 int no = result.get();
                 for (int i = 0; i < no; i++) {
-                    Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1), 0);
+                    Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
                     board.addPlayer(player);
                     player.setSpace(board.getSpace(i % board.width, i));
                 }
@@ -182,7 +182,7 @@ public class AppController implements Observer {
             }
         }
         catch(Exception e){
-            System.out.println("No saved games");
+            e.printStackTrace();
         }
     }
 

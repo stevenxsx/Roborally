@@ -22,11 +22,13 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Pit;
 import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -94,17 +96,24 @@ public class GameController {
                     CommandCardField field = player.getProgramField(j);
                     field.setCard(null);
                     field.setVisible(true);
-                    if(player.NeedReboot()!= true)
+                    if(!player.NeedReboot())
                         field.setCard2(null);
 
                     }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
                     //if statement to ensure that the player that is rebooting cant get any cards
-                    if(player.NeedReboot()!= true)
-                    field.setCard(generateRandomCommandCard());
+                    if(!player.NeedReboot()) {
+                        if (!player.getDamagecards().isEmpty()) {
+                            if (player.getDamagecards().size() > j)
+                                field.setCard(new CommandCard(player.getDamagecards().get(j)));
+                            else
+                                field.setCard(generateRandomCommandCard());
+                        }
+                        else
+                            field.setCard(generateRandomCommandCard());
+                    }
                     else
-                        //makes sure that the player cant program anything since they are rebooting
                         field.setCard(null);
                     field.setVisible(true);
                 }
@@ -113,16 +122,23 @@ public class GameController {
     }
 
 
-    // XXX: V2
+    /**
+     * @author s205444, Lucas
+     * @return returns a command card
+     */
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
-        int random = (int) (Math.random() * commands.length);
-        return new CommandCard(commands[random]);
+        ArrayList<Command> commandArrayList = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            commandArrayList.add(commands[i]);
+        }
+        int random = (int) (Math.random() * commandArrayList.size());
+        return new CommandCard(commandArrayList.get(random));
     }
 
     /**
+     * @author s205444, Lucas
      * Checks for a winner in the game.
-     *
      * @param player takes the current player
      */
 
@@ -301,6 +317,19 @@ public class GameController {
                     break;
                 case BACK_UP:
                     this.backUp(player);
+                    break;
+                case SPAM:
+                    this.spam(player);
+                    break;
+                case VIRUS:
+                    this.virus(player);
+                    break;
+                case TROJAN_HORS:
+                    this.trojan(player);
+                    break;
+                case WORM:
+                    this.worm(player);
+                    break;
                 default:
                     // DO NOTHING (for now)
             }
@@ -316,6 +345,10 @@ public class GameController {
      * @throws ImpossibleMoveException If a move is not possible, an impossibleMoveException is thrown.
      */
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
+        if(space == null){
+            this.worm(player);
+        }
+
         Player neighbourPlayer = space.getPlayer();
         boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
 
@@ -337,9 +370,16 @@ public class GameController {
                 }
             }
         }
+        for(FieldAction fa: player.getSpace().getActions()){
+            if(fa instanceof Pit){
+                fa.doAction(this, player.getSpace());
+                return;
+            }
+        }
         if (target != null && neighbourPlayer != null) {
             try {
                 Space neighbourSpace = board.getNeighbour(neighbourPlayer.getSpace(), heading);
+
                 moveToSpace(neighbourPlayer, neighbourSpace, heading);
             } catch (Exception e) {
                 throw new ImpossibleMoveException(player, space, heading);
@@ -594,7 +634,44 @@ public class GameController {
      * Used to open a shop for upgrade cards. Can be bought if energy is sufficient.
      * @author s205444, Lucas
      */
+    public void spam(Player player){
+        player.getDamagecards().remove(Command.SPAM);
+        CommandCard card = generateRandomCommandCard();
+        executeCommand(player,card.command);
+    }
+    public void trojan(Player player){
+        player.getDamagecards().remove(Command.TROJAN_HORS);
+        player.getDamagecards().add(Command.SPAM);
+        player.getDamagecards().add(Command.SPAM);
+        CommandCard card = generateRandomCommandCard();
+        executeCommand(player,card.command);
+    }
 
+    public void virus(Player player){
+
+    }
+
+    public void worm(Player player) {
+        Space space = player.getSpace();
+        int step = space.board.getStep();
+        for (int i = step+1; i < Player.NO_REGISTERS; i++)
+            player.clearRegister(i);
+        player.setNeedReboot(true);
+        Space rebootSpace;
+        Board board = this.board;
+        for(int i = 0; i < board.width; i++) {
+            for(int k = 0; k < board.height; k++){
+                rebootSpace = board.getSpace(i,k);
+                for(FieldAction fa: rebootSpace.getActions()){
+                    if(fa instanceof RebootTokens){
+                        player.setSpace(rebootSpace);
+                        player.getDamagecards().add(Command.SPAM);
+                        player.getDamagecards().add(Command.SPAM);
+                    }
+                }
+            }
+        }
+    }
     public void shop(){
         ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);
         dialog.setTitle("Upgrade shop");
