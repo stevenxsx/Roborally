@@ -23,11 +23,10 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
@@ -63,6 +62,8 @@ public class Board extends Subject {
     }
 
     private final List<Player> players = new ArrayList<>();
+
+    private final List<Player> playerOrder = new ArrayList<>();
 
     public int getCheckpointCounter() {
         return checkpointCounter;
@@ -152,12 +153,53 @@ public class Board extends Subject {
         return current;
     }
 
+    private int calculateDistanceToAntenna(Player player) {
+        // FIXME
+        Random rand = new Random();
+        return rand.nextInt(players.size());
+    }
+
+
+    private void reCalculatePlayerOrder(){
+        /*
+        Calculate player distance to Space antenna
+        and populate/re-populate player order
+         */
+        java.util.List<Pair<Player, Integer>> distanceList = new java.util.ArrayList<>();
+        for (Player player : players) {
+            distanceList.add(new Pair(player, calculateDistanceToAntenna(player)));
+        }
+        distanceList.sort(Comparator.comparing(Pair::getValue));
+
+        playerOrder.clear();
+        for (Pair<Player, Integer> playerIntegerPair : distanceList) {
+            playerOrder.add(playerIntegerPair.getKey());
+        }
+    }
+
     public void setCurrentPlayer(Player player) {
+        if (playerOrder.isEmpty()){
+            reCalculatePlayerOrder();
+            current = playerOrder.get(0);
+        }
+        else if (playerOrder.indexOf(current) == playerOrder.size() - 1){
+            // current player was last in player order
+            reCalculatePlayerOrder();
+            current = playerOrder.get(0);
+        }
+        else
+        {
+            current = playerOrder.get(playerOrder.indexOf(current) + 1);
+        }
+        notifyChange();
+    }
+
+    /*public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
             this.current = player;
             notifyChange();
         }
-    }
+    }*/
 
     public Phase getPhase() {
         return phase;

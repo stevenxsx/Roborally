@@ -26,7 +26,10 @@ class GameControllerTest {
             player.setSpace(board.getSpace(i, i));
             player.setHeading(Heading.values()[i % Heading.values().length]);
         }
-        board.setCurrentPlayer(board.getPlayer(0));
+        board.
+
+                setCurrentPlayer(board.getPlayer(0));
+
     }
 
     @AfterEach

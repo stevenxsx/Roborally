@@ -84,7 +84,7 @@ public class GameController {
     // XXX: V2
     public void startProgrammingPhase() {
         board.setPhase(Phase.PROGRAMMING);
-        board.setCurrentPlayer(board.getPlayer(0));
+        //board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
@@ -129,7 +129,7 @@ public class GameController {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
-        board.setCurrentPlayer(board.getPlayer(0));
+        //board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
     }
 
