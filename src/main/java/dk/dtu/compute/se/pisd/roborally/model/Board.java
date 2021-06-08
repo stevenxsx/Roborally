@@ -177,14 +177,12 @@ public class Board extends Subject {
      * @author Oline s201010*/
 
     private double calculateDistanceToAntenna(Player player) {
-        int distance=0;
+        int distance;
         int x = player.getSpace().x; // the players x coordinate
         int y = player.getSpace().y; // the players y coordinate
         Space antenna = getAntenna(); // the space where antenna is located
-        for(int i =0;i<players.size();i++) {
-                distance = Math.abs((antenna.x-x)+Math.abs(antenna.y-y));
-        }
-            return distance;
+        distance = Math.abs(antenna.x-x)+Math.abs(antenna.y-y);
+        return distance;
 
             /* To test if priority method works */
             //Random rand = new Random();
@@ -334,6 +332,10 @@ public class Board extends Subject {
     }*/
 
    return " Current player = " + getCurrentPlayer().getName() + " , Moves: " + getCounter();
+
+
+
+
 };
 
     public void setCounter(int i) {
