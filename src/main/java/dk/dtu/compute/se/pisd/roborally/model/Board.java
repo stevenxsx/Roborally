@@ -153,14 +153,53 @@ public class Board extends Subject {
         return current;
     }
 
-    private int calculateDistanceToAntenna(Player player) {
-        // FIXME
-        Random rand = new Random();
-        return rand.nextInt(players.size());
+    /**
+     * Loops through all spaces to find antenna
+     * @return Space where antenna is located
+     * @author Oline s201010*/
+
+    private Space getAntenna(){
+        for (int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                if(spaces[x][y].getAntenna()){
+                    return spaces[x][y];
+                }
+            }
+        }
+        return null;
     }
 
+    /**
+     * Calculates distance from each player to the antenna, to determine who gets priority to go first
+     * @return distance from player to antenna
+     * @param player
+     * @author Oline s201010*/
 
-    private void reCalculatePlayerOrder(){
+    private int calculateDistanceToAntenna(Player player) {
+        // FIXME
+        int distance;
+        int x = player.getSpace().x; // the players x coordinate
+        int y = player.getSpace().y; // the players y coordinate
+        Space antenna = getAntenna(); // the space where antenna is located
+        for(int i =0;i<players.size();i++){
+
+        }
+        //return distance;
+
+        /* To test if priority method works */
+        Random rand = new Random();
+        return rand.nextInt(players.size());
+
+    }
+
+    /**
+     * Maps players to a value (distance calculated in previous method)
+     * Adds all pairs to a list (distancelist)
+     * Sorts the list according to distance and adds the sorted list to player order
+     *
+     *@author Oline s201010 */
+
+    private void calculatePlayerOrder(){
         /*
         Calculate player distance to Space antenna
         and populate/re-populate player order
@@ -177,14 +216,20 @@ public class Board extends Subject {
         }
     }
 
+    /** Current player is set according to player order
+     * If the current player is the last in the player order the method
+     * recalculates the player order and sets the current player to the first index
+     * in the recalculated list
+     * @author Oline s201010*/
+
     public void setCurrentPlayer(Player player) {
         if (playerOrder.isEmpty()){
-            reCalculatePlayerOrder();
+            calculatePlayerOrder();
             current = playerOrder.get(0);
         }
         else if (playerOrder.indexOf(current) == playerOrder.size() - 1){
             // current player was last in player order
-            reCalculatePlayerOrder();
+            calculatePlayerOrder();
             current = playerOrder.get(0);
         }
         else
@@ -288,8 +333,9 @@ public class Board extends Subject {
                 ", Step: " + getStep();
     }*/
 
-   return "Player = " + getCurrentPlayer().getName() + " moves " + getCounter();
-}
+   return " Current player = " + getCurrentPlayer().getName() + " , Moves: " + getCounter();
+};
+
     public void setCounter(int i) {
         counter = i;
     }
