@@ -452,6 +452,10 @@ class Repository implements IRepository {
             if(cardOrdinal >= 0){
                 game.getPlayer(ID).getProgramField(number).setCard(new CommandCard(cArray[cardOrdinal]));
             }
+            if(cardOrdinal > 7){
+                Player player = game.getPlayer(ID);
+                player.getDamagecards().add(cArray[cardOrdinal]);
+            }
         }
         rs.close();
         PreparedStatement ps2 = getSelectPlayerHandStatement();
