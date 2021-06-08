@@ -43,7 +43,7 @@ public class Pit extends FieldAction {
      */
     public void clearRegister(Player player, Space space){
         int step = space.board.getStep();
-        for (int i = step+1; i < Player.NO_REGISTERS; i++)
+        for (int i = step + 1; i < Player.NO_REGISTERS; i++)
             player.clearRegister(i);
     }
 

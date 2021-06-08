@@ -32,11 +32,6 @@ public class RebootTokens extends FieldAction {
             //player.setNeedReboot(false);
 
         }
-
-
-
-
-
         return false;
     }
 

@@ -140,6 +140,7 @@ public class GameController {
      * @author s205444, Lucas
      * Checks for a winner in the game.
      * @param player takes the current player
+     *
      */
 
     public void chooseWinner(Player player) {
@@ -203,6 +204,14 @@ public class GameController {
      * Executes the next steps in the game.
      */
     private void executeNextStep() {
+        /*
+        try {
+            endOfTurn(board.getCurrentPlayer());
+        }
+        catch(ImpossibleMoveException m){
+            System.out.println("Move exception");
+        }
+         */
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -289,12 +298,36 @@ public class GameController {
 
     }
 
-    // XXX: V2
+
+    /**
+     * Method for adding an upgrade to a player.
+     * @param player the player who will receive the upgrade
+     * @param upgrade the type of upgrade to be added to the player
+     *
+     * Currently using print statements for debugging. This should be changed later
+     */
+    /*
+    private void addUpgrade(@NotNull Player player, Upgrade upgrade) {
+        if (player.board == board && upgrade != null) {
+            switch (upgrade) {
+                case BRAKES:
+                    System.out.println(player.addUpgrade(1));
+                    break;
+                case VIRUS_MODULE:
+                    System.out.println(player.addUpgrade(2));
+                    break;
+                case TROJAN_NEEDLER:
+                    System.out.println(player.addUpgrade(3));
+                    break;
+                case REAR_LASER:
+                    System.out.println(player.addUpgrade(4));
+                    break;
+            }
+        }
+    }
+*/
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
-            // XXX This is a very simplistic way of dealing with some basic cards and
-            //     their execution. This should eventually be done in a more elegant way
-            //     (this concerns the way cards are modelled as well as the way they are executed).
 
             switch (command) {
                 case FORWARD:
@@ -346,7 +379,12 @@ public class GameController {
      */
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
         if(space == null){
-            this.worm(player);
+            Pit tempPit = new Pit();
+            tempPit.doAction(this, player.getSpace());
+            return;
+        }
+        if(player.NeedReboot()){
+            return;
         }
 
         Player neighbourPlayer = space.getPlayer();
@@ -396,10 +434,8 @@ public class GameController {
     /** Moves robot one space forward in the heading it is facing*/
 
     public void moveForward(@NotNull Player player) {
-        Space current = player.getSpace();
         Space neighbourSpace = board.getNeighbour(player.getSpace(), player.getHeading());
-        if(neighbourSpace != null)
-        {
+
             try
             {
                 moveToSpace(player, neighbourSpace, player.getHeading());
@@ -407,7 +443,7 @@ public class GameController {
                 System.out.println("Move impossible");
             }
 
-        }
+
     }
 
     public void push(@NotNull Player player, Heading direction) {
@@ -629,6 +665,7 @@ public class GameController {
     public void West(@NotNull Player player) {
         player.setHeading(Heading.WEST);
     }
+
 
     /**
      * Used to open a shop for upgrade cards. Can be bought if energy is sufficient.
