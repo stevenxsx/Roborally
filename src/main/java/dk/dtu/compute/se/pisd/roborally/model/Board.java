@@ -27,6 +27,7 @@ import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.lang.Math.*;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
@@ -175,22 +176,21 @@ public class Board extends Subject {
      * @param player
      * @author Oline s201010*/
 
-    private int calculateDistanceToAntenna(Player player) {
-        // FIXME
-        int distance;
+    private double calculateDistanceToAntenna(Player player) {
+        int distance=0;
         int x = player.getSpace().x; // the players x coordinate
         int y = player.getSpace().y; // the players y coordinate
         Space antenna = getAntenna(); // the space where antenna is located
-        for(int i =0;i<players.size();i++){
-
+        for(int i =0;i<players.size();i++) {
+                distance = Math.abs((antenna.x-x)+Math.abs(antenna.y-y));
         }
-        //return distance;
+            return distance;
 
-        /* To test if priority method works */
-        Random rand = new Random();
-        return rand.nextInt(players.size());
+            /* To test if priority method works */
+            //Random rand = new Random();
+            //return rand.nextInt(players.size());
+        }
 
-    }
 
     /**
      * Maps players to a value (distance calculated in previous method)
