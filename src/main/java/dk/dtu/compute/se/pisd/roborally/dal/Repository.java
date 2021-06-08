@@ -219,7 +219,8 @@ class Repository implements IRepository {
             ResultSet rs = ps.executeQuery();
             int playerNo = -1;
             if (rs.next()) {
-                game = LoadBoard.loadBoard(null);
+                String boardName = rs.getString("board");
+                game = LoadBoard.loadBoard(boardName);
                 if (game == null) {
                     return null;
                 }
