@@ -1,11 +1,5 @@
 package dk.dtu.compute.se.pisd.roborally.model.Components;
 
-import dk.dtu.compute.se.pisd.roborally.model.Command;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public enum Upgrade {
 
     BRAKES("Brakes",3),

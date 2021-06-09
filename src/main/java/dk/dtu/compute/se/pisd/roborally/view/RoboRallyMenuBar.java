@@ -79,6 +79,9 @@ public class RoboRallyMenuBar extends MenuBar {
         update();
     }
 
+    /**
+     * updates the visibility of menu bar items dependent on whether app is running or not.
+     */
     public void update() {
         if (appController.isGameRunning()) {
             newGame.setVisible(false);

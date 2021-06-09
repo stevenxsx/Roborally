@@ -138,15 +138,14 @@ class Repository implements IRepository {
                 connection.setAutoCommit(true);
                 return true;
             } catch (SQLException e) {
-                // TODO error handling
                 e.printStackTrace();
-                System.err.println("Some DB error");
+                System.err.println("Could not create game in database");
 
                 try {
                     connection.rollback();
                     connection.setAutoCommit(true);
                 } catch (SQLException e1) {
-                    // TODO error handling
+                    System.err.println("Failed to rollback after failing to create game in database.");
                     e1.printStackTrace();
                 }
             }

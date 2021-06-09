@@ -47,6 +47,9 @@ class Connector {
 
     private Connection connection;
 
+    /**
+     * Used to establish a connection to a database.
+     */
     Connector() {
         try {
             // String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE;
@@ -55,8 +58,7 @@ class Connector {
 
             createDatabaseSchema();
         } catch (SQLException e) {
-            // TODO we should try to diagnose and fix some problems here and
-            //      exit in a more graceful way
+            System.out.print("Could not establish connection to the database");
             e.printStackTrace();
             // Platform.exit();
         }
@@ -79,15 +81,19 @@ class Connector {
             statement.close();
             connection.commit();
         } catch (SQLException e) {
+            System.out.println("Could not create schemas in database");
             e.printStackTrace();
-            // TODO error handling
             try {
                 connection.rollback();
-            } catch (SQLException e1) {}
+            } catch (SQLException e1) {
+                System.out.println("Failed to rollback after failing to create schemas in database.");
+            }
         } finally {
             try {
                 connection.setAutoCommit(true);
-            } catch (SQLException e) {}
+            } catch (SQLException e) {
+                System.out.print("Could not set auto commit to true - possible connection error.");
+            }
         }
     }
 

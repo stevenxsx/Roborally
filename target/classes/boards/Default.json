@@ -183,6 +183,13 @@
       "x": 7,
       "y": 0,
       "startPoint": true
+    },
+    {
+      "walls": [
+      ],
+      "antenna": true,
+      "x": 6,
+      "y": 7
     }
   ]
 }

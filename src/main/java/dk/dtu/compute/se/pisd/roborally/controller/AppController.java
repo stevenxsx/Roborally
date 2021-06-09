@@ -208,6 +208,10 @@ public class AppController implements Observer {
         return false;
     }
 
+    /**
+     * Exits the Roborally app after being prompted with yes/no answer to exit the app.
+     */
+
     public void exit() {
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);

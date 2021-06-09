@@ -24,10 +24,12 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
@@ -51,7 +53,7 @@ public class Board extends Subject {
     private final Space[][] spaces;
 
     private final Space[] startingPoints = new Space[6];
-    public int startingPointsIncrementer = 0;
+    private final List<Player> playerOrder = new ArrayList<>();
 
     public String name;
 
@@ -152,13 +154,88 @@ public class Board extends Subject {
     public Player getCurrentPlayer() {
         return current;
     }
+    /**
+     * Loops through all spaces to find antenna
+     * @return Space where antenna is located
+     * @author Oline s201010*/
 
-    public void setCurrentPlayer(Player player) {
-        if (player != this.current && players.contains(player)) {
-            this.current = player;
-            notifyChange();
+    private Space getAntenna(){
+        for (int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                if(spaces[x][y].getAntenna()){
+                    return spaces[x][y];
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Calculates distance from each player to the antenna, to determine who gets priority to go first
+     * @return distance from player to antenna
+     * @param player
+     * @author Oline s201010*/
+
+    private double calculateDistanceToAntenna(Player player) {
+        int distance;
+        int x = player.getSpace().x; // the players x coordinate
+        int y = player.getSpace().y; // the players y coordinate
+        Space antenna = getAntenna(); // the space where antenna is located
+        distance = Math.abs(antenna.x-x)+Math.abs(antenna.y-y);
+        return distance;
+
+        /* To test if priority method works */
+        //Random rand = new Random();
+        //return rand.nextInt(players.size());
+    }
+
+    /**
+     * Maps players to a value (distance calculated in previous method)
+     * Adds all pairs to a list (distancelist)
+     * Sorts the list according to distance and adds the sorted list to player order
+     *
+     *@author Oline s201010 */
+
+    private void calculatePlayerOrder(){
+        /*
+        Calculate player distance to Space antenna
+        and populate/re-populate player order
+         */
+        java.util.List<Pair<Player, Integer>> distanceList = new java.util.ArrayList<>();
+        for (Player player : players) {
+            distanceList.add(new Pair(player, calculateDistanceToAntenna(player)));
+        }
+        distanceList.sort(Comparator.comparing(Pair::getValue));
+
+        playerOrder.clear();
+        for (Pair<Player, Integer> playerIntegerPair : distanceList) {
+            playerOrder.add(playerIntegerPair.getKey());
         }
     }
+
+    /** Current player is set according to player order
+     * If the current player is the last in the player order the method
+     * recalculates the player order and sets the current player to the first index
+     * in the recalculated list
+     * @author Oline s201010*/
+
+    public void setCurrentPlayer(Player player) {
+        if (playerOrder.isEmpty()){
+            calculatePlayerOrder();
+            current = playerOrder.get(0);
+        }
+        else if (playerOrder.indexOf(current) == playerOrder.size() - 1){
+            // current player was last in player order
+            calculatePlayerOrder();
+            current = playerOrder.get(0);
+        }
+        else
+        {
+            current = playerOrder.get(playerOrder.indexOf(current) + 1);
+        }
+            notifyChange();
+        }
+
 
     public Phase getPhase() {
         return phase;

@@ -87,7 +87,9 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Sets the current phase to programming phase. Sets the registers and playerhand ready to start programming.
+     */
     public void startProgrammingPhase() {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
@@ -128,7 +130,7 @@ public class GameController {
 
     /**
      * @author s205444, Lucas
-     * @return returns a command card
+     * @return returns a random command card
      */
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
@@ -153,7 +155,9 @@ public class GameController {
         winMsg.showAndWait();
     }
 
-    // XXX: V2
+    /**
+     * Ends the programming phase and sets phase to ACTIVATION:
+     */
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
@@ -162,7 +166,10 @@ public class GameController {
         board.setStep(0);
     }
 
-    // XXX: V2
+    /**
+     * Makes programming fields visible.
+     * @param register used to check that register number is less than a player's actual registers.
+     */
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {
             for (int i = 0; i < board.getPlayersNumber(); i++) {
@@ -173,7 +180,9 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * makes programming fields invisible
+     */
     private void makeProgramFieldsInvisible() {
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
@@ -184,19 +193,25 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Executes robots programs.
+     */
     public void executePrograms() {
         board.setStepMode(false);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Executes programs beyond the first step and enables step counting.
+     */
     public void executeStep() {
         board.setStepMode(true);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Continutes execution of programming until phase is over.
+     */
     private void continuePrograms() {
         do {
             executeNextStep();
@@ -208,14 +223,6 @@ public class GameController {
      * Executes the next steps in the game.
      */
     private void executeNextStep() {
-        /*
-        try {
-            endOfTurn(board.getCurrentPlayer());
-        }
-        catch(ImpossibleMoveException m){
-            System.out.println("Move exception");
-        }
-         */
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -233,7 +240,7 @@ public class GameController {
                 /** @Author Mike
                  * this else if statement is to makesure that the player only can activate the effect of the reboot once
                  */
-                else if (choice != null && currentPlayer.NeedReboot()!=false) {
+                else if (choice != null && currentPlayer.NeedReboot()) {
                     RebootTokens.Choose choose = choice.choose;
                     if (choose.Interactive()) {
                         board.setPhase(Phase.PLAYER_INTERACTION);
@@ -302,8 +309,11 @@ public class GameController {
 
     }
 
-
-
+    /**
+     * Executes a command for the player dependent on the type of command.
+     * @param player the current player
+     * @param command the command that player is trying to execute.
+     */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
 
@@ -413,7 +423,10 @@ public class GameController {
         }
     }
 
-    /** Moves robot one space forward in the heading it is facing*/
+    /**
+     * Moves a player one step forward, except if the player has a BRAKE upgrade.
+     * @param player the currentplayer trying to move forward.
+     */
 
     public void moveForward(@NotNull Player player) {
 
@@ -570,7 +583,12 @@ public class GameController {
     }
 
 
-
+    /**
+     * Moves a card from view in the controller.
+     * @param source cardfield source to move from
+     * @param target cardfield target to move to
+     * @return true if moved, otherwise false
+     */
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
         CommandCard targetCard = target.getCard();
@@ -669,6 +687,7 @@ public class GameController {
         CommandCard card = generateRandomCommandCard();
         executeCommand(player,card.command);
     }
+
     public void trojan(Player player){
         player.getDamagecards().remove(Command.TROJAN_HORS);
         player.getDamagecards().add(Command.SPAM);
@@ -702,6 +721,11 @@ public class GameController {
             }
         }
     }
+
+    /**
+     * @author s205444, Lucas
+     * Allows a player to buy upgrades in the shop during programming phase.
+     */
     public void shop(){
         if(!board.getPhase().equals(Phase.PROGRAMMING)){
             Frame frame = new JFrame();

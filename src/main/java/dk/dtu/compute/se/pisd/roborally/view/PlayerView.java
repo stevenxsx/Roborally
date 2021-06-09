@@ -137,6 +137,11 @@ public class PlayerView extends Tab implements ViewObserver {
         }
     }
 
+    /**
+     * updates the current view from player's perspective every time it is called.
+     * @param subject Subject of the observer design pattern.
+     */
+
     @Override
     public void updateView(Subject subject) {
         if (subject == player.board) {
@@ -175,24 +180,28 @@ public class PlayerView extends Tab implements ViewObserver {
                         //     from the initialization phase to the programming phase somehow!
                         executeButton.setDisable(false);
                         stepButton.setDisable(true);
+                        buyButton.setDisable(true);
                         break;
 
                     case PROGRAMMING:
                         finishButton.setDisable(false);
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
+                        buyButton.setDisable(false);
                         break;
 
                     case ACTIVATION:
                         finishButton.setDisable(true);
                         executeButton.setDisable(false);
                         stepButton.setDisable(false);
+                        buyButton.setDisable(true);
                         break;
 
                     default:
                         finishButton.setDisable(true);
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
+                        buyButton.setDisable(true);
                 }
 
 
@@ -237,14 +246,4 @@ public class PlayerView extends Tab implements ViewObserver {
             }
         }
     }
-    public void choose(){
-        rebootCard card = new rebootCard(RebootTokens.Choose.CHOOSE_HEADING);
-        for (RebootTokens.Choose option: card.choose.getOptions()) {
-            Button optionButton = new Button(option.displayName);
-            optionButton.setOnAction(e -> gameController.Reboot_choose(option));
-            optionButton.setDisable(false);
-            playerInteractionPanel.getChildren().add(optionButton);
-        }
-    }
-
 }

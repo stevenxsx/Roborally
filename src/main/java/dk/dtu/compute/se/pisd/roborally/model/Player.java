@@ -58,6 +58,8 @@ public class Player extends Subject {
     private int checkpoints;
     private int energy;
 
+
+
     public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
         this.name = name;
@@ -128,6 +130,10 @@ public class Player extends Subject {
         return space;
     }
 
+    /**
+     * sets a player to a specific space
+     * @param space the space the player will be set to.
+     */
     public void setSpace(Space space) {
         Space oldSpace = this.space;
         if (space != oldSpace &&
@@ -208,6 +214,12 @@ public class Player extends Subject {
         return this.damagecards;
     }
 
+    /**
+     * adds an upgrade to a player's upgradelist
+     * @author s205444, Lucas
+     * @param upgrade One of the ENUM Upgrades
+     * @return string dependent on whether sucessfully upgraded or not.
+     */
     public String addUpgrade(Upgrade upgrade) {
         if(this.upgradeList.isEmpty()){
             upgradeList.add(upgrade);
@@ -221,7 +233,12 @@ public class Player extends Subject {
             return "You cannot have more than three upgrades.";
     }
 
-
+    /**
+     * returns true if a robot has the current upgrade, otherwise false.
+     * @author s205444, Lucas
+     * @param upgrade checks for one of the ENUM Upgrades
+     * @return true or false
+     */
 
     public boolean hasUpgrade(Upgrade upgrade){
         if(!upgradeList.isEmpty()) {

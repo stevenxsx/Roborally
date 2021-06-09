@@ -42,6 +42,7 @@ public class    Space extends Subject {
 
     private Player player;
     public boolean startPoint = false;
+    public boolean antenna = false;
 
     private List<Heading> walls = new ArrayList<>();
     private List<FieldAction> actions = new ArrayList<>();
@@ -80,6 +81,14 @@ public class    Space extends Subject {
 
     public boolean getStartPoint() {
         return startPoint;
+    }
+
+    public void setAntenna(boolean bool){
+        this.antenna = bool;
+    }
+
+    public boolean getAntenna(){
+        return antenna;
     }
 
     void playerChanged() {
