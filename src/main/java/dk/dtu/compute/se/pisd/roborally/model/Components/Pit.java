@@ -24,8 +24,10 @@ public class Pit extends FieldAction {
                 for(FieldAction fa: rebootSpace.getActions()){
                     if(fa instanceof RebootTokens){
                         player.setSpace(rebootSpace);
-                        player.getDamagecards().add(Command.SPAM);
-                        player.getDamagecards().add(Command.SPAM);
+                        if(!player.hasUpgrade(Upgrade.FIREWALL)) {
+                            player.getDamagecards().add(Command.SPAM);
+                            player.getDamagecards().add(Command.SPAM);
+                        }
                         return true;
                     }
                 }

@@ -22,8 +22,10 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
@@ -51,6 +53,7 @@ public class Player extends Subject {
     private CommandCardField[] program;
     private CommandCardField[] cards;
     private ArrayList<Command> damagecards;
+    private ArrayList<Upgrade> upgradeList;
 
     private int checkpoints;
     private int energy;
@@ -61,8 +64,8 @@ public class Player extends Subject {
         this.color = color;
         this.checkpoints = 0;
         this.energy = 0;
-        this.checkpoints = checkpoints;
         this.damagecards = new ArrayList<>();
+        this.upgradeList = new ArrayList<>();
         this.NeedReboot = false;
         this.space = null;
 
@@ -203,6 +206,35 @@ public class Player extends Subject {
     }
     public ArrayList<Command> getDamagecards(){
         return this.damagecards;
+    }
+
+    public String addUpgrade(Upgrade upgrade) {
+        if(this.upgradeList.isEmpty()){
+            if(upgradeList.size() < 4) {
+                upgradeList.add(upgrade);
+                return "Upgrade succesfully added.";
+            }
+            else{
+                return "You cannot have more than three upgrades.";
+            }
+        }
+        else
+            return "Something went wrong with upgrading";
+    }
+
+    public String removeUpgrade(int slotToRemove) {
+     return null;
+    }
+
+    public boolean hasUpgrade(Upgrade upgrade){
+        if(!upgradeList.isEmpty()) {
+            for (Upgrade listUpgrade : this.upgradeList) {
+                if (upgrade.equals(listUpgrade)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 

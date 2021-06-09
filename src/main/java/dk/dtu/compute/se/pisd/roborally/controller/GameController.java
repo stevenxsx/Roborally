@@ -24,10 +24,16 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Pit;
 import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
+import dk.dtu.compute.se.pisd.roborally.view.PlayerView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.DialogEvent;
+import javafx.scene.control.DialogPane;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +50,6 @@ public class GameController {
     final public Board board;
 
     public boolean winnerFound = false;
-
-    final private List<String> UPGRADE_CARDS = Arrays.asList("Brakes", "Virus_Module", "Trojan Needler", "Rear Laser");
 
     public GameController(@NotNull Board board) {
         this.board = board;
@@ -299,33 +303,7 @@ public class GameController {
     }
 
 
-    /**
-     * Method for adding an upgrade to a player.
-     * @param player the player who will receive the upgrade
-     * @param upgrade the type of upgrade to be added to the player
-     *
-     * Currently using print statements for debugging. This should be changed later
-     */
-    /*
-    private void addUpgrade(@NotNull Player player, Upgrade upgrade) {
-        if (player.board == board && upgrade != null) {
-            switch (upgrade) {
-                case BRAKES:
-                    System.out.println(player.addUpgrade(1));
-                    break;
-                case VIRUS_MODULE:
-                    System.out.println(player.addUpgrade(2));
-                    break;
-                case TROJAN_NEEDLER:
-                    System.out.println(player.addUpgrade(3));
-                    break;
-                case REAR_LASER:
-                    System.out.println(player.addUpgrade(4));
-                    break;
-            }
-        }
-    }
-*/
+
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
 
@@ -408,12 +386,16 @@ public class GameController {
                 }
             }
         }
-        for(FieldAction fa: player.getSpace().getActions()){
-            if(fa instanceof Pit){
-                fa.doAction(this, player.getSpace());
-                return;
+
+        if(!player.hasUpgrade(Upgrade.HOVER_UNIT)) {
+            for (FieldAction fa : player.getSpace().getActions()) {
+                if (fa instanceof Pit) {
+                    fa.doAction(this, player.getSpace());
+                    return;
+                }
             }
         }
+
         if (target != null && neighbourPlayer != null) {
             try {
                 Space neighbourSpace = board.getNeighbour(neighbourPlayer.getSpace(), heading);
@@ -434,16 +416,27 @@ public class GameController {
     /** Moves robot one space forward in the heading it is facing*/
 
     public void moveForward(@NotNull Player player) {
-        Space neighbourSpace = board.getNeighbour(player.getSpace(), player.getHeading());
 
+        if(player.hasUpgrade(Upgrade.BRAKES)){
+            ArrayList<String> choices = new ArrayList<>();
+            choices.add("Yes");
+            choices.add("No");
+            ChoiceDialog<String> dialog = new ChoiceDialog<String>(choices.get(0), choices);
+            dialog.setHeaderText("Move only 0 forward?");
+
+            Optional<String> result = dialog.showAndWait();
+            if(result.isPresent()){
+                if(result.get().equals("Yes"))
+                    return;
+            }
+        }
+        Space neighbourSpace = board.getNeighbour(player.getSpace(), player.getHeading());
             try
             {
                 moveToSpace(player, neighbourSpace, player.getHeading());
             } catch (ImpossibleMoveException e){
                 System.out.println("Move impossible");
             }
-
-
     }
 
     public void push(@NotNull Player player, Heading direction) {
@@ -710,13 +703,59 @@ public class GameController {
         }
     }
     public void shop(){
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);
+        if(!board.getPhase().equals(Phase.PROGRAMMING)){
+            Frame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame, "You can only buy during Programming phase!");
+            return;
+        }
+        ArrayList<String> upgradeList = new ArrayList<>();
+        for(Upgrade upgrade : Upgrade.values()){
+            upgradeList.add(upgrade.displayName);
+        }
+
+        ArrayList<String> playerNumber = new ArrayList<String>();
+        for(Player pl : board.getPlayers()){
+            playerNumber.add(pl.getName());
+        }
+
+        ChoiceDialog<String> playerDialog = new ChoiceDialog<>(playerNumber.get(0),playerNumber);
+        playerDialog.setTitle("Player selection");
+        playerDialog.setHeaderText("Select player who is buying upgrade");
+        Optional<String> playerResult = playerDialog.showAndWait();
+        Player player = null;
+        if(playerResult.isPresent()){
+            for(Player players: board.getPlayers()) {
+                if(players.getName().equals(playerResult.get())) {
+                    player = players;
+                }
+            }
+        }
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(upgradeList.get(0), upgradeList);
+
         dialog.setTitle("Upgrade shop");
         dialog.setHeaderText("Select a card to buy:");
         Optional<String> result = dialog.showAndWait();
 
         if(result.isPresent()){
+            Upgrade upgradeCard = null;
             String upgradeChosen = result.get();
+            for(Upgrade upgrade : Upgrade.values()){
+                if(upgrade.displayName.equals(upgradeChosen)){
+                    upgradeCard = upgrade;
+                    break;
+                }
+            }
+            if(upgradeCard != null && player != null) {
+                Frame frame = new JFrame();
+                int cost = upgradeCard.cost;
+                if(player.getEnergy() > cost) {
+                    JOptionPane.showMessageDialog(frame, "Not enough energy");
+                }
+                else {
+                    String msg = player.addUpgrade(upgradeCard);
+                    JOptionPane.showMessageDialog(frame, msg);
+                }
+            }
         }
     }
 

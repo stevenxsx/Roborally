@@ -49,14 +49,8 @@ public enum Command {
     TROJAN_HORS("TROJAN HORSE");
 
 
-    final public String displayName;
 
-    // XXX Assignment V3
-    // Command(String displayName) {
-    //     this.displayName = displayName;
-    // }
-    //
-    // replaced by the code below:
+    final public String displayName;
 
     final private List<Command> options;
 

@@ -4,20 +4,20 @@ import dk.dtu.compute.se.pisd.roborally.model.Command;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public enum Upgrade {
 
-
-
-
-    BRAKES("Brakes"), //Upgrade ID 1
-    VIRUS_MODULE("Virus Module"), //ID 2 etc.
-    TROJAN_NEEDLER("Trojan Needler"),
-    REAR_LASER("Rear Laser");
+    BRAKES("Brakes",3),
+    FIREWALL("Firewall", 3),
+    HOVER_UNIT("Hover Unit", 1);
 
     final public String displayName;
+    final public int cost;
 
-    Upgrade(String displayName, Command... options) {
+
+    Upgrade(String displayName, int cost, Upgrade... upgradeOpts) {
         this.displayName = displayName;
+        this.cost = cost;
     }
 }
