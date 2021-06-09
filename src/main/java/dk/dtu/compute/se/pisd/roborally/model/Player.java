@@ -22,7 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
@@ -38,6 +42,7 @@ public class Player extends Subject {
     final public static int NO_CARDS = 8;
 
     final public Board board;
+    public boolean NeedReboot;
 
     private String name;
     private String color;
@@ -47,9 +52,13 @@ public class Player extends Subject {
 
     private CommandCardField[] program;
     private CommandCardField[] cards;
+    private ArrayList<Command> damagecards;
+    private ArrayList<Upgrade> upgradeList;
 
     private int checkpoints;
     private int energy;
+
+
 
     public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
@@ -57,6 +66,9 @@ public class Player extends Subject {
         this.color = color;
         this.checkpoints = 0;
         this.energy = 0;
+        this.damagecards = new ArrayList<>();
+        this.upgradeList = new ArrayList<>();
+        this.NeedReboot = false;
         this.space = null;
 
         program = new CommandCardField[NO_REGISTERS];
@@ -118,6 +130,10 @@ public class Player extends Subject {
         return space;
     }
 
+    /**
+     * sets a player to a specific space
+     * @param space the space the player will be set to.
+     */
     public void setSpace(Space space) {
         Space oldSpace = this.space;
         if (space != oldSpace &&
@@ -173,6 +189,70 @@ public class Player extends Subject {
         CommandCardField field = this.getCardField(i);
         field.setCard(null);
         field.setVisible(true);
+    }
+
+    /** @Author Mike
+     * To get the status of a robot is needing to reboot or not
+     * @return
+     */
+    public boolean NeedReboot(){
+        return NeedReboot;
+    }
+
+    /** @Author Mike
+     * To make a parameter for methods so that the robots dont reboot all the time but it can be turned off again
+     * @param reboot
+     */
+    public void setNeedReboot(boolean reboot){
+        this.NeedReboot = reboot;
+    }
+
+    public void setDamagecards(Command card){
+        this.damagecards.add(card);
+    }
+    public ArrayList<Command> getDamagecards(){
+        return this.damagecards;
+    }
+
+    /**
+     * adds an upgrade to a player's upgradelist
+     * @author s205444, Lucas
+     * @param upgrade One of the ENUM Upgrades
+     * @return string dependent on whether sucessfully upgraded or not.
+     */
+    public String addUpgrade(Upgrade upgrade) {
+        if(this.upgradeList.isEmpty()){
+            upgradeList.add(upgrade);
+            return "Upgrade succesfully added.";
+        }
+        else if (upgradeList.size() < 4){
+            upgradeList.add(upgrade);
+            return "Upgrade succesfully added.";
+        }
+        else
+            return "You cannot have more than three upgrades.";
+    }
+
+    /**
+     * returns true if a robot has the current upgrade, otherwise false.
+     * @author s205444, Lucas
+     * @param upgrade checks for one of the ENUM Upgrades
+     * @return true or false
+     */
+
+    public boolean hasUpgrade(Upgrade upgrade){
+        if(!upgradeList.isEmpty()) {
+            for (Upgrade listUpgrade : this.upgradeList) {
+                if (upgrade.equals(listUpgrade)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<Upgrade> getUpgradeList() {
+        return upgradeList;
     }
 }
 

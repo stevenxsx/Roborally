@@ -25,6 +25,7 @@ import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.model.Components.EnergyCube;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -137,15 +138,14 @@ class Repository implements IRepository {
                 connection.setAutoCommit(true);
                 return true;
             } catch (SQLException e) {
-                // TODO error handling
                 e.printStackTrace();
-                System.err.println("Some DB error");
+                System.err.println("Could not create game in database");
 
                 try {
                     connection.rollback();
                     connection.setAutoCommit(true);
                 } catch (SQLException e1) {
-                    // TODO error handling
+                    System.err.println("Failed to rollback after failing to create game in database.");
                     e1.printStackTrace();
                 }
             }
@@ -219,7 +219,8 @@ class Repository implements IRepository {
             ResultSet rs = ps.executeQuery();
             int playerNo = -1;
             if (rs.next()) {
-                game = LoadBoard.loadBoard(null);
+                String boardName = rs.getString("board");
+                game = LoadBoard.loadBoard(boardName);
                 if (game == null) {
                     return null;
                 }
@@ -290,6 +291,13 @@ class Repository implements IRepository {
                 rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
                 rs.updateInt(CHECKPOINT, player.getCheckpoints());
                 rs.updateInt(ENERGY, player.getEnergy());
+                int k = 10;
+                if(!player.getUpgradeList().isEmpty()){
+                    for(Upgrade upgrade : player.getUpgradeList()){
+                        rs.updateString(k,upgrade.toString());
+                        k++;
+                    }
+                }
 
                 rs.insertRow();
             }
@@ -409,6 +417,26 @@ class Repository implements IRepository {
                 int energy = rs.getInt(ENERGY);
                 player.setCheckpoints(checkpoint);
                 player.setEnergy(energy);
+                String upg1 = rs.getString("upgrade1");
+                String upg2 = rs.getString("upgrade2");
+                String upg3 = rs.getString("upgrade3");
+                Upgrade upgradecard = null;
+                for(int l = 0; l < 3; l++) {
+                    for(Upgrade upgrade : Upgrade.values()){
+                        if(l == 0 && upg1 != null){
+                            if(upg1.equals(upgrade.toString()))
+                                player.addUpgrade(upgrade);
+                        }
+                        else if(l == 1 && upg2 != null){
+                            if(upg2.equals(upgrade.toString()))
+                                player.addUpgrade(upgrade);
+                        }
+                        else if(l == 2 && upg3 != null){
+                            if(upg3.equals(upgrade.toString()))
+                                player.addUpgrade(upgrade);
+                        }
+                    }
+                }
             } else {
                 System.err.println("Game in DB does not have a player with id " + i +"!");
             }
@@ -450,6 +478,10 @@ class Repository implements IRepository {
             int number = rs.getInt("RegNumber");
             if(cardOrdinal >= 0){
                 game.getPlayer(ID).getProgramField(number).setCard(new CommandCard(cArray[cardOrdinal]));
+            }
+            if(cardOrdinal > 7){
+                Player player = game.getPlayer(ID);
+                player.getDamagecards().add(cArray[cardOrdinal]);
             }
         }
         rs.close();
@@ -542,6 +574,13 @@ class Repository implements IRepository {
                 rs.updateInt(PLAYER_HEADING, player.getHeading().ordinal());
                 rs.updateInt("checkpoint", player.getCheckpoints());
                 rs.updateInt("energy", player.getEnergy());
+                int k = 10;
+                if(!player.getUpgradeList().isEmpty()){
+                    for(Upgrade upgrade : player.getUpgradeList()){
+                        rs.updateString(k,upgrade.toString());
+                        k++;
+                    }
+                }
                 rs.updateRow();
             }
             rs.close();

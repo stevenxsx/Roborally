@@ -2,9 +2,7 @@ package dk.dtu.compute.se.pisd.roborally.model.Components;
 
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 
 public class Laser extends FieldAction {
 
@@ -31,13 +29,8 @@ public class Laser extends FieldAction {
 
         for (int i = 0; i < laserStrength; i++) {
             Player player = space.getPlayer();
-            try {
-                player.getSpace();
-                //dmg to player here;
-            } catch (Exception e) {
-
-            }
+            player.setDamagecards(Command.SPAM);
         }
-        return false;
+        return true;
     }
 }

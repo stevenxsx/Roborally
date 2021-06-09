@@ -23,11 +23,14 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
 import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.lang.Math.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
@@ -50,7 +53,7 @@ public class Board extends Subject {
     private final Space[][] spaces;
 
     private final Space[] startingPoints = new Space[6];
-    public int startingPointsIncrementer = 0;
+    private final List<Player> playerOrder = new ArrayList<>();
 
     public String name;
 
@@ -63,8 +66,6 @@ public class Board extends Subject {
     }
 
     private final List<Player> players = new ArrayList<>();
-
-    private final List<Player> playerOrder = new ArrayList<>();
 
     public int getCheckpointCounter() {
         return checkpointCounter;
@@ -153,7 +154,6 @@ public class Board extends Subject {
     public Player getCurrentPlayer() {
         return current;
     }
-
     /**
      * Loops through all spaces to find antenna
      * @return Space where antenna is located
@@ -184,11 +184,10 @@ public class Board extends Subject {
         distance = Math.abs(antenna.x-x)+Math.abs(antenna.y-y);
         return distance;
 
-            /* To test if priority method works */
-            //Random rand = new Random();
-            //return rand.nextInt(players.size());
-        }
-
+        /* To test if priority method works */
+        //Random rand = new Random();
+        //return rand.nextInt(players.size());
+    }
 
     /**
      * Maps players to a value (distance calculated in previous method)
@@ -234,15 +233,9 @@ public class Board extends Subject {
         {
             current = playerOrder.get(playerOrder.indexOf(current) + 1);
         }
-        notifyChange();
-    }
-
-    /*public void setCurrentPlayer(Player player) {
-        if (player != this.current && players.contains(player)) {
-            this.current = player;
             notifyChange();
         }
-    }*/
+
 
     public Phase getPhase() {
         return phase;
@@ -304,16 +297,16 @@ public class Board extends Subject {
         int y = space.y;
         switch (heading) {
             case SOUTH:
-                y = (y + 1) % height;
+                y = (y + 1);
                 break;
             case WEST:
-                x = (x + width - 1) % width;
+                x = (x + width - 1) ;
                 break;
             case NORTH:
-                y = (y + height - 1) % height;
+                y = (y + height - 1);
                 break;
             case EAST:
-                x = (x + 1) % width;
+                x = (x + 1);
                 break;
         }
 
@@ -321,23 +314,14 @@ public class Board extends Subject {
     }
 
     public String getStatusMessage() {
-        // this is actually a view aspect, but for making assignment V1 easy for
-        // the students, this method gives a string representation of the current
-        // status of the game
-/*
-        // XXX: V2 changed the status so that it shows the phase, the player and the step
-        return "Phase: " + getPhase().name() +
-                ", Player = " + getCurrentPlayer().getName() +
-                ", Step: " + getStep();
-    }*/
+        String upgrades = "";
+        for(Upgrade upgrade : getCurrentPlayer().getUpgradeList()){
+            if(upgrade != null)
+            upgrades += ("---- "+ upgrade.displayName);
+        }
 
-   return " Current player = " + getCurrentPlayer().getName() + " , Moves: " + getCounter();
-
-
-
-
-};
-
+   return "Player = " + getCurrentPlayer().getName() +  " | upgrades: " + upgrades + "---- Step: " + getStep() + " | Phase: " + getPhase().name();
+}
     public void setCounter(int i) {
         counter = i;
     }

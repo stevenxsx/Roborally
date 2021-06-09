@@ -2,9 +2,7 @@ package dk.dtu.compute.se.pisd.roborally.model.Components;
 
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 
 public class Pit extends FieldAction {
 
@@ -17,12 +15,24 @@ public class Pit extends FieldAction {
 
         //Clears the register for the player landing on the Pit, to ensure that they dont more from it.
         clearRegister(player, space);
-
-        //Working on how to move to a specific token/space spot on the board
-        // gameController.moveToSpace(space.getPlayer(), space , player.getHeading());
-
-
-
+        player.setNeedReboot(true);
+        Space rebootSpace;
+        Board board = gameController.board;
+        for(int i = 0; i < board.width; i++) {
+            for(int k = 0; k < board.height; k++){
+                rebootSpace = board.getSpace(i,k);
+                for(FieldAction fa: rebootSpace.getActions()){
+                    if(fa instanceof RebootTokens){
+                        player.setSpace(rebootSpace);
+                        if(!player.hasUpgrade(Upgrade.FIREWALL)) {
+                            player.getDamagecards().add(Command.SPAM);
+                            player.getDamagecards().add(Command.SPAM);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
 
         return false;
     }
@@ -35,7 +45,7 @@ public class Pit extends FieldAction {
      */
     public void clearRegister(Player player, Space space){
         int step = space.board.getStep();
-        for (int i = step+1; i < Player.NO_REGISTERS; i++)
+        for (int i = step + 1; i < Player.NO_REGISTERS; i++)
             player.clearRegister(i);
     }
 

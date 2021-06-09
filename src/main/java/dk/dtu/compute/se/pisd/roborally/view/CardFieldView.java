@@ -121,6 +121,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+
     private CommandCardField cardFieldFromRepresentation(String rep) {
         if (rep != null && field.player != null) {
             String[] strings = rep.split(",");

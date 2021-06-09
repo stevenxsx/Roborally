@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS Player (
   heading tinyint,
   checkpoint int,
   energy int,
-  
+  upgrade1 ENUM('BRAKES', 'FIREWALL', 'HOVER_UNIT'), /* Actually this is bad style, but do not have time at the moment to setup properly.*/
+  upgrade2 ENUM('BRAKES', 'FIREWALL', 'HOVER_UNIT'),
+  upgrade3 ENUM('BRAKES', 'FIREWALL', 'HOVER_UNIT'),
   PRIMARY KEY (gameID, playerID),
   FOREIGN KEY (gameID) REFERENCES Game(gameID)
 );;

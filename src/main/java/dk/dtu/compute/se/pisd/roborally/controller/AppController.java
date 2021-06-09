@@ -182,7 +182,7 @@ public class AppController implements Observer {
             }
         }
         catch(Exception e){
-            System.out.println("No saved games");
+            e.printStackTrace();
         }
     }
 
@@ -207,6 +207,10 @@ public class AppController implements Observer {
         }
         return false;
     }
+
+    /**
+     * Exits the Roborally app after being prompted with yes/no answer to exit the app.
+     */
 
     public void exit() {
         if (gameController != null) {

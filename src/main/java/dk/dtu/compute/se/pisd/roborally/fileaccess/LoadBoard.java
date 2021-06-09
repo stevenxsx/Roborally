@@ -50,6 +50,12 @@ public class LoadBoard {
     private static final int WIDTH = 8;
     private static final int HEIGHT = 8;
 
+    /**
+     * Loads a board from a JSON file.
+     * @param boardname the name of the board that will be loaded.
+     * @return the board that will be played on.
+     */
+
     public static Board loadBoard(String boardname) {
         if (boardname == null) {
             boardname = DEFAULTBOARD;

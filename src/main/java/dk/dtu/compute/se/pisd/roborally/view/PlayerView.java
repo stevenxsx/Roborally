@@ -24,6 +24,7 @@ package dk.dtu.compute.se.pisd.roborally.view;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -136,6 +137,11 @@ public class PlayerView extends Tab implements ViewObserver {
         }
     }
 
+    /**
+     * updates the current view from player's perspective every time it is called.
+     * @param subject Subject of the observer design pattern.
+     */
+
     @Override
     public void updateView(Subject subject) {
         if (subject == player.board) {
@@ -174,24 +180,28 @@ public class PlayerView extends Tab implements ViewObserver {
                         //     from the initialization phase to the programming phase somehow!
                         executeButton.setDisable(false);
                         stepButton.setDisable(true);
+                        buyButton.setDisable(true);
                         break;
 
                     case PROGRAMMING:
                         finishButton.setDisable(false);
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
+                        buyButton.setDisable(false);
                         break;
 
                     case ACTIVATION:
                         finishButton.setDisable(true);
                         executeButton.setDisable(false);
                         stepButton.setDisable(false);
+                        buyButton.setDisable(true);
                         break;
 
                     default:
                         finishButton.setDisable(true);
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
+                        buyButton.setDisable(true);
                 }
 
 
@@ -202,23 +212,7 @@ public class PlayerView extends Tab implements ViewObserver {
                 }
                 playerInteractionPanel.getChildren().clear();
 
-                if (player.board.getCurrentPlayer() == player) {
-                    // TODO Assignment V3: these buttons should be shown only when there is
-                    //      an interactive command card, and the buttons should represent
-                    //      the player's choices of the interactive command card. The
-                    //      following is just a mockup showing two options
-                   /* Button optionButton = new Button("Option1");
-                    optionButton.setOnAction( e -> gameController.notImplemented());
-                    optionButton.setDisable(false);
-                    playerInteractionPanel.getChildren().add(optionButton);
-
-                    optionButton = new Button("Option 2");
-                    optionButton.setOnAction( e -> gameController.notImplemented());
-                    optionButton.setDisable(false);
-                    playerInteractionPanel.getChildren().add(optionButton);
-
-                    */
-
+                if (player.board.getCurrentPlayer() == player && !player.NeedReboot()) {
                     CommandCardField field = player.getProgramField(player.board.getStep());
                     if (field != null) {
                         CommandCard card = field.getCard();
@@ -232,8 +226,24 @@ public class PlayerView extends Tab implements ViewObserver {
                         }
                     }
                 }
+                /** @Author Mike
+                 * This should be able to make the options for choosing your heading when doing a reboot to an Player interphase
+                 */
+                else if (player.board.getCurrentPlayer() == player && player.NeedReboot()){
+                    CommandCardField field = player.getProgramField(player.board.getStep());
+                    if (field != null) {
+                        rebootCard card = field.getCard2();
+                        if (card != null) {
+                            for (RebootTokens.Choose option: card.choose.getOptions()) {
+                                Button optionButton = new Button(option.displayName);
+                                optionButton.setOnAction(e -> gameController.Reboot_choose(option));
+                                optionButton.setDisable(false);
+                                playerInteractionPanel.getChildren().add(optionButton);
+                            }
+                        }
+                    }
+                }
             }
         }
-
     }
 }

@@ -82,10 +82,13 @@ public class BoardView extends VBox implements ViewObserver {
         update(board);
     }
 
+    /**
+     * updates statusmessage for the board.
+     * @param subject subject for the obsever design pattern.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == board) {
-            Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
         }
     }

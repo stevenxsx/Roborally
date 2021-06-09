@@ -22,10 +22,19 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Pit;
+import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
+import dk.dtu.compute.se.pisd.roborally.view.PlayerView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.DialogEvent;
+import javafx.scene.control.DialogPane;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +51,6 @@ public class GameController {
 
     public boolean winnerFound = false;
 
-    final private List<String> UPGRADE_CARDS = Arrays.asList("Brakes", "Virus_Module", "Trojan Needler", "Rear Laser");
-
     public GameController(@NotNull Board board) {
         this.board = board;
     }
@@ -54,7 +61,7 @@ public class GameController {
      *
      * @param space the space to which the current player should move
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space)  {
+    public void moveCurrentPlayerToSpace(@NotNull Space space) {
         // TODO Assignment V1: method should be implemented by the students:
         //   - the current player should be moved to the given space
         //     (if it is free()
@@ -64,24 +71,25 @@ public class GameController {
         //     if the player is moved
         Player current_player = board.getCurrentPlayer();
         // Check this not moves the player and they cant land on another person/robot.
-        if (space.getPlayer() == null && space.getPlayer() != current_player){ //return null if free
+        if (space.getPlayer() == null && space.getPlayer() != current_player) { //return null if free
             current_player.setSpace(space);//sets players position
-            board.setCounter(board.getCounter()+1);
+            board.setCounter(board.getCounter() + 1);
             //to change the player
             int number = board.getPlayerNumber(current_player);
-            board.setCurrentPlayer(board.getPlayer((number+1) % board.getPlayersNumber() ));
-        }
-        else if (space.getPlayer() != current_player){
+            board.setCurrentPlayer(board.getPlayer((number + 1) % board.getPlayersNumber()));
+        } else if (space.getPlayer() != current_player) {
             push(space.getPlayer(), current_player.getHeading());
             current_player.setSpace(space);//sets players position
-            board.setCounter(board.getCounter()+1);
+            board.setCounter(board.getCounter() + 1);
             //to change the player
             int number = board.getPlayerNumber(current_player);
-            board.setCurrentPlayer(board.getPlayer((number+1) % board.getPlayersNumber() ));
+            board.setCurrentPlayer(board.getPlayer((number + 1) % board.getPlayersNumber()));
         }
     }
 
-    // XXX: V2
+    /**
+     * Sets the current phase to programming phase. Sets the registers and playerhand ready to start programming.
+     */
     public void startProgrammingPhase() {
         board.setPhase(Phase.PROGRAMMING);
         //board.setCurrentPlayer(board.getPlayer(0));
@@ -94,10 +102,25 @@ public class GameController {
                     CommandCardField field = player.getProgramField(j);
                     field.setCard(null);
                     field.setVisible(true);
-                }
+                    if(!player.NeedReboot())
+                        field.setCard2(null);
+
+                    }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
-                    field.setCard(generateRandomCommandCard());
+                    //if statement to ensure that the player that is rebooting cant get any cards
+                    if(!player.NeedReboot()) {
+                        if (!player.getDamagecards().isEmpty()) {
+                            if (player.getDamagecards().size() > j)
+                                field.setCard(new CommandCard(player.getDamagecards().get(j)));
+                            else
+                                field.setCard(generateRandomCommandCard());
+                        }
+                        else
+                            field.setCard(generateRandomCommandCard());
+                    }
+                    else
+                        field.setCard(null);
                     field.setVisible(true);
                 }
             }
@@ -105,26 +128,36 @@ public class GameController {
     }
 
 
-    // XXX: V2
+    /**
+     * @author s205444, Lucas
+     * @return returns a random command card
+     */
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
-        int random = (int) (Math.random() * commands.length);
-        return new CommandCard(commands[random]);
+        ArrayList<Command> commandArrayList = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            commandArrayList.add(commands[i]);
+        }
+        int random = (int) (Math.random() * commandArrayList.size());
+        return new CommandCard(commandArrayList.get(random));
     }
 
     /**
+     * @author s205444, Lucas
      * Checks for a winner in the game.
      * @param player takes the current player
      *
      */
 
-    public void chooseWinner(Player player){
+    public void chooseWinner(Player player) {
         Alert winMsg = new Alert(Alert.AlertType.INFORMATION, "Player \"" + player.getName() + "\" won.");
         this.winnerFound = true;
         winMsg.showAndWait();
     }
 
-    // XXX: V2
+    /**
+     * Ends the programming phase and sets phase to ACTIVATION:
+     */
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
@@ -133,7 +166,10 @@ public class GameController {
         board.setStep(0);
     }
 
-    // XXX: V2
+    /**
+     * Makes programming fields visible.
+     * @param register used to check that register number is less than a player's actual registers.
+     */
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {
             for (int i = 0; i < board.getPlayersNumber(); i++) {
@@ -144,7 +180,9 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * makes programming fields invisible
+     */
     private void makeProgramFieldsInvisible() {
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
@@ -155,19 +193,25 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Executes robots programs.
+     */
     public void executePrograms() {
         board.setStepMode(false);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Executes programs beyond the first step and enables step counting.
+     */
     public void executeStep() {
         board.setStepMode(true);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Continutes execution of programming until phase is over.
+     */
     private void continuePrograms() {
         do {
             executeNextStep();
@@ -184,22 +228,34 @@ public class GameController {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
+                rebootCard choice = currentPlayer.getProgramField(step).getCard2();
                 if (card != null) {
                     Command command = card.command;
-                    if(command.isInteractive()) {
+                    if (command.isInteractive()) {
                         board.setPhase(Phase.PLAYER_INTERACTION);
                         return;
                     }
                     executeCommand(currentPlayer, command);
+                }
+                /** @Author Mike
+                 * this else if statement is to makesure that the player only can activate the effect of the reboot once
+                 */
+                else if (choice != null && currentPlayer.NeedReboot()) {
+                    RebootTokens.Choose choose = choice.choose;
+                    if (choose.Interactive()) {
+                        board.setPhase(Phase.PLAYER_INTERACTION);
+                        return;
+                    }
+                    PickReboot_heading(currentPlayer, choose);
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
 
-                    for(Player player : this.board.getPlayers()){
-                        for(FieldAction fieldAction : player.getSpace().getActions()){
-                            if(winnerFound){
+                    for (Player player : this.board.getPlayers()) {
+                        for (FieldAction fieldAction : player.getSpace().getActions()) {
+                            if (winnerFound) {
                                 break;
                             }
                             fieldAction.doAction(this, player.getSpace());
@@ -226,11 +282,12 @@ public class GameController {
 
     /**
      * Executes a specific command for a robot.
+     *
      * @param option One of the command ENUMS, i.e. LEFT, RIGHT, FORWARD.
      */
-    public void executeCommandOptionAndContinue(@NotNull Command option){
+    public void executeCommandOptionAndContinue(@NotNull Command option) {
         Player currentPlayer = board.getCurrentPlayer();
-        if (currentPlayer != null && board.getPhase() == Phase.PLAYER_INTERACTION && option != null){
+        if (currentPlayer != null && board.getPhase() == Phase.PLAYER_INTERACTION && option != null) {
             board.setPhase(Phase.ACTIVATION);
             executeCommand(currentPlayer, option);
 
@@ -239,7 +296,7 @@ public class GameController {
             if (nextPlayerNumber < board.getPlayersNumber()) {
                 board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
             } else {
-                int step = board.getStep() +1;
+                int step = board.getStep() + 1;
                 if (step < Player.NO_REGISTERS) {
                     makeProgramFieldsVisible(step);
                     board.setStep(step);
@@ -252,12 +309,13 @@ public class GameController {
 
     }
 
-    // XXX: V2
+    /**
+     * Executes a command for the player dependent on the type of command.
+     * @param player the current player
+     * @param command the command that player is trying to execute.
+     */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
-            // XXX This is a very simplistic way of dealing with some basic cards and
-            //     their execution. This should eventually be done in a more elegant way
-            //     (this concerns the way cards are modelled as well as the way they are executed).
 
             switch (command) {
                 case FORWARD:
@@ -281,19 +339,18 @@ public class GameController {
                 case BACK_UP:
                     this.backUp(player);
                     break;
-                    /*
-                case EAST:
-                    this.East(player);
+                case SPAM:
+                    this.spam(player);
                     break;
-                case WEST:
-                    this.West(player);
+                case VIRUS:
+                    this.virus(player);
                     break;
-                case SOUTH:
-                    this.South(player);
+                case TROJAN_HORS:
+                    this.trojan(player);
                     break;
-                case NORTH:
-                    this.North(player);
-                    */
+                case WORM:
+                    this.worm(player);
+                    break;
                 default:
                     // DO NOTHING (for now)
             }
@@ -301,77 +358,98 @@ public class GameController {
     }
 
     /**
-     * Moves a player to a certain space depending on the parameters's values.
-     *
-     * @param player the player being moved
-     * @param space the space being moved to.
+     * Recursive method that moves a player to a certain space depending on the parameters's values.
+     * @author s205444 Lucas
+     * @param player  the player being moved
+     * @param space   the space being moved to.
      * @param heading the heading of the intially moving player.
      * @throws ImpossibleMoveException If a move is not possible, an impossibleMoveException is thrown.
      */
     public void moveToSpace(Player player, Space space, Heading heading) throws ImpossibleMoveException {
+        if(space == null){
+            Pit tempPit = new Pit();
+            tempPit.doAction(this, player.getSpace());
+            return;
+        }
+        if(player.NeedReboot()){
+            return;
+        }
+
         Player neighbourPlayer = space.getPlayer();
-        boolean movePossible = true;
         boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
 
-        if (!hasAnyWalls){
-            for(Heading header: player.getSpace().getWalls()){
-                if (player.getHeading() == header){
-                    movePossible = false;
+        if (!hasAnyWalls) {
+            for (Heading header : player.getSpace().getWalls()) {
+                if (player.getHeading() == header) {
                     space = player.getSpace();
-                    break;
+                    throw new ImpossibleMoveException(player, space, heading);
+                }
+            }
+        }
+        Space target = space;
+        boolean targetHasWalls = target.getWalls().isEmpty();
+        if (!targetHasWalls) {
+            for (Heading header : target.getWalls()) {
+                Heading headerlist = header.next().next();
+                if (headerlist == heading) {
+                    throw new ImpossibleMoveException(player, space, heading);
                 }
             }
         }
 
-        if(movePossible && neighbourPlayer!= null ){
-            Space target = space;
-            boolean targetHasWalls = target.getWalls().isEmpty();
-            if (target != null && targetHasWalls){
-                try {
-                    Space neighbourSpace = board.getNeighbour(neighbourPlayer.getSpace(),heading);
-                    moveToSpace(neighbourPlayer, neighbourSpace, heading);
+        if(!player.hasUpgrade(Upgrade.HOVER_UNIT)) {
+            for (FieldAction fa : player.getSpace().getActions()) {
+                if (fa instanceof Pit) {
+                    fa.doAction(this, player.getSpace());
+                    return;
                 }
-                catch(Exception e){
-                    System.out.println("Player is null");
-                }
-            }
-            else if(targetHasWalls){
-                //List<Heading> wallHeadings2 = ((Wall) target).getHeading();
-
-                for(Heading header: target.getWalls()){
-                    Heading headerlist = header.next().next();
-                    if (headerlist == heading){
-                        movePossible = false;
-                    }
-                }
-                if (movePossible){
-                    moveToSpace(neighbourPlayer,target,heading);
-                }
-
-            }
-            else{
-                throw new ImpossibleMoveException(player,space,heading);
             }
         }
-        if(movePossible)
-        player.setSpace(space);
+
+        if (target != null && neighbourPlayer != null) {
+            try {
+                Space neighbourSpace = board.getNeighbour(neighbourPlayer.getSpace(), heading);
+
+                moveToSpace(neighbourPlayer, neighbourSpace, heading);
+            } catch (Exception e) {
+                throw new ImpossibleMoveException(player, space, heading);
+            }
+        }
+        if(target !=null){
+            player.setSpace(space);
+        }
+        else {
+            throw new ImpossibleMoveException(player, space, heading);
+        }
     }
 
-    /** Moves robot one space forward in the heading it is facing*/
+    /**
+     * Moves a player one step forward, except if the player has a BRAKE upgrade.
+     * @param player the currentplayer trying to move forward.
+     */
 
     public void moveForward(@NotNull Player player) {
-        Space current = player.getSpace();
+
+        if(player.hasUpgrade(Upgrade.BRAKES)){
+            ArrayList<String> choices = new ArrayList<>();
+            choices.add("Yes");
+            choices.add("No");
+            ChoiceDialog<String> dialog = new ChoiceDialog<String>(choices.get(0), choices);
+            dialog.setHeaderText("Move only 0 forward?");
+
+            Optional<String> result = dialog.showAndWait();
+            if(result.isPresent()){
+                if(result.get().equals("Yes"))
+                    return;
+            }
+        }
         Space neighbourSpace = board.getNeighbour(player.getSpace(), player.getHeading());
-        if(neighbourSpace != null)
-        {
             try
             {
                 moveToSpace(player, neighbourSpace, player.getHeading());
             } catch (ImpossibleMoveException e){
                 System.out.println("Move impossible");
             }
-
-        }
     }
 
     public void push(@NotNull Player player, Heading direction) {
@@ -505,7 +583,12 @@ public class GameController {
     }
 
 
-
+    /**
+     * Moves a card from view in the controller.
+     * @param source cardfield source to move from
+     * @param target cardfield target to move to
+     * @return true if moved, otherwise false
+     */
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
         CommandCard targetCard = target.getCard();
@@ -517,6 +600,67 @@ public class GameController {
             return false;
         }
     }
+
+    /** @Author Mike
+     * Made to use in the player Interaction when choosing the heading for the player on the reboot token
+     * @param option
+     */
+    public void Reboot_choose(@NotNull RebootTokens.Choose option){
+        Player player = board.getCurrentPlayer();
+        if (player != null && board.getPhase() == Phase.PLAYER_INTERACTION && option != null){
+            board.setPhase(Phase.ACTIVATION);
+            PickReboot_heading(player, option);
+
+
+            int nextPlayerNumber = board.getPlayerNumber(player) + 1;
+            if (nextPlayerNumber < board.getPlayersNumber()) {
+                board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+            } else {
+                int step = board.getStep() +1;
+                if (step < Player.NO_REGISTERS) {
+                    makeProgramFieldsVisible(step);
+                    board.setStep(step);
+                    board.setCurrentPlayer(board.getPlayer(0));
+                } else {
+                    startProgrammingPhase();
+                }
+            }
+        }
+
+    }
+
+
+    /** @Author Mike
+     * This method is meant to when the player choose their heading once when they are on the reboot token
+      * @param player
+     * @param option
+     */
+    public void PickReboot_heading(@NotNull Player player, RebootTokens.Choose option) {
+        if (player.NeedReboot != false &&  player != null && player.board == board && option != null) {
+            // XXX This is a very simplistic way of dealing with some basic cards and
+            //     their execution. This should eventually be done in a more elegant way
+            //     (this concerns the way cards are modelled as well as the way they are executed).
+
+            switch (option) {
+                case EAST:
+                    this.East(player);
+                    break;
+                case WEST:
+                    this.West(player);
+                    break;
+                case SOUTH:
+                    this.South(player);
+                    break;
+                case NORTH:
+                    this.North(player);
+                default:
+                    // DO NOTHING (for now)
+            }
+            player.setNeedReboot(false);
+        }
+
+    }
+
     public void North(@NotNull Player player) {
         player.setHeading(Heading.NORTH);
     }
@@ -533,20 +677,111 @@ public class GameController {
         player.setHeading(Heading.WEST);
     }
 
+
     /**
      * Used to open a shop for upgrade cards. Can be bought if energy is sufficient.
      * @author s205444, Lucas
      */
+    public void spam(Player player){
+        player.getDamagecards().remove(Command.SPAM);
+        CommandCard card = generateRandomCommandCard();
+        executeCommand(player,card.command);
+    }
 
+    public void trojan(Player player){
+        player.getDamagecards().remove(Command.TROJAN_HORS);
+        player.getDamagecards().add(Command.SPAM);
+        player.getDamagecards().add(Command.SPAM);
+        CommandCard card = generateRandomCommandCard();
+        executeCommand(player,card.command);
+    }
+
+    public void virus(Player player){
+
+    }
+
+    public void worm(Player player) {
+        Space space = player.getSpace();
+        int step = space.board.getStep();
+        for (int i = step+1; i < Player.NO_REGISTERS; i++)
+            player.clearRegister(i);
+        player.setNeedReboot(true);
+        Space rebootSpace;
+        Board board = this.board;
+        for(int i = 0; i < board.width; i++) {
+            for(int k = 0; k < board.height; k++){
+                rebootSpace = board.getSpace(i,k);
+                for(FieldAction fa: rebootSpace.getActions()){
+                    if(fa instanceof RebootTokens){
+                        player.setSpace(rebootSpace);
+                        player.getDamagecards().add(Command.SPAM);
+                        player.getDamagecards().add(Command.SPAM);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @author s205444, Lucas
+     * Allows a player to buy upgrades in the shop during programming phase.
+     */
     public void shop(){
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(UPGRADE_CARDS.get(0), UPGRADE_CARDS);
+        if(!board.getPhase().equals(Phase.PROGRAMMING)){
+            Frame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame, "You can only buy during Programming phase!");
+            return;
+        }
+        ArrayList<String> upgradeList = new ArrayList<>();
+        for(Upgrade upgrade : Upgrade.values()){
+            upgradeList.add(upgrade.displayName);
+        }
+
+        ArrayList<String> playerNumber = new ArrayList<String>();
+        for(Player pl : board.getPlayers()){
+            playerNumber.add(pl.getName());
+        }
+
+        ChoiceDialog<String> playerDialog = new ChoiceDialog<>(playerNumber.get(0),playerNumber);
+        playerDialog.setTitle("Player selection");
+        playerDialog.setHeaderText("Select player who is buying upgrade");
+        Optional<String> playerResult = playerDialog.showAndWait();
+        Player player = null;
+        if(playerResult.isPresent()){
+            for(Player players: board.getPlayers()) {
+                if(players.getName().equals(playerResult.get())) {
+                    player = players;
+                }
+            }
+        }
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(upgradeList.get(0), upgradeList);
+
         dialog.setTitle("Upgrade shop");
         dialog.setHeaderText("Select a card to buy:");
         Optional<String> result = dialog.showAndWait();
 
         if(result.isPresent()){
+            Upgrade upgradeCard = null;
             String upgradeChosen = result.get();
+            for(Upgrade upgrade : Upgrade.values()){
+                if(upgrade.displayName.equals(upgradeChosen)){
+                    upgradeCard = upgrade;
+                    break;
+                }
+            }
+            if(upgradeCard != null && player != null) {
+                Frame frame = new JFrame();
+                int cost = upgradeCard.cost;
+                if(player.getEnergy() > cost) {
+                    JOptionPane.showMessageDialog(frame, "Not enough energy");
+                }
+                else {
+                    String msg = player.addUpgrade(upgradeCard);
+                    JOptionPane.showMessageDialog(frame, msg);
+                }
+            }
         }
     }
 
 }
+

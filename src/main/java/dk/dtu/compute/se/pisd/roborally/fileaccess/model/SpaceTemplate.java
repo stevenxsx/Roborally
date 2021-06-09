@@ -43,5 +43,4 @@ public class SpaceTemplate {
     public boolean startPoint;
     public boolean antenna;
 
-
 }

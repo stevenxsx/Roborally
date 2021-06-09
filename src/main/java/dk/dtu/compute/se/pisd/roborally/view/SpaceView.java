@@ -53,7 +53,6 @@ public class SpaceView extends StackPane implements ViewObserver {
     public SpaceView(@NotNull Space space) {
         this.space = space;
 
-        // XXX the following styling should better be done with styles
         this.setPrefWidth(SPACE_WIDTH);
         this.setMinWidth(SPACE_WIDTH);
         this.setMaxWidth(SPACE_WIDTH);
@@ -62,25 +61,14 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
-
-/*
-        if ((space.x + space.y) % 2 == 0) {
-            this.setStyle("-fx-background-color: white;");
-        } else {
-            this.setStyle("-fx-background-color: black;");
-        }
-*/
-
-        // updatePlayer();
-
-        // This space view should listen to changes of the space
         space.attach(this);
 
         update(space);
-
-
     }
 
+    /**
+     * updates the view of each player on each space.
+     */
     private void updatePlayer() {
 
         Player player = space.getPlayer();
@@ -109,6 +97,11 @@ public class SpaceView extends StackPane implements ViewObserver {
         }
     }
 
+    /**
+     * updates view for each space on the board.
+     * @author s205444, Lucas
+     * @param subject The subject of the observer design pattern.
+     */
     @Override
     public void updateView(Subject subject) {
         this.getChildren().clear();
@@ -120,7 +113,6 @@ public class SpaceView extends StackPane implements ViewObserver {
             if(this.space.getAntenna()){
                 AntennaView.drawAntenna(this);
             }
-
             if(!this.space.getWalls().isEmpty()){
                 WallView.drawWall(this, this.space);
             }
@@ -154,7 +146,6 @@ public class SpaceView extends StackPane implements ViewObserver {
 
             updatePlayer();
         }
-
     }
 
     public void updateNormalSpace(){
