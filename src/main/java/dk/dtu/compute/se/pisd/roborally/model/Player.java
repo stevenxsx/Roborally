@@ -210,21 +210,18 @@ public class Player extends Subject {
 
     public String addUpgrade(Upgrade upgrade) {
         if(this.upgradeList.isEmpty()){
-            if(upgradeList.size() < 4) {
-                upgradeList.add(upgrade);
-                return "Upgrade succesfully added.";
-            }
-            else{
-                return "You cannot have more than three upgrades.";
-            }
+            upgradeList.add(upgrade);
+            return "Upgrade succesfully added.";
+        }
+        else if (upgradeList.size() < 4){
+            upgradeList.add(upgrade);
+            return "Upgrade succesfully added.";
         }
         else
-            return "Something went wrong with upgrading";
+            return "You cannot have more than three upgrades.";
     }
 
-    public String removeUpgrade(int slotToRemove) {
-     return null;
-    }
+
 
     public boolean hasUpgrade(Upgrade upgrade){
         if(!upgradeList.isEmpty()) {
@@ -235,6 +232,10 @@ public class Player extends Subject {
             }
         }
         return false;
+    }
+
+    public ArrayList<Upgrade> getUpgradeList() {
+        return upgradeList;
     }
 }
 

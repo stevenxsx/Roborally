@@ -23,6 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Checkpoint;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -236,17 +237,13 @@ public class Board extends Subject {
     }
 
     public String getStatusMessage() {
-        // this is actually a view aspect, but for making assignment V1 easy for
-        // the students, this method gives a string representation of the current
-        // status of the game
-/*
-        // XXX: V2 changed the status so that it shows the phase, the player and the step
-        return "Phase: " + getPhase().name() +
-                ", Player = " + getCurrentPlayer().getName() +
-                ", Step: " + getStep();
-    }*/
+        String upgrades = "";
+        for(Upgrade upgrade : getCurrentPlayer().getUpgradeList()){
+            if(upgrade != null)
+            upgrades += ("---- "+ upgrade.displayName);
+        }
 
-   return "Player = " + getCurrentPlayer().getName() + " moves " + getCounter();
+   return "Player = " + getCurrentPlayer().getName() +  " | upgrades: " + upgrades + "---- Step: " + getStep() + " | Phase: " + getPhase().name();
 }
     public void setCounter(int i) {
         counter = i;
