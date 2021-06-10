@@ -76,14 +76,16 @@ public class GameController {
             board.setCounter(board.getCounter() + 1);
             //to change the player
             int number = board.getPlayerNumber(current_player);
-            board.setCurrentPlayer(board.getPlayer((number + 1) % board.getPlayersNumber()));
+            //board.setCurrentPlayer(board.getPlayer((number + 1) % board.getPlayersNumber()));
+            board.setCurrentPlayer(current_player);
         } else if (space.getPlayer() != current_player) {
             push(space.getPlayer(), current_player.getHeading());
             current_player.setSpace(space);//sets players position
             board.setCounter(board.getCounter() + 1);
             //to change the player
             int number = board.getPlayerNumber(current_player);
-            board.setCurrentPlayer(board.getPlayer((number + 1) % board.getPlayersNumber()));
+            //board.setCurrentPlayer(board.getPlayer((number + 1) % board.getPlayersNumber()));
+            board.setCurrentPlayer(current_player);
         }
     }
 

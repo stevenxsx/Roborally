@@ -176,7 +176,7 @@ public class Board extends Subject {
      * @param player
      * @author Oline s201010*/
 
-    private double calculateDistanceToAntenna(Player player) {
+    private double calculateDistanceToAntenna(@NotNull Player player) {
         int distance;
         int x = player.getSpace().x; // the players x coordinate
         int y = player.getSpace().y; // the players y coordinate

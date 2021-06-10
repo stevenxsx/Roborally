@@ -25,7 +25,8 @@ class GameControllerTest {
             Player player = new Player(board, null, "Player " + i);
             board.addPlayer(player);
             player.setSpace(board.getSpace(i, i));
-            player.setHeading(Heading.values()[i % Heading.values().length]);
+            //player.setHeading(Heading.values()[i % Heading.values().length]);
+            player.setHeading(Heading.SOUTH);
         }
         board.setCurrentPlayer(board.getPlayer(0));
 
@@ -137,5 +138,24 @@ class GameControllerTest {
         Assertions.assertNotNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
     }
 
+    @Test
+    void push() {
+        Board board = gameController.board;
+        Player player1 = board.getPlayer(0);
+        Player player2 = board.getPlayer(1);
+        Player player3 = board.getPlayer(2);
+        player1.setSpace(board.getSpace(0,0));
+        player2.setSpace(board.getSpace(0,1));
+        player3.setSpace(board.getSpace(0,2));
 
+
+        gameController.push(player1,Heading.SOUTH);
+        Assertions.assertEquals(player1, board.getSpace(0, 1).getPlayer(), "Player 1 " + player1.getName() + " should beSpace (0,1)!");
+        Assertions.assertEquals(player2, board.getSpace(0, 2).getPlayer(), "Player 2 " + player2.getName() + " should beSpace (0,2)!");
+        Assertions.assertEquals(player3, board.getSpace(0, 3).getPlayer(), "Player 3 " + player3.getName() + " should beSpace (0,3)!");
+        Assertions.assertEquals(Heading.SOUTH, player1.getHeading(), "Player 1 should be heading SOUTH!");
+        Assertions.assertEquals(Heading.SOUTH, player2.getHeading(), "Player 2 should be heading SOUTH!");
+        Assertions.assertEquals(Heading.SOUTH, player3.getHeading(), "Player 3 should be heading SOUTH!");
+        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
+    }
 }
