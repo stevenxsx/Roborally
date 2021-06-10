@@ -236,6 +236,9 @@ public class Board extends Subject {
             notifyChange();
         }
 
+    public List<Player> getPlayerOrder() {
+        return playerOrder;
+    }
 
     public Phase getPhase() {
         return phase;
@@ -300,10 +303,10 @@ public class Board extends Subject {
                 y = (y + 1);
                 break;
             case WEST:
-                x = (x + width - 1) ;
+                x = (x - 1) ;
                 break;
             case NORTH:
-                y = (y + height - 1);
+                y = (y  - 1);
                 break;
             case EAST:
                 x = (x + 1);

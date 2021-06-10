@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Pit;
 import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
@@ -159,6 +160,11 @@ public class GameController {
      * Ends the programming phase and sets phase to ACTIVATION:
      */
     public void finishProgrammingPhase() {
+        if(this.nullRegisters()){
+            Frame frame = new Frame();
+            JOptionPane.showMessageDialog(frame,"Error, none of the robots have cards in registers.");
+            return;
+        }
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
@@ -248,27 +254,24 @@ public class GameController {
                     }
                     PickReboot_heading(currentPlayer, choose);
                 }
-                int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
-                if (nextPlayerNumber < board.getPlayersNumber()) {
-                    board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
-                } else {
-
-                    for (Player player : this.board.getPlayers()) {
-                        for (FieldAction fieldAction : player.getSpace().getActions()) {
-                            if (winnerFound) {
-                                break;
+                for (Player player : this.board.getPlayers()) {
+                    for (FieldAction fieldAction : player.getSpace().getActions()) {
+                        if (winnerFound) {
+                            break;
                             }
                             fieldAction.doAction(this, player.getSpace());
                         }
                     }
+                if(board.getPlayerOrder().indexOf(currentPlayer) == board.getPlayerOrder().size()-1) {
                     step++;
-                    if (step < Player.NO_REGISTERS) {
-                        makeProgramFieldsVisible(step);
-                        board.setStep(step);
-                        board.setCurrentPlayer(board.getPlayer(0));
-                    } else {
-                        startProgrammingPhase();
-                    }
+                }
+                board.setCurrentPlayer(board.getPlayer(0));
+                if (step < Player.NO_REGISTERS) {
+                    makeProgramFieldsVisible(step);
+                    board.setStep(step);
+
+                } else {
+                    startProgrammingPhase();
                 }
             } else {
                 // this should not happen
@@ -374,6 +377,7 @@ public class GameController {
         if(player.NeedReboot()){
             return;
         }
+
 
         Player neighbourPlayer = space.getPlayer();
         boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
@@ -781,6 +785,14 @@ public class GameController {
                 }
             }
         }
+    }
+
+    public boolean nullRegisters(){
+        for(Player player :board.getPlayers()){
+            if(player.getProgramField(0).getCard() != null)
+                return false;
+        };
+        return true;
     }
 
 }
