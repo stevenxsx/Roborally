@@ -294,16 +294,16 @@ public class GameController {
             board.setPhase(Phase.ACTIVATION);
             executeCommand(currentPlayer, option);
 
-
-            int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
-            if (nextPlayerNumber < board.getPlayersNumber()) {
-                board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
-            } else {
+            if (board.getPlayerOrder().indexOf(currentPlayer) != board.getPlayerOrder().size() - 1) {
+                board.setCurrentPlayer(board.getCurrentPlayer());
+            }
+            else {
+                board.setCurrentPlayer(board.getPlayer(0));
                 int step = board.getStep() + 1;
                 if (step < Player.NO_REGISTERS) {
                     makeProgramFieldsVisible(step);
                     board.setStep(step);
-                    board.setCurrentPlayer(board.getPlayer(0));
+
                 } else {
                     startProgrammingPhase();
                 }
@@ -378,7 +378,11 @@ public class GameController {
             return;
         }
 
-
+        for (FieldAction fa : player.getSpace().getActions()) {
+            if (fa instanceof Laser) {
+                fa.doAction(this, player.getSpace());
+            }
+        }
         Player neighbourPlayer = space.getPlayer();
         boolean hasAnyWalls = player.getSpace().getWalls().isEmpty();
 
