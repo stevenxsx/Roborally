@@ -29,7 +29,7 @@ public class RebootTokens extends FieldAction {
             CommandCardField field = player.getProgramField(4);
             field.setCard2(new rebootCard(Choose.CHOOSE_HEADING));
             field.setVisible(true);
-            player.setNeedReboot(false);
+            //player.setNeedReboot(false);
 
         }
         return false;
