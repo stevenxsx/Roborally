@@ -92,11 +92,12 @@ class GameControllerTest {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();
 
+        gameController.moveForward(current);
         gameController.backUp(current);
 
-        Assertions.assertEquals(current, board.getSpace(0, 7).getPlayer(), "Player " + current.getName() + " should beSpace (0,7)!");
+        Assertions.assertEquals(current, board.getSpace(0, 0).getPlayer(), "Player " + current.getName() + " should beSpace (0,7)!");
         Assertions.assertEquals(Heading.SOUTH, current.getHeading(), "Player 0 should be heading SOUTH!");
-        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
+        Assertions.assertNull(board.getSpace(0, 1).getPlayer(), "Space (0,0) should be empty!");
     }
 
     @Test
@@ -157,4 +158,5 @@ class GameControllerTest {
         Assertions.assertEquals(Heading.SOUTH, player3.getHeading(), "Player 3 should be heading SOUTH!");
         Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
     }
+
 }

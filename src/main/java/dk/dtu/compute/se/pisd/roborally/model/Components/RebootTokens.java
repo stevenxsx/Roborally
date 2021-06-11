@@ -35,7 +35,7 @@ public class RebootTokens extends FieldAction {
         return false;
     }
 
-    /** @Auther Mike
+    /** @Author Mike
      * This method should remove all the cards in the players hand and register so no action with them should be able
      * @param player
      */

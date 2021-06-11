@@ -26,18 +26,13 @@ import dk.dtu.compute.se.pisd.roborally.model.Components.Laser;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Pit;
 import dk.dtu.compute.se.pisd.roborally.model.Components.RebootTokens;
 import dk.dtu.compute.se.pisd.roborally.model.Components.Upgrade;
-import dk.dtu.compute.se.pisd.roborally.view.PlayerView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.DialogEvent;
-import javafx.scene.control.DialogPane;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -246,7 +241,7 @@ public class GameController {
                     executeCommand(currentPlayer, command);
                 }
                 /** @Author Mike
-                 * this else if statement is to makesure that the player only can activate the effect of the reboot once
+                 * this else if statement is to make sure that the player only can activate the effect of the reboot once
                  */
                 else if (choice != null && currentPlayer.NeedReboot()) {
                     RebootTokens.Choose choose = choice.choose;
@@ -350,7 +345,7 @@ public class GameController {
                 case VIRUS:
                     this.virus(player);
                     break;
-                case TROJAN_HORS:
+                case TROJAN_HORSE:
                     this.trojan(player);
                     break;
                 case WORM:
@@ -699,7 +694,7 @@ public class GameController {
     }
 
     public void trojan(Player player){
-        player.getDamagecards().remove(Command.TROJAN_HORS);
+        player.getDamagecards().remove(Command.TROJAN_HORSE);
         player.getDamagecards().add(Command.SPAM);
         player.getDamagecards().add(Command.SPAM);
         CommandCard card = generateRandomCommandCard();
@@ -797,7 +792,7 @@ public class GameController {
         for(Player player :board.getPlayers()){
             if(player.getProgramField(0).getCard() != null)
                 return false;
-        };
+        }
         return true;
     }
 

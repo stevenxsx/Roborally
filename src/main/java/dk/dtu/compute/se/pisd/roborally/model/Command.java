@@ -46,7 +46,7 @@ public enum Command {
     SPAM("SPAM"),
     VIRUS("VIRUS"),
     WORM("WORM"),
-    TROJAN_HORS("TROJAN HORSE");
+    TROJAN_HORSE("TROJAN HORSE");
 
 
 

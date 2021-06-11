@@ -47,4 +47,6 @@ class BoardTest {
         Assertions.assertEquals(board.getPlayer(5), board.getCurrentPlayer(),
                 "Player " + board.getCurrentPlayer().getName() + " should be current player according to priority");
     }
+
+
 }
