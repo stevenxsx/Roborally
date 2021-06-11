@@ -159,4 +159,16 @@ class GameControllerTest {
         Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
     }
 
+    @Test
+    void reboot() {
+        //This test fails because reboot does not work as intended. To be fixed at a later time.
+        //Reboot token 1,3
+        //Pit 1,6
+        //Player 2 1,5
+        Board board = gameController.board;
+        Player player = board.getPlayer(1);
+        Assertions.assertEquals(board.getSpace(1,5),player.getSpace());
+        gameController.moveForward(player);
+        Assertions.assertEquals(board.getSpace(1,3),player.getSpace());
+    }
 }

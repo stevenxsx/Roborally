@@ -13,7 +13,7 @@ public class Pit extends FieldAction {
     public boolean doAction(GameController gameController, Space space) {
         Player player = space.getPlayer();
 
-        //Clears the register for the player landing on the Pit, to ensure that they dont more from it.
+        //Clears the register for the player landing on the Pit, to ensure that they dont move from it.
         clearRegister(player, space);
         player.setNeedReboot(true);
         Space rebootSpace;
